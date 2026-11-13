@@ -1,0 +1,21 @@
+# Entorno local: solo PostgreSQL (sin Caddy ni HTTPS).
+services:
+  postgres:
+    image: postgres:16
+    restart: unless-stopped
+    environment:
+      POSTGRES_USER: vitriauto
+      POSTGRES_PASSWORD: vitriauto
+      POSTGRES_DB: vitriauto_dev
+    ports:
+      - '5432:5432'
+    volumes:
+      - pgdata:/var/lib/postgresql/data
+    healthcheck:
+      test: ['CMD-SHELL', 'pg_isready -U vitriauto -d vitriauto_dev']
+      interval: 5s
+      timeout: 5s
+      retries: 10
+
+volumes:
+  pgdata:

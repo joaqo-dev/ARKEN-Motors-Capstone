@@ -1,0 +1,73 @@
+# Proxy de producción. Variables desde deploy/.env: DOMINIO, ACME_EMAIL y
+# CLOUDFLARE_API_TOKEN (permiso Zone.DNS:Edit).
+{
+	email {$ACME_EMAIL}
+}
+
+# Certificados por validación DNS: es el único modo de emitir el wildcard.
+(tls_cloudflare) {
+	tls {
+		dns cloudflare {env.CLOUDFLARE_API_TOKEN}
+	}
+}
+
+# Panel de gestión (SPA estática). Su CSP va como <meta> en el index.html;
+# aquí van las cabeceras que no pueden ir en un <meta>.
+app.{$DOMINIO} {
+	import tls_cloudflare
+	encode zstd gzip
+	root * /srv/panel
+	header {
+		Strict-Transport-Security "max-age=31536000; includeSubDomains"
+		X-Content-Type-Options "nosniff"
+		X-Frame-Options "DENY"
+		Content-Security-Policy "frame-ancestors 'none'"
+		Referrer-Policy "strict-origin-when-cross-origin"
+		Cross-Origin-Opener-Policy "same-origin"
+		Permissions-Policy "camera=(), microphone=(), geolocation=(), payment=(), usb=()"
+		-Server
+	}
+	# Los assets llevan hash en el nombre; el index.html siempre se revalida.
+	@assets path /assets/*
+	header @assets Cache-Control "public, max-age=31536000, immutable"
+	@resto not path /assets/*
+	header @resto Cache-Control "no-cache"
+	try_files {path} /index.html
+	file_server
+}
+
+# API. Caddy sirve las fotos públicas directo del volumen (solo lectura);
+# los documentos privados pasan siempre por un endpoint autenticado.
+api.{$DOMINIO} {
+	import tls_cloudflare
+	encode zstd gzip
+	header -Server
+	handle_path /archivos/fotos/* {
+		root * /srv/uploads/fotos
+		header {
+			Cross-Origin-Resource-Policy "cross-origin"
+			X-Content-Type-Options "nosniff"
+			Cache-Control "public, max-age=31536000, immutable"
+		}
+		file_server {
+			hide .*
+		}
+	}
+	handle {
+		reverse_proxy api:4000
+	}
+}
+
+# Marketplace (dominio raíz) y vitrinas (<subdominio>.DOMINIO). app.* y api.*
+# tienen su propio bloque, que Caddy prioriza por ser más específico.
+www.{$DOMINIO} {
+	import tls_cloudflare
+	redir https://{$DOMINIO}{uri} permanent
+}
+
+{$DOMINIO}, *.{$DOMINIO} {
+	import tls_cloudflare
+	encode zstd gzip
+	header -Server
+	reverse_proxy web-publico:3000
+}

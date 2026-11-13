@@ -1,0 +1,54 @@
+# Push a main: typecheck, lint y tests; si pasan, despliega en el VPS por SSH.
+# Los secretos de la app viven en deploy/.env del VPS; aquí solo los de SSH.
+name: Verificar y desplegar
+
+on:
+  push:
+    branches: [main]
+  workflow_dispatch:
+
+concurrency:
+  group: despliegue
+  cancel-in-progress: false
+
+permissions:
+  contents: read
+
+jobs:
+  verificar:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: pnpm/action-setup@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+          cache: pnpm
+      - run: pnpm install --frozen-lockfile
+      - run: pnpm typecheck
+      - run: pnpm lint
+      - run: pnpm test
+
+  desplegar:
+    needs: verificar
+    runs-on: ubuntu-latest
+    environment: produccion
+    steps:
+      - name: Llave SSH
+        run: |
+          install -m 700 -d ~/.ssh
+          echo "${{ secrets.SSH_KEY }}" > ~/.ssh/id_deploy
+          chmod 600 ~/.ssh/id_deploy
+          echo "${{ secrets.SSH_KNOWN_HOSTS }}" > ~/.ssh/known_hosts
+      - name: Desplegar
+        run: |
+          ssh -i ~/.ssh/id_deploy -o StrictHostKeyChecking=yes -p "${{ secrets.SSH_PORT || '22' }}" \
+            "${{ secrets.SSH_USER }}@${{ secrets.SSH_HOST }}" \
+            "set -e
+             cd /opt/vitriauto
+             git fetch --quiet origin main
+             git reset --hard origin/main
+             cd deploy
+             docker compose up -d --build --remove-orphans
+             docker image prune -f >/dev/null
+             docker compose ps"

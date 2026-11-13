@@ -1,0 +1,104 @@
+# Producción. Se ejecuta en el VPS desde deploy/:
+#   docker compose up -d --build
+# Variables en deploy/.env (plantilla: deploy/.env.example). Solo Caddy expone
+# puertos; el resto se comunica por la red interna de Docker.
+name: vitriauto
+
+x-reinicio: &reinicio
+  restart: unless-stopped
+  logging:
+    driver: local
+    options:
+      max-size: 20m
+      max-file: '5'
+
+services:
+  postgres:
+    <<: *reinicio
+    image: postgres:16-alpine
+    command: ['postgres', '-c', 'timezone=America/Santiago']
+    environment:
+      POSTGRES_USER: ${POSTGRES_USER:?}
+      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD:?}
+      POSTGRES_DB: ${POSTGRES_DB:?}
+      TZ: America/Santiago
+    volumes:
+      - pgdata:/var/lib/postgresql/data
+    healthcheck:
+      test: ['CMD-SHELL', 'pg_isready -U "$$POSTGRES_USER" -d "$$POSTGRES_DB"']
+      interval: 5s
+      timeout: 5s
+      retries: 20
+
+  migrar:
+    build: { context: .., dockerfile: deploy/Dockerfile, target: migrar }
+    environment:
+      DATABASE_URL: postgres://${POSTGRES_USER}:${POSTGRES_PASSWORD}@postgres:5432/${POSTGRES_DB}
+    depends_on:
+      postgres: { condition: service_healthy }
+    restart: 'no'
+
+  api:
+    <<: *reinicio
+    build: { context: .., dockerfile: deploy/Dockerfile, target: api }
+    environment:
+      PORT: 4000
+      DATABASE_URL: postgres://${POSTGRES_USER}:${POSTGRES_PASSWORD}@postgres:5432/${POSTGRES_DB}
+      JWT_SECRET: ${JWT_SECRET:?}
+      APP_URL: https://app.${DOMINIO:?}
+      SITIO_URL: https://${DOMINIO}
+      CORS_ORIGINS: https://app.${DOMINIO}
+      COOKIE_DOMAIN: .${DOMINIO}
+      RESEND_API_KEY: ${RESEND_API_KEY:?}
+      EMAIL_FROM: ${EMAIL_FROM:?}
+    volumes:
+      - ${UPLOADS_DIR_HOST:-/srv/vitriauto/uploads}:/data/uploads
+    depends_on:
+      migrar: { condition: service_completed_successfully }
+
+  web-publico:
+    <<: *reinicio
+    build:
+      context: ..
+      dockerfile: deploy/Dockerfile
+      target: web-publico
+      args:
+        NEXT_PUBLIC_API_URL: https://api.${DOMINIO:?}
+        NEXT_PUBLIC_ROOT_DOMAIN: ${DOMINIO}
+        NEXT_PUBLIC_PANEL_URL: https://app.${DOMINIO}
+    environment:
+      API_URL: http://api:4000
+      LEGAL_RAZON_SOCIAL: ${LEGAL_RAZON_SOCIAL:-}
+      LEGAL_RUT: ${LEGAL_RUT:-}
+      LEGAL_DOMICILIO: ${LEGAL_DOMICILIO:-}
+      LEGAL_CORREO: ${LEGAL_CORREO:-}
+      LEGAL_CIUDAD: ${LEGAL_CIUDAD:-}
+    depends_on: [api]
+
+  caddy:
+    <<: *reinicio
+    build:
+      context: ..
+      dockerfile: deploy/Dockerfile
+      target: caddy
+      args:
+        VITE_API_URL: https://api.${DOMINIO:?}
+        VITE_DOMINIO_PUBLICO: ${DOMINIO}
+    environment:
+      DOMINIO: ${DOMINIO}
+      ACME_EMAIL: ${ACME_EMAIL:?}
+      CLOUDFLARE_API_TOKEN: ${CLOUDFLARE_API_TOKEN:?}
+    ports:
+      - '80:80'
+      - '443:443'
+      - '443:443/udp'
+    volumes:
+      - ${UPLOADS_DIR_HOST:-/srv/vitriauto/uploads}:/srv/uploads:ro
+      - caddy_data:/data
+      - caddy_config:/config
+    depends_on: [api, web-publico]
+
+volumes:
+  pgdata:
+  caddy_data:
+  caddy_config:

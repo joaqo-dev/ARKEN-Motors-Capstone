@@ -1,0 +1,19 @@
+# Contexto del build de producción (deploy/Dockerfile): solo el código fuente.
+**/node_modules
+**/dist
+**/dist-demo
+**/.next
+**/.turbo
+**/coverage
+**/*.tsbuildinfo
+**/.env
+**/.env.*
+!**/.env.example
+**/uploads
+**/.DS_Store
+.git
+.github
+.claude
+.impeccable
+package-lock.json
+deploy/.env
