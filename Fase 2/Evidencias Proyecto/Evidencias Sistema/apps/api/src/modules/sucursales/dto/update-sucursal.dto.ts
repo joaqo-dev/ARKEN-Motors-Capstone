@@ -1,6 +1,7 @@
 import { RegionChile } from '@vitriauto/shared-types';
 import { IsIn, IsNotEmpty, IsOptional, IsString, MaxLength, ValidateIf } from 'class-validator';
 import { Transform } from 'class-transformer';
+import { EsTelefono } from '../../../common/validacion/telefono';
 
 const trim = ({ value }: { value: unknown }) => (typeof value === 'string' ? value.trim() : value);
 
@@ -35,6 +36,7 @@ export class UpdateSucursalDto {
   @IsString()
   @IsNotEmpty()
   @MaxLength(30)
+  @EsTelefono()
   telefono?: string;
 
   // null permite quitar el encargado.

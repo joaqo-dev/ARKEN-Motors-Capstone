@@ -388,6 +388,9 @@ export class VehiculosService {
       if (dto.estado === 'DISPONIBLE' && !esAdmin) {
         throw new ForbiddenException('Solo un admin publica vehículos: envíalo a revisión');
       }
+      if (!esAdmin && (dto.estado === 'DADO_DE_BAJA' || actual.estado === 'DADO_DE_BAJA')) {
+        throw new ForbiddenException('Solo un admin da de baja o reactiva un vehículo');
+      }
       if (
         (dto.estado === 'DISPONIBLE' || dto.estado === 'PENDIENTE_REVISION') &&
         (await this.fotos.contar(id, client)) === 0

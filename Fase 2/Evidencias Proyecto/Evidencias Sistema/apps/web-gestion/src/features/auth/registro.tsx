@@ -1,6 +1,8 @@
 import {
   esRutValido,
   esSubdominioValido,
+  esTelefonoValido,
+  MENSAJE_TELEFONO,
   PASSWORD_REGEX,
   REGIONES_CHILE,
 } from '@vitriauto/shared-types';
@@ -155,7 +157,10 @@ export function RegistroPage() {
           <Campo etiqueta="Teléfono" error={errores.telefono?.message}>
             <Input
               placeholder="+56 2 2345 6789"
-              {...register('telefono', { required: 'Obligatorio' })}
+              {...register('telefono', {
+                required: 'Obligatorio',
+                validate: (v: string) => esTelefonoValido(v) || MENSAJE_TELEFONO,
+              })}
             />
           </Campo>
           <Campo etiqueta="Email de la empresa" error={errores.email?.message}>

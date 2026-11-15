@@ -1,4 +1,9 @@
-import { esRutValido, formatearRut } from '@vitriauto/shared-types';
+import {
+  esRutValido,
+  esTelefonoValido,
+  formatearRut,
+  MENSAJE_TELEFONO,
+} from '@vitriauto/shared-types';
 import { InputRut } from '../../ui/rut';
 import { useFormulario } from '../../lib/formulario';
 import { Boton, Campo, Input } from '../../ui/componentes';
@@ -48,7 +53,12 @@ export function FormularioCliente({
         />
       </Campo>
       <Campo etiqueta="Teléfono" error={e.telefono?.message}>
-        <Input {...register('telefono', { required: 'Obligatorio' })} />
+        <Input
+          {...register('telefono', {
+            required: 'Obligatorio',
+            validate: (v: string) => esTelefonoValido(v) || MENSAJE_TELEFONO,
+          })}
+        />
       </Campo>
       <Campo etiqueta="Email" error={e.email?.message}>
         <Input type="email" {...register('email', { required: 'Obligatorio' })} />

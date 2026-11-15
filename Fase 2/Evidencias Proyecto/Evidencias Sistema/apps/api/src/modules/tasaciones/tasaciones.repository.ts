@@ -168,6 +168,21 @@ export class TasacionesRepository {
     return rows.length > 0;
   }
 
+  // ¿La patente ya está en el inventario de la automotora (ni vendida ni dada de baja)?
+  async patenteEnInventario(
+    automotoraId: string,
+    patente: string,
+    db: Queryable = this.pool,
+  ): Promise<boolean> {
+    const { rowCount } = await db.query(
+      `SELECT 1 FROM vehiculo
+        WHERE automotora_id = $1 AND patente = $2 AND estado NOT IN ('VENDIDO', 'DADO_DE_BAJA')
+        LIMIT 1`,
+      [automotoraId, patente],
+    );
+    return (rowCount ?? 0) > 0;
+  }
+
   async marcarVencidas(hoy: string, db: Queryable = this.pool): Promise<number> {
     const { rowCount } = await db.query(
       `UPDATE tasacion SET estado = 'VENCIDA' WHERE estado = 'VIGENTE' AND fecha_vencimiento < $1`,

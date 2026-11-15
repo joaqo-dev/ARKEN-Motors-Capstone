@@ -533,6 +533,25 @@ describe('VehiculosService: revisión antes de publicar', () => {
     );
   });
 
+  it('el Vendedor no da de baja ni reactiva un vehículo; el admin sí', async () => {
+    const baja = crearServicio();
+    await expect(
+      baja.service.cambiarEstado('v1', { estado: 'DADO_DE_BAJA' }, vendedor),
+    ).rejects.toThrow(ForbiddenException);
+
+    const reactivar = crearServicio();
+    reactivar.vehiculos.lockById = jest
+      .fn()
+      .mockResolvedValue(vehiculoRow({ estado: 'DADO_DE_BAJA' }));
+    await expect(
+      reactivar.service.cambiarEstado('v1', { estado: 'EN_PREPARACION' }, vendedor),
+    ).rejects.toThrow(ForbiddenException);
+
+    const { service, vehiculos } = crearServicio();
+    await service.cambiarEstado('v1', { estado: 'DADO_DE_BAJA' }, admin);
+    expect(vehiculos.setEstado).toHaveBeenCalledWith('v1', 'DADO_DE_BAJA', expect.anything());
+  });
+
   it('enviar a revisión exige 1 foto y avisa a los admins de la sucursal', async () => {
     const sinFotos = crearServicio();
     sinFotos.fotos.contar = jest.fn().mockResolvedValue(0);

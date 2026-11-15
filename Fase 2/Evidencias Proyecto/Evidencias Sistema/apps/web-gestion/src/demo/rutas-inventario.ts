@@ -259,6 +259,9 @@ function cambiarEstado(c: Contexto) {
   if (estado === 'DISPONIBLE' && !c.esAdmin) {
     throw fallo(403, 'Solo un admin publica vehículos: envíalo a revisión');
   }
+  if (!c.esAdmin && (estado === 'DADO_DE_BAJA' || v.estado === 'DADO_DE_BAJA')) {
+    throw fallo(403, 'Solo un admin da de baja o reactiva un vehículo');
+  }
   if ((estado === 'DISPONIBLE' || estado === 'PENDIENTE_REVISION') && v.fotos.length === 0) {
     throw fallo(
       409,

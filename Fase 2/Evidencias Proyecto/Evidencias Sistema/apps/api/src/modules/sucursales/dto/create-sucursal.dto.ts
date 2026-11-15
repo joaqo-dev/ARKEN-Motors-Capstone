@@ -1,6 +1,7 @@
 import { RegionChile } from '@vitriauto/shared-types';
 import { IsIn, IsNotEmpty, IsOptional, IsString, MaxLength } from 'class-validator';
 import { Transform } from 'class-transformer';
+import { EsTelefono } from '../../../common/validacion/telefono';
 
 const trim = ({ value }: { value: unknown }) => (typeof value === 'string' ? value.trim() : value);
 
@@ -30,6 +31,7 @@ export class CreateSucursalDto {
   @IsString()
   @IsNotEmpty()
   @MaxLength(30)
+  @EsTelefono()
   telefono!: string;
 
   @Transform(trim)

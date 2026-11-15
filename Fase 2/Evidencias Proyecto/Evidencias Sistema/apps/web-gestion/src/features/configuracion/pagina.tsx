@@ -4,8 +4,10 @@ import type { UseFormRegister } from 'react-hook-form';
 import {
   descripcionSeoAutomotora,
   esRutValido,
+  esTelefonoValido,
   formatearRut,
   LARGO_DESCRIPCION_SEO,
+  MENSAJE_TELEFONO,
   PLAZOS_CREDITO,
   simularCredito,
   tituloSeoAutomotora,
@@ -125,8 +127,13 @@ function Formulario({ automotora }: { automotora: Automotora }) {
             <Campo etiqueta="Email">
               <Input type="email" {...register('email', { required: true })} />
             </Campo>
-            <Campo etiqueta="Teléfono (casa matriz)">
-              <Input {...register('telefono', { required: true })} />
+            <Campo etiqueta="Teléfono (casa matriz)" error={formState.errors.telefono?.message}>
+              <Input
+                {...register('telefono', {
+                  required: 'Obligatorio',
+                  validate: (v: string) => esTelefonoValido(v) || MENSAJE_TELEFONO,
+                })}
+              />
             </Campo>
             <Campo
               etiqueta="Dirección (casa matriz)"

@@ -1,6 +1,7 @@
 import { Transform } from 'class-transformer';
 import { IsEmail, IsNotEmpty, IsString, MaxLength } from 'class-validator';
 import { trim, trimLower } from '../../auth/dto/transforms';
+import { EsTelefono } from '../../../common/validacion/telefono';
 
 export class CreateClienteDto {
   @Transform(trim)
@@ -20,6 +21,7 @@ export class CreateClienteDto {
   @IsString()
   @IsNotEmpty()
   @MaxLength(30)
+  @EsTelefono()
   telefono!: string;
 
   @Transform(trimLower)

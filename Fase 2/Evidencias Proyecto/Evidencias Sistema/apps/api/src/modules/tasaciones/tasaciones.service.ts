@@ -85,6 +85,13 @@ export class TasacionesService {
     if (!esPatenteValida(dto.patente)) {
       throw new BadRequestException('Patente inválida (formatos: AB1234, BCDF12, ABC12, AB123)');
     }
+    // Se tasa un auto ajeno: uno que ya está en el inventario no se puede comprar.
+    const patente = normalizarPatente(dto.patente);
+    if (await this.tasaciones.patenteEnInventario(actor.automotoraId, patente)) {
+      throw new ConflictException(
+        `El vehículo ${patente} ya está en el inventario de la automotora`,
+      );
+    }
     await this.comunes.validarCliente(dto.clienteId, actor.automotoraId);
     const vigencia = await this.comunes.vigencia('TASACION', actor.automotoraId, dto.vigenciaDias);
 
@@ -96,7 +103,7 @@ export class TasacionesService {
           folio,
           sucursalId,
           clienteId: dto.clienteId,
-          patente: normalizarPatente(dto.patente),
+          patente,
           marca: dto.marca,
           modelo: dto.modelo,
           version: dto.version ?? null,

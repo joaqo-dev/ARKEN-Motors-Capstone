@@ -66,6 +66,20 @@ export function esWhatsappValido(valor: string): boolean {
   return WHATSAPP_REGEX.test(normalizarWhatsapp(valor));
 }
 
+// Teléfono chileno, celular o fijo: 9 dígitos (sin el +56) que no parten en 0 ni 1.
+// Acepta espacios, puntos, guiones, paréntesis y el +56 opcional; se guarda como
+// '+56XXXXXXXXX' (ej. '+56912345678', '+56223456789').
+export const MENSAJE_TELEFONO = 'Teléfono inválido: usa un número chileno (ej. +56 9 1234 5678)';
+
+export function normalizarTelefono(valor: string): string {
+  const digitos = valor.replace(/\D/g, '');
+  return digitos.length === 9 ? `+56${digitos}` : `+${digitos}`;
+}
+
+export function esTelefonoValido(valor: string): boolean {
+  return /^[\d\s().+-]+$/.test(valor.trim()) && /^\+56[2-9]\d{8}$/.test(normalizarTelefono(valor));
+}
+
 // Marcas que se escriben como sigla (todo en mayúsculas).
 const SIGLAS_MARCA = new Set([
   'BMW',

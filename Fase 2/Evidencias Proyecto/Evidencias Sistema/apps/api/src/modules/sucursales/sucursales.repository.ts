@@ -144,6 +144,24 @@ export class SucursalesRepository {
     return rows[0];
   }
 
+  // ¿Otra sucursal activa de la automotora con ese nombre? (sin distinguir mayúsculas)
+  async existeNombre(
+    automotoraId: string,
+    nombre: string,
+    excluirId: string | null,
+    db: Queryable = this.pool,
+  ): Promise<boolean> {
+    const { rowCount } = await db.query(
+      `SELECT 1 FROM sucursal
+        WHERE automotora_id = $1 AND activa = true
+          AND lower(btrim(nombre)) = lower(btrim($2))
+          AND ($3::uuid IS NULL OR id <> $3)
+        LIMIT 1`,
+      [automotoraId, nombre, excluirId],
+    );
+    return (rowCount ?? 0) > 0;
+  }
+
   async darDeBaja(id: string, automotoraId: string, db: Queryable = this.pool): Promise<void> {
     await db.query('UPDATE sucursal SET activa = false WHERE id = $1 AND automotora_id = $2', [
       id,

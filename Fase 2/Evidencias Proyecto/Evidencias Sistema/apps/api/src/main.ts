@@ -6,6 +6,7 @@ import type { NestExpressApplication } from '@nestjs/platform-express';
 import cookieParser from 'cookie-parser';
 import helmet from 'helmet';
 import { AppModule } from './app.module';
+import { erroresDeValidacion } from './common/validacion/mensajes';
 import {
   AlmacenamientoService,
   PREFIJO_FOTOS_PUBLICAS,
@@ -30,7 +31,12 @@ async function bootstrap() {
     allowedHeaders: ['Content-Type', CSRF_HEADER],
   });
   app.useGlobalPipes(
-    new ValidationPipe({ whitelist: true, forbidNonWhitelisted: true, transform: true }),
+    new ValidationPipe({
+      whitelist: true,
+      forbidNonWhitelisted: true,
+      transform: true,
+      exceptionFactory: erroresDeValidacion,
+    }),
   );
   app.useGlobalFilters(new GlobalExceptionFilter());
   app.enableShutdownHooks();

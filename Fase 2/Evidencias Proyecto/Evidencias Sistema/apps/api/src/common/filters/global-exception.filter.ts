@@ -34,6 +34,14 @@ export class GlobalExceptionFilter implements ExceptionFilter {
         message = 'El archivo es demasiado pesado. Elige uno más liviano.';
       } else if (message === 'Too many files') {
         message = 'Son demasiados archivos a la vez.';
+      } else if (statusCode === HttpStatus.TOO_MANY_REQUESTS) {
+        message = 'Demasiados intentos seguidos. Espera un momento y vuelve a intentarlo.';
+      } else if (message === 'Validation failed (uuid is expected)') {
+        // Id mal escrito en la URL: para quien navega es lo mismo que un registro inexistente.
+        statusCode = HttpStatus.NOT_FOUND;
+        message = 'No existe o la dirección no es válida';
+      } else if (typeof message === 'string' && message.startsWith('Validation failed')) {
+        message = 'Uno de los valores de la dirección no es válido';
       }
     } else if (exception instanceof DatabaseError && exception.code === '23505') {
       // unique_violation (p. ej. carrera entre dos registros con el mismo subdominio)

@@ -14,6 +14,7 @@ import {
   ValidateIf,
 } from 'class-validator';
 import { trim, trimLower } from '../../auth/dto/transforms';
+import { EsTelefono } from '../../../common/validacion/telefono';
 
 // Configuración de la automotora. El subdominio no está: es fijo.
 export class UpdateConfiguracionDto {
@@ -51,6 +52,7 @@ export class UpdateConfiguracionDto {
   @IsString()
   @IsNotEmpty()
   @MaxLength(30)
+  @EsTelefono()
   telefono?: string;
 
   // Descripción breve del perfil público; null la quita.

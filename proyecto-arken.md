@@ -1,9 +1,13 @@
-# Arken — Plataforma de Centralización de Automotoras
+# Vitriauto — Plataforma de Centralización de Automotoras
+
+> Proyecto **ARKEN Motors** (PTY4614 Capstone, Duoc UC). La plataforma se llama
+> **Vitriauto**.
 
 > Documento de presentación del proyecto. Reúne qué es la plataforma, qué hace,
 > con qué tecnologías está construida y cómo se desplegará. Las reglas de
-> negocio completas y el detalle técnico fino viven en la carpeta `docs/` del
-> repositorio; este documento es su resumen ordenado.
+> negocio completas viven en la especificación de requerimientos
+> (`Fase 2/Evidencias Proyecto/`) y en la documentación técnica del código;
+> este documento es su resumen ordenado.
 
 **Contenido**
 
@@ -19,7 +23,7 @@
 
 ## 1. Resumen
 
-**Arken** es una plataforma web para automotoras (empresas que compran y venden
+**Vitriauto** es una plataforma web para automotoras (empresas que compran y venden
 vehículos usados). Cada automotora que se registra obtiene, al mismo tiempo:
 
 - **Un sistema de gestión** para administrar su negocio: inventario de
@@ -41,9 +45,9 @@ y **multi-sucursal** (una automotora puede operar en varios locales).
 | ------------------------------- | --------------------------------------------------------------- |
 | Aplicaciones                    | 3 (API, panel de gestión, sitio público) + 1 paquete compartido |
 | Módulos de negocio              | 18                                                              |
-| Tablas en la base de datos      | 23                                                              |
+| Tablas en la base de datos      | 27                                                              |
 | Roles de usuario                | 3 (Admin General, Admin de Sucursal, Vendedor)                  |
-| Pruebas automatizadas de la API | 163                                                             |
+| Pruebas automatizadas de la API | 224                                                             |
 
 ---
 
@@ -65,7 +69,7 @@ cuadernos o sistemas armados a medida. Eso trae problemas concretos:
 
 ### La solución
 
-Arken reúne todo en un solo lugar. La automotora se registra en minutos, carga
+Vitriauto reúne todo en un solo lugar. La automotora se registra en minutos, carga
 sus vehículos con fotos y desde ese momento:
 
 - **Sabe en qué está cada auto**: si está en preparación, publicado, reservado,
@@ -89,20 +93,21 @@ sus vehículos con fotos y desde ese momento:
 
 ### Para quién es
 
-| Quién                                      | Qué hace en la plataforma                                                                                                  |
-| ------------------------------------------ | -------------------------------------------------------------------------------------------------------------------------- |
-| **Dueño de la automotora** (Admin General) | Ve y administra todas las sucursales: inventario, ventas, costos, márgenes, usuarios y configuración.                      |
-| **Jefe de sucursal** (Admin de Sucursal)   | Lo mismo que el dueño, pero solo para su sucursal.                                                                         |
-| **Vendedor**                               | Gestiona autos, clientes, cotizaciones, reservas y ventas de su sucursal, pero no ve costos ni márgenes.                   |
-| **Comprador**                              | Busca vehículos en el marketplace o en la página de una automotora, sin registrarse, y contacta por WhatsApp o por correo. |
+| Quién                                      | Qué hace en la plataforma                                                                                                                     |
+| ------------------------------------------ | --------------------------------------------------------------------------------------------------------------------------------------------- |
+| **Dueño de la automotora** (Admin General) | Ve y administra todas las sucursales: inventario, ventas, costos, márgenes, usuarios y configuración.                                         |
+| **Jefe de sucursal** (Admin de Sucursal)   | Lo mismo que el dueño, pero solo para su sucursal.                                                                                            |
+| **Vendedor**                               | Gestiona autos, clientes, cotizaciones, reservas y ventas de su sucursal; no ve costos ni márgenes y no publica autos (los envía a revisión). |
+| **Comprador**                              | Busca vehículos en el marketplace o en la página de una automotora, sin registrarse, y contacta por WhatsApp o por correo.                    |
 
 ### Un día de uso, como ejemplo
 
 1. Llega un auto comprado a un particular. El vendedor lo ingresa al sistema
    con su patente, datos y fotos tomadas con el celular (se aceptan incluso
    fotos de iPhone; el sistema las optimiza solas).
-2. Mientras se prepara, se registran sus gastos (mecánica, lavado). Cuando está
-   listo, se marca como disponible y aparece al instante en la página de la
+2. Mientras se prepara, se registran sus gastos (mecánica, lavado) y se le hace
+   la inspección pre-compra. Cuando está listo, el vendedor lo envía a revisión;
+   el administrador lo publica y aparece al instante en la página de la
    automotora y en el marketplace.
 3. Un comprador lo encuentra en el marketplace y escribe por WhatsApp. El
    vendedor le emite una cotización: el cliente la recibe por correo en PDF.
@@ -118,8 +123,8 @@ sus vehículos con fotos y desde ese momento:
 
 ## 3. Funcionalidades
 
-Las funcionalidades se organizan en 18 módulos. Las reglas completas de cada uno
-están en `docs/01-modulos-funcionales.md`.
+Las funcionalidades se organizan en 18 módulos. Los 294 requerimientos
+funcionales están en `Fase 2/Evidencias Proyecto/Especificacion_Requerimientos_Funcionales_Arken.docx`.
 
 ### 3.1 Plataforma pública
 
@@ -131,6 +136,8 @@ están en `docs/01-modulos-funcionales.md`.
 - El registro crea en una sola operación la automotora, su sucursal principal y
   el usuario Admin General. Activación inmediata, con verificación obligatoria
   del correo antes de iniciar sesión.
+- Aceptación obligatoria de los Términos de uso y la Política de privacidad
+  (Ley N° 19.628 y Ley N° 21.719), publicados en el sitio público.
 
 **Marketplace global (Módulo 2)**
 
@@ -145,6 +152,10 @@ están en `docs/01-modulos-funcionales.md`.
 - Detalle del vehículo con galería de fotos a pantalla completa, ficha técnica,
   datos de la sucursal y botón de WhatsApp con un mensaje ya escrito sobre ese
   auto. En el celular, una barra fija muestra el precio y el botón de WhatsApp.
+- **Simulador de crédito** en el detalle (si la automotora lo activa): el
+  comprador elige pie y plazo y ve la cuota referencial; se calcula en el
+  navegador y no se guarda.
+- Sello de **inspección pre-compra** con su resultado, fecha y kilometraje.
 - Acceso 100 % anónimo. Nunca se exponen datos internos (patente, costos,
   consignación).
 
@@ -167,8 +178,8 @@ están en `docs/01-modulos-funcionales.md`.
 
 **Sucursales (Módulo 4)**
 
-- Crear, editar y dar de baja sucursales, con dirección, región, comuna,
-  teléfono, WhatsApp, encargado y horario.
+- Crear, editar y dar de baja sucursales, con nombre único, dirección, región,
+  comuna, teléfono, WhatsApp, encargado y horario.
 - Transferir un vehículo entre sucursales, dejando registro en su historial.
 
 **Usuarios y roles (Módulo 5)**
@@ -196,13 +207,21 @@ están en `docs/01-modulos-funcionales.md`.
   auto recibido en parte de pago y consignación.
 - Estados: en preparación, disponible (publicado), reservado, pendiente de
   revisión, vendido y dado de baja. Para publicar se exige al menos una foto.
+- **Revisión antes de publicar**: el vendedor envía el auto a revisión y un
+  administrador lo publica o lo devuelve indicando qué corregir. El sistema
+  muestra qué le falta a cada auto (fotos, documentos, inspección).
 - Hasta 30 fotos por vehículo, ordenables, con visor a pantalla completa.
-- Documentos legales (permiso de circulación, revisión técnica, SOAP) con fecha
-  de vencimiento; al ingresar la patente el sistema sugiere el mes de la
-  revisión técnica.
+- Documentos legales (permiso de circulación, revisión técnica, SOAP) con su
+  respaldo (certificado, homologación, póliza, pago total o primera cuota); el
+  sistema calcula el vencimiento cuando la regla lo fija y rechaza fechas
+  imposibles. Al ingresar la patente sugiere el mes de la revisión técnica.
+- **Inspección pre-compra**: lista de chequeo de 11 secciones (Bueno, Regular,
+  Malo, No aplica), con fotos, resultado e informe en PDF.
+- **Ficha imprimible** en PDF con código QR a la página pública del auto.
 - Balance del vehículo: costo de adquisición, gastos, margen proyectado o real.
 - Bitácora: historial de todo lo que le pasó al auto (alta, cambios de precio y
-  estado, gastos, cotizaciones, reservas, venta, transferencias).
+  estado, gastos, reservas, venta, transferencias, inspecciones y las
+  cotizaciones que terminaron en venta).
 - Listado separado en pestañas: **En inventario**, **Vendidos** y **Dados de
   baja**, con búsqueda, filtros, orden y días en stock.
 
@@ -232,7 +251,7 @@ están en `docs/01-modulos-funcionales.md`.
   venta, descontando la seña del saldo.
 - **Tasación**: la automotora ofrece comprar el auto de un cliente; si se
   acepta, el vehículo entra al inventario como compra a particular.
-- Todos con folio correlativo por sucursal y PDF. Nunca se editan: se anulan
+- Todos con folio correlativo por automotora y PDF. Nunca se editan: se anulan
   con motivo y se emite uno nuevo.
 
 **Ventas (Módulo 11)**
@@ -251,8 +270,9 @@ están en `docs/01-modulos-funcionales.md`.
 **Notificaciones internas (Módulo 13)**
 
 - Avisos automáticos para el equipo: reservas por vencer, consignaciones por
-  vencer y documentos legales por vencer (agrupados cuando corresponde). Cada
-  aviso se genera una sola vez y se marca como resuelto al atenderlo.
+  vencer y documentos legales por vencer (agrupados cuando corresponde), y
+  vehículos enviados a revisión. Cada aviso se genera una sola vez y se marca
+  como resuelto al atenderlo.
 
 **Dashboard del negocio (Módulo 14)**
 
@@ -273,15 +293,19 @@ están en `docs/01-modulos-funcionales.md`.
 
 **Auditoría (Módulo 16)**
 
-- Registro inmutable de cada acción relevante (cambios de precio y estado,
-  documentos, ventas, gastos, usuarios, sucursales, configuración), mostrado
+- Registro inmutable de toda operación que crea, modifica, quita o envía algo
+  (vehículos, fotos, documentos legales, inspecciones, documentos comerciales,
+  ventas, gastos, clientes, usuarios, sucursales, configuración), mostrado
   como un historial de actividad por día con solo los datos que cambiaron
   ("antes → después") y enlaces a cada documento.
+- **Registro de accesos** aparte (inicios y cierres de sesión, intentos
+  fallidos, cambios de contraseña), solo para el Admin General.
 
 **Configuración (Módulo 17)**
 
 - Datos de la empresa, logo y banner, vigencia por defecto de los documentos,
-  configuración de los correos automáticos y una vista previa de cómo aparece
+  configuración de los correos automáticos, parámetros del simulador de
+  crédito (tasa, pie mínimo y plazo máximo) y una vista previa de cómo aparece
   la automotora en Google.
 
 **Correos automáticos al cliente (Módulo 18)**
@@ -373,7 +397,7 @@ Cada módulo de NestJS sigue la misma estructura, sin excepciones:
 
 ```
 Controller  → solo HTTP: recibe la request, valida el DTO, delega
-  Service   → toda la lógica de negocio (reglas de docs/01)
+  Service   → toda la lógica de negocio (reglas de la especificación de requerimientos)
     Repository → único lugar que ejecuta SQL
 ```
 
@@ -384,7 +408,7 @@ Controller  → solo HTTP: recibe la request, valida el DTO, delega
   venta, registrar una automotora, transferir un vehículo, emitir un
   documento): un `TransactionRunner` maneja `BEGIN`/`COMMIT`/`ROLLBACK` y cada
   Repository acepta el cliente de la transacción.
-- **Folios correlativos sin colisiones**: el siguiente folio por sucursal se
+- **Folios correlativos sin colisiones**: el siguiente folio por automotora se
   calcula dentro de la transacción tras tomar un _advisory lock_ de PostgreSQL
   (`pg_advisory_xact_lock`), de modo que dos emisiones simultáneas nunca
   obtienen el mismo número. El mismo mecanismo numera los gastos por automotora.
@@ -413,14 +437,14 @@ que normalmente resuelve un ORM se cubren con reglas estrictas:
 
 ### 4.5 Modelo de datos
 
-El esquema (`docs/schema.sql`, PostgreSQL 16) tiene **23 tablas** agrupadas en:
+El esquema (`schema.sql`, PostgreSQL 16) tiene **27 tablas** agrupadas en:
 
-| Grupo                 | Tablas                                                                                                                       |
-| --------------------- | ---------------------------------------------------------------------------------------------------------------------------- |
-| Núcleo y acceso       | `automotora`, `sucursal`, `usuario`, `token_accion`, `sesion`                                                                |
-| Clientes e inventario | `cliente`, `vehiculo`, `vehiculo_foto`, `documento_legal_vehiculo`, `vehiculo_bitacora`                                      |
-| Operación             | `gasto`, `consignacion`, `cotizacion`, `cotizacion_costo`, `reserva`, `tasacion`, `venta`, `venta_costo`, `venta_forma_pago` |
-| Seguimiento           | `notificacion`, `notificacion_referencia`, `correo`, `auditoria`                                                             |
+| Grupo                 | Tablas                                                                                                                                       |
+| --------------------- | -------------------------------------------------------------------------------------------------------------------------------------------- |
+| Núcleo y acceso       | `automotora`, `sucursal`, `usuario`, `token_accion`, `sesion`                                                                                |
+| Clientes e inventario | `cliente`, `vehiculo`, `vehiculo_foto`, `documento_legal_vehiculo`, `vehiculo_bitacora`, `inspeccion`, `inspeccion_punto`, `inspeccion_foto` |
+| Operación             | `gasto`, `consignacion`, `cotizacion`, `cotizacion_costo`, `reserva`, `tasacion`, `venta`, `venta_costo`, `venta_forma_pago`                 |
+| Seguimiento           | `notificacion`, `notificacion_referencia`, `correo`, `auditoria`, `registro_acceso`                                                          |
 
 Aspectos destacados del diseño:
 
@@ -429,8 +453,8 @@ Aspectos destacados del diseño:
   de pago) y `vehiculo ↔ tasacion` (auto comprado desde una tasación): las
   tablas se crean primero y esas llaves foráneas se agregan al final con
   `ALTER TABLE`.
-- **Auditoría inmutable**: un _trigger_ impide `UPDATE` y `DELETE` sobre la
-  tabla `auditoria`; el registro se escribe en la misma transacción que el
+- **Auditoría inmutable**: un _trigger_ impide `UPDATE` y `DELETE` sobre las
+  tablas `auditoria` y `registro_acceso`; el registro se escribe en la misma transacción que el
   cambio auditado.
 - **Bajas lógicas** (sucursales, usuarios, clientes): nada se borra físicamente
   si tiene historial asociado.
@@ -464,6 +488,8 @@ Aspectos destacados del diseño:
   extensión), con límite de tamaño y nombre aleatorio. Fotos públicas y
   documentos privados se separan: los privados (documentos legales, boletas,
   PDFs) solo se descargan con sesión y respetando el _scope_.
+- **Registro de accesos** inmutable: sesiones, intentos fallidos con su motivo
+  y cambios de contraseña, con IP y navegador.
 - **Variables de entorno validadas al arrancar** con Zod: la API no inicia si
   falta un valor crítico.
 
@@ -491,7 +517,9 @@ mismo correo.
 
 - **PDFs** (cotización, reserva, tasación, consignación y comprobante de venta)
   generados en el servidor con `@react-pdf/renderer` tras emitir el documento,
-  guardados como archivo privado y adjuntados a los correos.
+  guardados como archivo privado y adjuntados a los correos. También la ficha
+  imprimible del vehículo (con QR, generada con `qrcode`) y el informe de
+  inspección pre-compra.
 - **Correos** construidos con plantillas `react-email` y enviados con Resend; el
   remitente muestra el nombre de la automotora y las respuestas van a su correo.
 - **Fotos**: se aceptan JPG, PNG, WebP, HEIC/HEIF (iPhone) y AVIF. Con `sharp`
@@ -532,7 +560,7 @@ mismo correo.
 
 ### 4.11 Calidad y pruebas
 
-- **163 pruebas automatizadas** con Jest sobre los Services con lógica de
+- **224 pruebas automatizadas** (23 suites) con Jest sobre los Services con lógica de
   negocio no trivial (con Repositories simulados), más pruebas de funciones
   puras (fechas, liquidación de consignaciones, validaciones, conversión de
   imágenes).
@@ -563,7 +591,7 @@ mismo correo.
 | **@nestjs/throttler**                   | Límite de peticiones por IP                                                         |
 | **helmet / cookie-parser**              | Cabeceras de seguridad y lectura de cookies                                         |
 | **@nestjs/schedule**                    | Tareas programadas (vencimientos, avisos, correos)                                  |
-| **@react-pdf/renderer**                 | Generación de los PDF de documentos comerciales                                     |
+| **@react-pdf/renderer + qrcode**        | Generación de los PDF (documentos, ficha con QR, informe de inspección)             |
 | **Resend + react-email**                | Envío de correos y sus plantillas                                                   |
 | **sharp + heic-convert**                | Conversión y optimización de fotos a WebP (incluido HEIC de iPhone)                 |
 | **Jest + ts-jest**                      | Pruebas automatizadas                                                               |
@@ -609,7 +637,7 @@ mismo correo.
 > Estado actual: el sistema está **completo y funcionando en el entorno de
 > desarrollo**. El despliegue a producción se hará una vez que se cuente con el
 > dominio definitivo. Esta sección describe la infraestructura planificada
-> (detalle en `docs/03-arquitectura-stack.md`).
+> (configuración en `Fase 2/Evidencias Proyecto/Evidencias Sistema/deploy/`).
 
 ### 6.1 Infraestructura
 
@@ -621,16 +649,20 @@ mismo correo.
   ```yaml
   services:
     postgres: # PostgreSQL 16 con volumen persistente
+    migrar: # node-pg-migrate up; corre y termina antes de la API
     api: # NestJS, puerto interno 4000
     web-publico: # Next.js, puerto interno 3000
-    web-gestion: # Panel React compilado (archivos estáticos), puerto interno 3001
-    caddy: # proxy inverso + HTTPS + archivos públicos (fotos)
+    caddy: # proxy inverso + HTTPS + panel compilado + fotos públicas
   ```
 
-- **Archivos subidos** (fotos, PDFs, documentos legales, boletas) en un
-  **volumen Docker persistente**, independiente del contenedor de la API, para
-  no perderlos al reconstruirla. Las fotos públicas las sirve Caddy
-  directamente; los documentos privados, solo la API.
+  El panel de gestión no tiene contenedor propio: es un build estático de Vite
+  que Caddy sirve directamente.
+
+- **Archivos subidos** (fotos, PDFs, documentos legales, boletas, fotos de
+  inspección) en una **carpeta del servidor** (`/srv/vitriauto/uploads`)
+  montada en la API, independiente de su contenedor, para no perderlos al
+  reconstruirla. Caddy la monta en solo lectura y sirve directo solo las fotos
+  públicas; los documentos privados se descargan por la API.
 
 ### 6.2 Dominios y HTTPS
 
@@ -647,20 +679,25 @@ mismo correo.
 
 Con GitHub Actions, en cada _push_ a la rama `main`:
 
-1. Se ejecutan las pruebas automatizadas.
+1. Se revisan los tipos (`pnpm typecheck`), el estilo (`pnpm lint`) y se
+   ejecutan las pruebas automatizadas (`pnpm test`).
 2. Si pasan, el _pipeline_ se conecta por SSH al servidor y ejecuta
-   `git pull && docker compose up -d --build`.
+   `git reset --hard origin/main && docker compose up -d --build`.
 
 No se contempla un ambiente intermedio (_staging_), por ser complejidad
-innecesaria para este alcance. Las variables de entorno de producción se guardan
-como _GitHub Secrets_ y se inyectan en el despliegue; nunca se versionan.
+innecesaria para este alcance. Las variables de entorno de producción viven solo
+en `deploy/.env` del servidor (nunca se versionan); _GitHub Secrets_ guarda
+únicamente los datos de la conexión SSH del _pipeline_.
 
 ### 6.4 Respaldos
 
-Tarea diaria en el servidor con `pg_dump` comprimido, que conserva los últimos 7
-respaldos. Es una red de seguridad ante errores humanos, no un plan de
-continuidad ante una falla total de la infraestructura (aceptable para el
-alcance del proyecto).
+Dos niveles (scripts en `deploy/respaldo/`):
+
+1. **En el servidor**, tarea diaria con `pg_dump` en formato comprimido, que
+   conserva los últimos 7 respaldos. Protege ante errores humanos.
+2. **Fuera del servidor**, una máquina virtual externa (Proxmox) trae cada día,
+   por `rsync` sobre SSH con una llave de solo lectura, los respaldos y los
+   archivos subidos, y guarda 30 días. Protege ante la pérdida del servidor.
 
 ### 6.5 Pasos para la puesta en producción
 
@@ -672,13 +709,13 @@ alcance del proyecto).
 4. Configurar las variables de entorno de producción (`DATABASE_URL`,
    `JWT_SECRET`, `APP_URL`, `SITIO_URL`, `CORS_ORIGINS`, `COOKIE_DOMAIN`,
    `RESEND_API_KEY`, `EMAIL_FROM`, `UPLOADS_DIR` y las del sitio público y el
-   panel) como _GitHub Secrets_.
-5. Crear la base con `schema.sql` (primera migración) y levantar los
-   contenedores.
+   panel) en `deploy/.env` del servidor.
+5. Levantar los contenedores: el servicio `migrar` crea la base con la
+   migración inicial (equivalente a `schema.sql`) antes de iniciar la API.
 6. Cargar manualmente la automotora de demostración en producción.
 7. Verificar el dominio en **Google Search Console** (propiedad de tipo dominio,
    que cubre todos los subdominios) y enviar el `sitemap.xml`.
-8. Programar el respaldo diario.
+8. Programar el respaldo diario y la copia externa.
 
 ---
 
@@ -697,20 +734,19 @@ Decisiones deliberadas, no omisiones:
 - **Notificaciones internas solo dentro del sistema**; los correos están
   dirigidos únicamente a los clientes (documentos y recordatorios).
 - **Multimedia solo con fotografías** (1 a 30 por vehículo), sin video.
-- **Revisión técnica simplificada**: periodicidad anual para todos los
-  vehículos, con el mes sugerido según el último dígito de la patente.
+- **Revisión técnica simplificada**: periodicidad anual, con el mes sugerido
+  según el último dígito de la patente; los vehículos nuevos quedan exentos 24
+  meses desde su primera inscripción con el certificado de homologación.
 - **SEO enfocado en la automotora como empresa**, no en cada vehículo (que es
   efímero: se vende).
 
 ### Documentación del repositorio
 
-| Archivo                              | Contenido                                         |
-| ------------------------------------ | ------------------------------------------------- |
-| `docs/00-vision-general.md`          | Contexto, actores y decisiones de alcance         |
-| `docs/01-modulos-funcionales.md`     | Los 18 módulos con todas sus reglas de negocio    |
-| `docs/02-modelo-datos.md`            | Razones del diseño del esquema                    |
-| `docs/schema.sql`                    | Definición exacta de la base de datos (23 tablas) |
-| `docs/03-arquitectura-stack.md`      | Tecnologías y despliegue                          |
-| `docs/04-arquitectura-codigo.md`     | Capas, convenciones y pruebas                     |
-| `docs/05-seguridad-autenticacion.md` | Seguridad y flujos de autenticación               |
-| `docs/06-plan-implementacion.md`     | Orden de construcción, paso a paso                |
+| Archivo (en `Fase 2/Evidencias Proyecto/`)             | Contenido                                                     |
+| ------------------------------------------------------ | ------------------------------------------------------------- |
+| `Especificacion_Requerimientos_Funcionales_Arken.docx` | Los 294 requerimientos funcionales, en 19 módulos             |
+| `Requerimientos_Funcionales_Arken.xlsx`                | Los mismos requerimientos en planilla, con resumen por módulo |
+| `schema.sql`                                           | Definición exacta de la base de datos (27 tablas)             |
+| `Modelo_Relacional.png`                                | Diagrama del modelo relacional con todas las columnas         |
+| `Modelo_Relacional.html`                               | Modelo relacional interactivo (abrir en el navegador)         |
+| `Evidencias Sistema/`                                  | Código del sistema (ver su `README.md`)                       |

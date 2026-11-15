@@ -1,5 +1,5 @@
 import { Building, Clock, MapPin, MessageCircle, Phone, Plus, User } from 'lucide-react';
-import { REGIONES_CHILE } from '@vitriauto/shared-types';
+import { esTelefonoValido, MENSAJE_TELEFONO, REGIONES_CHILE } from '@vitriauto/shared-types';
 import { useMutation, useQueryClient } from '@tanstack/react-query';
 import { useState } from 'react';
 import { useFormulario } from '../../lib/formulario';
@@ -216,7 +216,12 @@ function FormularioSucursal({ sucursal, onCerrar }: { sucursal?: Sucursal; onCer
           <Input {...register('comuna', { required: 'Obligatoria' })} />
         </Campo>
         <Campo etiqueta="Teléfono" error={e.telefono?.message}>
-          <Input {...register('telefono', { required: 'Obligatorio' })} />
+          <Input
+            {...register('telefono', {
+              required: 'Obligatorio',
+              validate: (v: string) => esTelefonoValido(v) || MENSAJE_TELEFONO,
+            })}
+          />
         </Campo>
         <Campo
           etiqueta="WhatsApp (celular)"

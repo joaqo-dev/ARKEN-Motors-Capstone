@@ -471,10 +471,12 @@ function useCambiarEstado(v: VehiculoDetalle, alTerminar: () => void) {
 // mano: se cancela la reserva o se anula la venta.
 function estadosManuales(v: VehiculoDetalle, esAdmin: boolean) {
   if (v.estado === 'RESERVADO' || v.estado === 'VENDIDO') return [];
+  // Dar de baja y reactivar es de admins: el Vendedor no toca un vehículo dado de baja.
+  if (!esAdmin && v.estado === 'DADO_DE_BAJA') return [];
   return (
     esAdmin
       ? ['DISPONIBLE', 'EN_PREPARACION', 'DADO_DE_BAJA']
-      : ['EN_PREPARACION', 'PENDIENTE_REVISION', 'DADO_DE_BAJA']
+      : ['EN_PREPARACION', 'PENDIENTE_REVISION']
   ).filter((x) => x !== v.estado);
 }
 

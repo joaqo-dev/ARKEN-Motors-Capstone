@@ -12,6 +12,7 @@ import {
   ValidateNested,
 } from 'class-validator';
 import { MENSAJE_PASSWORD, trim, trimLower } from './transforms';
+import { EsTelefono } from '../../../common/validacion/telefono';
 
 export class DatosAutomotoraDto {
   @Transform(trim)
@@ -46,6 +47,7 @@ export class DatosAutomotoraDto {
   @IsString()
   @IsNotEmpty()
   @MaxLength(30)
+  @EsTelefono()
   telefono!: string;
 
   @Transform(trimLower)

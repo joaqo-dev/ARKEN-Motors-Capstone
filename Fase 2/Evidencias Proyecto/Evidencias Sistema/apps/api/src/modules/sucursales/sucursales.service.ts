@@ -51,6 +51,7 @@ export class SucursalesService {
   // principales: la principal nace con el registro.
   async crear(dto: CreateSucursalDto, usuario: UsuarioAutenticado) {
     const row = await this.tx.run(async (client) => {
+      await this.validarNombreUnico(usuario.automotoraId, dto.nombre, null, client);
       const creada = await this.sucursales.create(
         {
           automotoraId: usuario.automotoraId,
@@ -82,6 +83,9 @@ export class SucursalesService {
   async actualizar(id: string, dto: UpdateSucursalDto, usuario: UsuarioAutenticado) {
     const actual = await this.buscarOFallar(id, usuario);
     const row = await this.tx.run(async (client) => {
+      if (dto.nombre !== undefined) {
+        await this.validarNombreUnico(usuario.automotoraId, dto.nombre, id, client);
+      }
       const actualizada = await this.sucursales.update(
         id,
         usuario.automotoraId,
@@ -104,6 +108,18 @@ export class SucursalesService {
       return actualizada;
     });
     return toSucursalResponse(row);
+  }
+
+  // Dos sucursales activas con el mismo nombre serían indistinguibles en los selectores.
+  private async validarNombreUnico(
+    automotoraId: string,
+    nombre: string,
+    excluirId: string | null,
+    client: PoolClient,
+  ) {
+    if (await this.sucursales.existeNombre(automotoraId, nombre, excluirId, client)) {
+      throw new ConflictException(`Ya existe una sucursal llamada "${nombre.trim()}"`);
+    }
   }
 
   async darDeBaja(id: string, usuario: UsuarioAutenticado) {
