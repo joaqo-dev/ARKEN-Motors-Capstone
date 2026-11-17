@@ -1,7 +1,8 @@
 @import '@fontsource-variable/geist';
 
-/* Mismo lenguaje visual que el panel: neutros puros, Geist, sombras suaves y
-   un solo color de marca (el de WhatsApp) para la acción de contacto. */
+/* Mismo lenguaje visual que el panel de gestión: neutros puros, Geist, sombras
+   suaves con desplazamiento y un solo color de marca (el de WhatsApp) para la
+   acción de contacto. */
 :root {
   --fondo: #f6f6f7;
   --superficie: #ffffff;

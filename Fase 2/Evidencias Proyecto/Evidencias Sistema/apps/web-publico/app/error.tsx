@@ -3,9 +3,9 @@
 import { useRouter } from 'next/navigation';
 import { startTransition, useEffect } from 'react';
 
-// Error al renderizar una página (p. ej. la API no responde): mensaje claro y
-// opción de reintentar. Sin cabecera del marketplace, porque también puede
-// aparecer dentro de una vitrina.
+// Error al renderizar una página (ej. la API no responde): mensaje amable y
+// opción de reintentar, en vez de la pantalla de error genérica. Sin cabecera
+// del marketplace: también puede aparecer dentro de una vitrina.
 export default function ErrorPagina({
   error,
   reset,

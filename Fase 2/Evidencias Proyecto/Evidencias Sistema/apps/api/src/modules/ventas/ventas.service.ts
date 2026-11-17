@@ -31,7 +31,7 @@ import { VehiculosRepository } from '../vehiculos/vehiculos.repository';
 import { CreateVentaDto } from './dto/create-venta.dto';
 import { VentaDetalleRow, VentasRepository } from './ventas.repository';
 
-// Estados desde los que se puede vender.
+// Estados desde los que se puede vender (Módulo 7.6: transiciones flexibles).
 const VENDIBLES: EstadoVehiculo[] = [
   'DISPONIBLE',
   'EN_PREPARACION',
@@ -89,8 +89,8 @@ export function toVentaResponse(row: VentaDetalleRow) {
   };
 }
 
-// Ventas y su anulación. Cierre: todos los roles. Anulación: solo admins
-// (controller), con motivo obligatorio.
+// Ventas (Módulo 11) y su anulación (Módulo 12). Cierre: todos los roles.
+// Anulación: solo admins (controller), con motivo obligatorio.
 @Injectable()
 export class VentasService {
   constructor(
@@ -355,9 +355,9 @@ export class VentasService {
     return this.obtener(id, actor);
   }
 
-  // Anulación: el vehículo vuelve a estar disponible, la reserva que concretaba
-  // se cancela con la seña retenida (ingreso), la consignación se reactiva y el
-  // vehículo recibido en parte de pago no se toca.
+  // Anulación (Módulo 12): el vehículo vuelve a estar disponible, la reserva que
+  // concretaba se cancela con la seña retenida (ingreso), la consignación se
+  // reactiva, y el vehículo recibido en parte de pago NO se toca.
   async anular(id: string, motivo: string, actor: UsuarioAutenticado) {
     await this.buscarOFallar(id, actor);
     await this.tx.run(async (client) => {
@@ -428,7 +428,7 @@ export class VentasService {
       );
       await this.comunes.auditar(
         actor,
-        { tipo: 'VENTA', id, sucursalId: venta.sucursal_id },
+        { tipo: 'VENTA', id, sucursalId: venta.sucursal_id, folio: venta.folio },
         'VENTA_ANULADA',
         client,
         { estado: 'CONFIRMADA' },

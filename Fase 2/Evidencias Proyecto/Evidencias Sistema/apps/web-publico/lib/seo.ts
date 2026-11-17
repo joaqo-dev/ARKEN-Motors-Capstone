@@ -2,8 +2,8 @@ import { descripcionSeoAutomotora, tituloSeoAutomotora } from '@vitriauto/shared
 import type { AutomotoraPublica } from './api';
 import { urlArchivo, urlPerfil } from './config';
 
-// SEO de la vitrina: se posiciona la automotora como empresa (nombre,
-// ubicación, contacto), no cada vehículo.
+// SEO de la vitrina (Módulo 3): se posiciona la automotora como empresa (su
+// nombre, dónde está, cómo contactarla), no cada vehículo.
 
 const comunas = (a: AutomotoraPublica) => a.sucursales.map((s) => s.comuna);
 

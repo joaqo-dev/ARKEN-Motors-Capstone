@@ -159,9 +159,9 @@ interface DatosVenta {
 
 const aCentavos = (v: number) => Math.round((Number.isNaN(v) ? 0 : v) * 100);
 
-// Cierre de venta: formas de pago combinables que deben cuadrar con el precio
-// final menos la seña (si concreta una reserva). Una parte de pago crea el
-// vehículo recibido como "Pendiente de revisión".
+// Cierre de venta (Módulo 11): formas de pago combinables que deben cuadrar con
+// el precio final menos la seña (si concreta una reserva); parte de pago crea
+// el vehículo recibido “Pendiente de revisión”.
 export function NuevaVentaPage() {
   const [params] = useSearchParams();
   const navegar = useNavigate();

@@ -3,8 +3,8 @@ import { useAyudas } from '../lib/ayudas';
 
 // Burbuja de ayuda única para todo el panel. Cualquier elemento con
 // `data-ayuda="…"` (los botones la reciben con la prop `ayuda`) la muestra al
-// pasar el mouse (tras una pausa) o al enfocarlo con el teclado. Usa un solo
-// oyente delegado.
+// pasar el mouse (tras una breve pausa, para no aparecer al cruzar la pantalla)
+// o al enfocarlo con el teclado. Un solo oyente delegado: no envuelve botones.
 const ESPERA_MS = 450;
 const MARGEN = 8;
 

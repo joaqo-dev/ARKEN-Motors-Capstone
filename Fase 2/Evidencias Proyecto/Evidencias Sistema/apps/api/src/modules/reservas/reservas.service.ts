@@ -56,8 +56,8 @@ export function toReservaResponse(row: ReservaDetalleRow) {
   };
 }
 
-// Reservas. Todos los roles emiten; extender y cancelar es solo de admins, y
-// cancelar exige motivo.
+// Reservas (Módulos 10.2 y 12). Todos los roles emiten; extender y cancelar
+// (dar de baja) es solo de admins, y cancelar exige motivo.
 @Injectable()
 export class ReservasService {
   constructor(
@@ -166,7 +166,7 @@ export class ReservasService {
       await this.reservas.extender(id, nuevaFechaVencimiento, client);
       await this.comunes.auditar(
         actor,
-        { tipo: 'RESERVA', id, sucursalId: actual.sucursal_id },
+        { tipo: 'RESERVA', id, sucursalId: actual.sucursal_id, folio: actual.folio },
         'RESERVA_EXTENDIDA',
         client,
         { fechaVencimiento: actual.fecha_vencimiento, estado: actual.estado },
@@ -176,8 +176,8 @@ export class ReservasService {
     return this.obtener(id, actor);
   }
 
-  // Cancela una reserva: el vehículo vuelve a su estado previo. El admin indica
-  // si la seña se retiene (ingreso) o se devuelve al cliente.
+  // Dar de baja una reserva (Módulo 12): libera el vehículo a su estado previo.
+  // El admin indica si la seña se retiene (ingreso) o se devuelve al cliente.
   async cancelar(id: string, motivo: string, senaRetenida: boolean, actor: UsuarioAutenticado) {
     await this.buscarOFallar(id, actor);
     await this.tx.run(async (client) => {
@@ -220,7 +220,7 @@ export class ReservasService {
       );
       await this.comunes.auditar(
         actor,
-        { tipo: 'RESERVA', id, sucursalId: actual.sucursal_id },
+        { tipo: 'RESERVA', id, sucursalId: actual.sucursal_id, folio: actual.folio },
         'RESERVA_CANCELADA',
         client,
         { estado: actual.estado },

@@ -16,7 +16,7 @@ import { CreateUsuarioDto } from './dto/create-usuario.dto';
 import { UpdateUsuarioDto } from './dto/update-usuario.dto';
 import { UsuariosService } from './usuarios.service';
 
-// El Vendedor no administra usuarios.
+// El Vendedor no administra usuarios (Módulo 5).
 @Controller('usuarios')
 @Roles('ADMIN_GENERAL', 'ADMIN_SUCURSAL')
 export class UsuariosController {

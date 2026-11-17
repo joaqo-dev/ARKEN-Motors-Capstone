@@ -16,8 +16,8 @@ function leerGuardada(): string | null {
   }
 }
 
-// Selector de sucursal de la barra superior: el ADMIN_GENERAL elige "Todas" o
-// una sucursal; ADMIN_SUCURSAL y VENDEDOR quedan fijos en la suya.
+// Selector de sucursal de la barra superior (docs/04): el ADMIN_GENERAL elige
+// "Todas" o una sucursal; ADMIN_SUCURSAL y VENDEDOR quedan fijos en la suya.
 export function SucursalActivaProvider({ children }: { children: ReactNode }) {
   const { usuario, esGeneral } = useSesion();
   const [elegida, setElegida] = useState<string | null>(leerGuardada);

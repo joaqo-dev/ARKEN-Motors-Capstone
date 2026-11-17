@@ -32,9 +32,9 @@ export class JwtAuthGuard implements CanActivate {
     } catch {
       throw new UnauthorizedException();
     }
-    // El access token dura hasta 15 min: sin esta consulta, un usuario desactivado
-    // o con otro rol/sucursal seguiría operando con sus permisos anteriores. El 401
-    // hace que el panel renueve con /auth/refresh, que revisa el estado.
+    // El access token vive hasta 15 min: sin esta consulta, un usuario desactivado
+    // o al que le cambiaron rol/sucursal seguiría operando con sus permisos viejos.
+    // El 401 hace que el panel renueve con /auth/refresh, que ya revisa el estado.
     const usuario = await this.usuarios.findById(payload.sub);
     if (
       !usuario ||

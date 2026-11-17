@@ -39,8 +39,8 @@ export interface CorreoHistorialRow extends CorreoRow {
   usuario_nombre: string | null;
 }
 
-// Lo que el correo necesita del documento: datos de la automotora, de la
-// sucursal del documento (contacto) y del cliente, y su estado actual para
+// Todo lo que el correo necesita del documento: datos de la automotora y de la
+// sucursal del documento (contacto), del cliente, y el estado actual para
 // decidir si un recordatorio todavía corresponde.
 export interface DocumentoCorreoRow {
   automotora_id: string;
@@ -136,9 +136,9 @@ export class CorreosRepository {
     return (rowCount ?? 0) > 0;
   }
 
-  // Toma hasta `limite` correos listos para enviar y los reserva por 10 minutos
-  // (cuenta como intento): si el proceso se cae, otro los retoma después, y dos
-  // procesos nunca toman el mismo.
+  // Toma hasta `limite` correos listos para enviar y los "arrienda" por 10
+  // minutos (cuenta el intento): si el proceso se cae a mitad de camino, otro
+  // los retoma después, y dos procesos nunca toman el mismo.
   async tomarPendientes(limite: number, db: Queryable = this.pool): Promise<CorreoRow[]> {
     const { rows } = await db.query<CorreoRow>(
       `UPDATE correo SET intentos = intentos + 1, fecha_programada = now() + interval '10 minutes'
@@ -199,8 +199,8 @@ export class CorreosRepository {
     return rows;
   }
 
-  // ---- Recordatorios (cron diario). Cada INSERT encola los eventos de hoy;
-  // clave_evento única evita repetirlos. Devuelven cuántos se encolaron.
+  // ---- Recordatorios (cron diario). Cada INSERT encola los eventos que tocan
+  // hoy; clave_evento única evita repetirlos. Devuelven cuántos se encolaron.
 
   // "El vehículo sigue disponible": N días después de emitir, si todavía falta
   // para el aviso de vencimiento (si coinciden, va solo el aviso).

@@ -302,7 +302,7 @@ export function NuevaCotizacionPage() {
   );
 }
 
-// Estados desde los que un vehículo se puede vender.
+// Estados desde los que un vehículo se puede vender (Módulo 11).
 const VENDIBLES = ['DISPONIBLE', 'EN_PREPARACION', 'PENDIENTE_REVISION', 'RESERVADO'];
 
 export function CotizacionPage() {

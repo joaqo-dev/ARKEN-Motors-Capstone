@@ -14,8 +14,9 @@ import {
   type FilaVenta,
 } from './db';
 
-// Piezas compartidas por los manejadores de la API en memoria. Replican las
-// reglas de la API que el panel necesita: alcance por rol, folios y estados.
+// Piezas compartidas por los manejadores de la API en memoria. Imitan las
+// reglas de la API real (docs/01-modulos-funcionales.md) en lo que el panel
+// necesita para verse y comportarse igual: alcance por rol, folios, estados.
 
 export interface Contexto {
   usuario: Usuario;
@@ -200,7 +201,7 @@ export const gastosDelVehiculo = (vehiculoId: string) =>
 export const totalGastosVehiculo = (vehiculoId: string) =>
   gastosDelVehiculo(vehiculoId).reduce((s, g) => s + g.monto, 0);
 
-// Comisión de la automotora por un auto consignado a un precio dado.
+// Comisión de la automotora por un auto consignado a un precio dado (Módulo 9).
 export function comisionConsignacion(cons: FilaConsignacion, precio: number) {
   return cons.tipoTrato === 'COMISION_VENTA'
     ? Math.round((precio * (cons.porcentajeComision ?? 0)) / 100)
@@ -239,7 +240,7 @@ export function vehiculoListado(c: Contexto, v: FilaVehiculo) {
   };
 }
 
-// Qué le falta: mismas reglas que la API.
+// Qué le falta (Módulo 7.6): mismas reglas que la API.
 export function pendientesDe(v: FilaVehiculo) {
   const hoyChile = hoy();
   const ultima = datos()

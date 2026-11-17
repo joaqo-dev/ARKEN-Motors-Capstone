@@ -30,8 +30,8 @@ export function FormularioCliente({
   return (
     <form
       onSubmit={(evento) => {
-        // Desde un portal el evento igual sube por el árbol de React hasta el
-        // formulario que abrió el modal: no debe enviarlo.
+        // En un portal, el evento igual sube por el árbol de React hasta el
+        // formulario del documento que abrió el modal: no debe enviarlo.
         evento.stopPropagation();
         // Solo los datos editables: `inicial` puede ser el cliente completo
         // (id, estado, fechaCreacion…) y la API rechaza campos de más.

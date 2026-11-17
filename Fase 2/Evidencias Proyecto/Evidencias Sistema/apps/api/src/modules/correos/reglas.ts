@@ -7,7 +7,7 @@ export interface ContenidoCorreo {
   titulo: string;
   parrafos: string[];
   resumen: { etiqueta: string; valor: string }[];
-  // Seguimientos y avisos comerciales: llevan el enlace de baja.
+  // Seguimientos y avisos comerciales: llevan el enlace de baja (Módulo 18).
   permiteBaja: boolean;
 }
 
@@ -19,9 +19,9 @@ const CON_BAJA: TipoCorreo[] = [
   'TASACION_POR_VENCER',
 ];
 
-// Por qué un correo ya no corresponde al enviarlo (null = se envía). Desde que
-// se planificó, la cotización pudo concretarse, el vehículo venderse o el
-// cliente darse de baja.
+// Por qué un correo ya no corresponde al momento de enviarlo (null = se envía).
+// Los recordatorios se planifican una vez al día: entre medio la cotización pudo
+// concretarse, el vehículo venderse o el cliente darse de baja.
 export function motivoDescarte(tipo: TipoCorreo, d: DocumentoCorreoRow): string | null {
   if (tipo === 'DOCUMENTO') {
     return d.estado === 'ANULADA' || d.estado === 'CANCELADA' ? 'El documento fue anulado' : null;

@@ -31,7 +31,7 @@ CMD ["node_modules/.bin/node-pg-migrate", "-m", "migrations", "-j", "sql", "up"]
 # ---------- API ----------
 FROM fuente AS build-api
 RUN pnpm --filter @vitriauto/api build
-# Deja solo dependencias de producción (mismas rutas: los enlaces de pnpm siguen válidos).
+# Deja solo las dependencias de producción (mismas rutas: los enlaces de pnpm siguen válidos).
 RUN --mount=type=cache,id=pnpm,target=/pnpm/store pnpm install --frozen-lockfile --prod
 
 FROM ${NODE_IMAGE} AS api

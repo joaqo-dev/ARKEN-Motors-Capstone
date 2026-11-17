@@ -1,7 +1,7 @@
 import { Cabecera } from '../components/cabecera';
 
-// Silueta de la portada del marketplace mientras carga (portada, buscador y
-// recién publicados).
+// Mientras el servidor arma la portada del marketplace: la misma silueta
+// (portada a sangre, buscador y recién publicados sobre gris).
 export default function Cargando() {
   return (
     <div className="mk vt mk-mercado" aria-busy="true" aria-label="Cargando">

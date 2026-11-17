@@ -1,4 +1,5 @@
-// Modelo común de los documentos comerciales en PDF.
+// Modelo común de los documentos comerciales en PDF (cotización, reserva,
+// tasación, consignación y, más adelante, comprobante de venta).
 export interface FilaDato {
   etiqueta: string;
   valor: string;

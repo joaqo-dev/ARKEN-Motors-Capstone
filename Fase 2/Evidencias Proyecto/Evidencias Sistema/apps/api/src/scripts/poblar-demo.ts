@@ -23,23 +23,26 @@ import { VencimientosTareas } from '../modules/vencimientos/vencimientos.tareas'
 import { VentasService } from '../modules/ventas/ventas.service';
 import { pngDemo } from './imagen-demo';
 
-// Puebla una automotora ya registrada con ~6 meses de historia de demo:
-// vehículos, clientes, tasaciones, cotizaciones, reservas, consignaciones,
-// ventas y gastos, con utilidad neta positiva cada mes.
+// Puebla una automotora YA registrada con datos de demostración y ~6 meses de
+// historia: vehículos, clientes, tasaciones, cotizaciones, reservas,
+// consignaciones, ventas y gastos, con utilidad neta positiva cada mes.
+// Pensado para la cuenta demo de producción.
 //
-// Usa los Services reales (folios, bitácora, auditoría y reglas intactos).
-// Cada paso se ejecuta "hoy" y luego se corre hacia atrás restando días a lo
-// que creó. Los pasos se ordenan por fecha, así los folios quedan
-// correlativos. La auditoría es inmutable: registra la fecha real de carga.
+// Usa los Services reales (folios, bitácora, auditoría y reglas de negocio
+// intactos). Cada paso se ejecuta "hoy" y después se corre hacia atrás: las
+// fechas de lo que ese paso creó se restan en bloque. Los pasos se ordenan por
+// fecha antes de ejecutarse, así los folios quedan correlativos en el tiempo.
+// La auditoría es inmutable: registra la fecha real de carga.
 //
-// Salvaguardas: no crea usuarios, no publica vehículos, apaga los correos
-// automáticos y los clientes usan @example.com. Sin REINICIAR se niega a
-// correr si la automotora ya tiene vehículos.
+// Salvaguardas: no crea usuarios, no publica vehículos (nada aparece en el
+// marketplace), apaga los correos automáticos de la automotora y los clientes
+// usan direcciones @example.com (dominio reservado, nunca recibe correo).
+// Sin REINICIAR se niega a correr si la automotora ya tiene vehículos.
 //
 // Uso (en el VPS, desde deploy/):
 //   docker compose run --rm -e SUBDOMINIO=demo -e CONFIRMAR=demo api node dist/scripts/poblar-demo.js
-// REINICIAR=demo borra antes los datos de negocio de esa automotora;
-// conserva usuarios, sucursales y auditoría.
+// REINICIAR=demo borra antes los datos de negocio de esa automotora (vehículos,
+// clientes, documentos, gastos y fotos); conserva usuarios, sucursales y auditoría.
 
 type Color = 'Rojo' | 'Blanco' | 'Negro' | 'Gris' | 'Azul' | 'Plateado' | 'Verde';
 const COLORES: Record<Color, [number, number, number]> = {
@@ -222,8 +225,8 @@ async function main() {
   const sucursal = (s: 'matriz' | 'vina') => (s === 'vina' ? vina.id : matriz.id);
 
   // ------------------------------------------------- línea de tiempo (eventos)
-  // Cada evento se registra con sus días atrás y al final se ejecutan en orden
-  // cronológico. `ids` guarda lo creado para los eventos posteriores.
+  // Cada evento se registra con sus días atrás; al final se ejecutan en orden
+  // cronológico. `ids` guarda lo creado para que eventos posteriores lo usen.
   const eventos: { dias: number; orden: number; paso: () => Promise<unknown> }[] = [];
   const en = (dias: number, paso: () => Promise<unknown>) =>
     eventos.push({ dias, orden: eventos.length, paso });
@@ -1158,9 +1161,10 @@ async function main() {
   );
 }
 
-// Borra los datos de negocio de una automotora para volver a poblarla, en una
-// transacción y en orden de dependencias. Conserva usuarios, sucursales y
-// auditoría. Fotos y PDFs se borran del disco después del COMMIT.
+// Borra los datos de negocio de una automotora (para volver a poblarla): todo
+// en una transacción y en orden de dependencias. Conserva usuarios, sucursales
+// y auditoría (inmutable). Las fotos y los PDF de los documentos se borran del
+// disco después del COMMIT.
 async function borrarDatos(pool: Pool, automotoraId: string, raizUploads: string) {
   const client = await pool.connect();
   let fotos: string[] = [];

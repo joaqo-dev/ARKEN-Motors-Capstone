@@ -124,7 +124,7 @@ function AccionesVehiculo({ v }: { v: VehiculoDetalle }) {
   const reservado = v.estado === 'RESERVADO';
   const vendible = !vendido && v.estado !== 'DADO_DE_BAJA';
   const cambiar = useCambiarEstado(v, () => setModal(null));
-  // Revisión antes de publicar: el Vendedor envía, un admin publica.
+  // Revisión antes de publicar (Módulo 7.6): el Vendedor envía, un admin publica.
   const bloqueo = v.pendientes.filter((p) => p.obligatorio);
   const motivoBloqueo = bloqueo.length
     ? `Antes: ${bloqueo.map((p) => p.texto.toLowerCase()).join(', ')}`
@@ -249,7 +249,7 @@ function Resumen({ v }: { v: VehiculoDetalle }) {
                 alt={`${descripcionVehiculo(v)}, foto de portada`}
                 className="aspect-[16/9] w-full object-cover transition-transform duration-500 ease-(--ease-out) group-hover:scale-[1.015]"
               />
-              {/* Los datos más consultados, sobre la foto */}
+              {/* Los datos que se preguntan primero, sobre la foto (como en la referencia) */}
               <span className="absolute bottom-3 left-3 flex flex-wrap gap-1.5">
                 <ChipFoto>{km(v.kilometraje)}</ChipFoto>
                 <ChipFoto>{etiqueta(v.transmision)}</ChipFoto>
@@ -348,7 +348,7 @@ function Resumen({ v }: { v: VehiculoDetalle }) {
 }
 
 // Pestaña "Ficha técnica": los datos del vehículo, editables ahí mismo, y la
-// ficha imprimible (solo vehículos en inventario).
+// ficha imprimible (Módulo 7.10, solo vehículos en inventario).
 function PanelFicha({ v }: { v: VehiculoDetalle }) {
   if (v.estado === 'VENDIDO') {
     return (
@@ -440,8 +440,8 @@ function FilaDato({ etiqueta: texto, children }: { etiqueta: string; children: R
   );
 }
 
-// Cambiar estado a mano (RESERVADO y VENDIDO los fijan Reservas y Ventas).
-// Solo un admin publica (DISPONIBLE); el Vendedor lo envía a revisión.
+// Cambiar estado a mano (RESERVADO y VENDIDO los fijan Reservas y Ventas). Solo un
+// admin publica (DISPONIBLE); el Vendedor lo envía a revisión (Módulo 7.6).
 function useCambiarEstado(v: VehiculoDetalle, alTerminar: () => void) {
   const qc = useQueryClient();
   const avisar = useAviso();
@@ -468,7 +468,7 @@ function useCambiarEstado(v: VehiculoDetalle, alTerminar: () => void) {
 }
 
 // Estados que se fijan a mano según el rol. RESERVADO y VENDIDO no cambian a
-// mano: se cancela la reserva o se anula la venta.
+// mano: se cancela la reserva o se anula la venta (Módulo 7.6).
 function estadosManuales(v: VehiculoDetalle, esAdmin: boolean) {
   if (v.estado === 'RESERVADO' || v.estado === 'VENDIDO') return [];
   // Dar de baja y reactivar es de admins: el Vendedor no toca un vehículo dado de baja.
@@ -565,7 +565,7 @@ function CambiarEstadoModal({
 }
 
 // La sucursal, bajo el título. El Admin General la cambia ahí mismo
-// (transferencia); un vehículo vendido no se transfiere.
+// (transferencia, Módulo 4); un vehículo vendido no se transfiere (Módulo 7.6).
 function SucursalVehiculo({ v }: { v: VehiculoDetalle }) {
   const { esGeneral } = useSesion();
   const { sucursales } = useSucursalActiva();
@@ -589,7 +589,7 @@ function SucursalVehiculo({ v }: { v: VehiculoDetalle }) {
   );
 }
 
-// Transferencia entre sucursales (solo Admin General).
+// Transferencia entre sucursales (solo Admin General, Módulo 4).
 function TransferirModal({
   v,
   inicial,

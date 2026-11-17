@@ -1,4 +1,4 @@
-# Entorno local: solo PostgreSQL (sin Caddy ni HTTPS).
+# Entorno local (sin Caddy/HTTPS). Los servicios api/web se agregan en pasos siguientes.
 services:
   postgres:
     image: postgres:16

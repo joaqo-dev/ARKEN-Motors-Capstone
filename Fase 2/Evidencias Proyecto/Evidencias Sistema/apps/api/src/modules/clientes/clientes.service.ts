@@ -65,7 +65,7 @@ export class ClientesService {
   }
 
   // Visible para cualquier usuario que vea la ficha, sin importar la sucursal
-  // de cada documento.
+  // de cada documento (Módulo 6).
   async historial(id: string, usuario: UsuarioAutenticado) {
     await this.buscarOFallar(id, usuario);
     const rows = await this.clientes.historial(id, usuario.automotoraId);
@@ -128,8 +128,8 @@ export class ClientesService {
     return toClienteResponse(row);
   }
 
-  // Baja lógica: el cliente nunca se elimina. Solo admins (controller); afecta
-  // a todas las sucursales porque la ficha es de la automotora.
+  // Baja lógica: el cliente nunca se elimina (Módulo 6). Solo admins (controller);
+  // afecta a todas las sucursales porque la ficha es de la automotora.
   async desactivar(id: string, usuario: UsuarioAutenticado) {
     return this.cambiarEstado(id, 'INACTIVO', usuario);
   }
@@ -161,8 +161,8 @@ export class ClientesService {
     return toClienteResponse(row);
   }
 
-  // La ficha es de la automotora; el registro guarda la sucursal desde donde se
-  // actuó (null si fue un ADMIN_GENERAL).
+  // La ficha es de la automotora; el registro guarda la sucursal desde donde
+  // se actuó (null si fue un ADMIN_GENERAL), como en desactivar/activar.
   private async auditar(
     usuario: UsuarioAutenticado,
     clienteId: string,

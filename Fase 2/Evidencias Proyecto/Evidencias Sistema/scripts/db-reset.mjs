@@ -1,6 +1,7 @@
-// Recrea la base de desarrollo: borra todo, aplica docs/schema.sql (vía la
-// migración base) y carga la demo del seed. Se niega a correr contra una base
-// que no sea local.
+// Recrea la base de DESARROLLO desde cero: borra todo, aplica las migraciones
+// (la base aplica docs/schema.sql, o la copia congelada tras el primer
+// despliegue) y carga los datos de demo del seed.
+// Solo para la base local: se niega a correr contra cualquier otro servidor.
 import { execSync } from 'node:child_process';
 import { readFileSync } from 'node:fs';
 import { createRequire } from 'node:module';
@@ -25,7 +26,7 @@ const cliente = new Client({ connectionString: url });
 await cliente.connect();
 await cliente.query('DROP SCHEMA public CASCADE; CREATE SCHEMA public;');
 await cliente.end();
-console.log('Base vaciada. Aplicando docs/schema.sql…');
+console.log('Base vaciada. Aplicando las migraciones…');
 
 // La misma base para la migración y el seed (el API lee su propio .env).
 const opciones = { stdio: 'inherit', env: { ...process.env, DATABASE_URL: url } };

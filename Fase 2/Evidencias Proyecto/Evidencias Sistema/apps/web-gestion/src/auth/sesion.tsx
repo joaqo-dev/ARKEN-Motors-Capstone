@@ -45,8 +45,8 @@ export function AuthProvider({ children }: { children: ReactNode }) {
     esAdmin: usuario !== null && usuario.rol !== 'VENDEDOR',
     cerrarSesion: async () => {
       await api('POST', '/auth/logout', { sinRefresh: true }).catch(() => undefined);
-      // Primero se anula la sesión (sus observadores siguen suscritos) y luego se
-      // descarta el resto de la caché; qc.clear() los dejaría con el usuario anterior.
+      // Primero anular la sesión (sus observadores siguen suscritos) y luego
+      // descartar el resto de la caché: qc.clear() los dejaría con el usuario viejo.
       qc.setQueryData(CLAVE_SESION, null);
       qc.removeQueries({ predicate: (q) => q.queryKey[0] !== CLAVE_SESION[0] });
     },

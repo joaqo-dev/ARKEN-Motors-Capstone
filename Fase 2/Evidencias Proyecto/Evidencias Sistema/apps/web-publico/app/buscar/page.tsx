@@ -15,8 +15,8 @@ export const metadata: Metadata = {
   robots: { index: false, follow: true },
 };
 
-// Búsqueda del marketplace: todo el inventario publicado, con filtros
-// dinámicos, orden y paginación. Acceso anónimo.
+// Búsqueda del marketplace global (Módulo 2): todo el inventario publicado,
+// con filtros dinámicos, orden y paginación. Acceso anónimo.
 export default async function BuscarPage({ searchParams }: { searchParams: Promise<Busqueda> }) {
   const busqueda = await searchParams;
   const [resultado, filtros, recientes] = await Promise.all([
@@ -25,7 +25,7 @@ export default async function BuscarPage({ searchParams }: { searchParams: Promi
     // La foto de la franja: la del último auto publicado (no cambia al filtrar).
     api.buscar(paramsBusqueda({ orden: 'recientes' })),
   ]);
-  // Una foto distinta a la del hero de la portada: el segundo auto publicado con foto.
+  // Otra foto que la del hero de la portada: el segundo auto publicado con foto.
   const conFoto = (recientes?.items ?? []).filter((v) => v.fotoPortada && v.categoria !== 'MOTO');
   const foto = urlArchivo((conFoto[1] ?? conFoto[0])?.fotoPortada ?? null);
   const total = recientes?.total ?? 0;

@@ -2,9 +2,10 @@ import { ExternalLink, FileText, ImageOff, X } from 'lucide-react';
 import { useEffect, useRef, useState, type InputHTMLAttributes, type ReactNode } from 'react';
 import { Input, Nota } from './componentes';
 
-// Campo de archivo con vista previa (documentos legales y boletas): muestra el
-// archivo elegido antes de guardar. Se usa igual que <Input type="file"> con
-// register(); el archivo se sube al enviar el formulario.
+// Campo de archivo con vista previa (documentos legales y boletas): al elegir
+// el archivo se muestra ahí mismo, antes de guardar, para revisar que sea el
+// correcto. Se usa igual que <Input type="file"> con register(): solo agrega
+// la vista previa (el archivo no se sube hasta enviar el formulario).
 
 const MB = 1024 * 1024;
 

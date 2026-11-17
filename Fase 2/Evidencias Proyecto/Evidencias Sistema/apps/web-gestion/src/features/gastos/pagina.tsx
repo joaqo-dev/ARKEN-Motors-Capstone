@@ -82,10 +82,10 @@ interface Respuesta {
 }
 
 const LIMITE = 50;
-// Gastos de vehículos (se registran en la ficha de cada auto y entran en su
-// margen) y operacionales (arriendo, sueldos...: se restan del resultado del
-// período). Los generales no tienen sucursal y solo cuentan en la vista
-// consolidada.
+// Gastos (Módulo 8): de vehículos (se registran en la ficha de cada auto y
+// entran en su margen) y operacionales (arriendo, sueldos...: se restan del
+// resultado del período). Los generales no tienen sucursal y solo cuentan en la
+// vista consolidada.
 export function GastosPage() {
   const { esGeneral } = useSesion();
   const { sucursalId: sucursalGlobal, sucursales } = useSucursalActiva();

@@ -2,8 +2,8 @@ import { Injectable, OnApplicationBootstrap } from '@nestjs/common';
 import { Cron } from '@nestjs/schedule';
 import { NotificacionesService } from './notificaciones.service';
 
-// Cron diario, después de los vencimientos automáticos (00:05), y también al
-// arrancar, para cubrir los días en que la API estuvo abajo.
+// Cron diario (Módulo 13). Corre después de los vencimientos automáticos (00:05),
+// y también al arrancar, para cubrir los días en que la API estuvo abajo.
 @Injectable()
 export class NotificacionesTareas implements OnApplicationBootstrap {
   constructor(private readonly notificaciones: NotificacionesService) {}

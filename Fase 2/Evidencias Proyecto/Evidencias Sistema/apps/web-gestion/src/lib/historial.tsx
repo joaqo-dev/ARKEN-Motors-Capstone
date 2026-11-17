@@ -9,10 +9,11 @@ import {
 } from 'react';
 import { useLocation, useNavigationType } from 'react-router-dom';
 
-// Historial de navegación del panel, para que "‹ Volver" lleve a la pantalla
-// de la que realmente se vino (p. ej. Gasto N° 15 → ficha del vehículo →
-// "‹ Gasto N° 15") y no siempre a la sección padre. Sigue la pila del
-// navegador por location.key y se guarda en sessionStorage.
+// Historial de navegación dentro del panel, para que "‹ Volver" lleve a la
+// pantalla de la que realmente se vino (ej. Gasto N° 15 → ficha del vehículo →
+// "‹ Gasto N° 15"), y no siempre a la sección padre. Espeja la pila del
+// navegador por location.key; se guarda en sessionStorage para sobrevivir a
+// una recarga de la página.
 
 interface Estado {
   pila: string[]; // location.key de cada entrada

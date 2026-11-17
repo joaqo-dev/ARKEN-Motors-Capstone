@@ -47,8 +47,8 @@ export class SucursalesService {
     return toSucursalResponse(await this.buscarOFallar(id, usuario));
   }
 
-  // Solo ADMIN_GENERAL (controller). Las sucursales creadas a mano nunca son
-  // principales: la principal nace con el registro.
+  // Solo ADMIN_GENERAL (controlado en el controller). Las sucursales creadas
+  // manualmente nunca son principales: la principal nace con el registro.
   async crear(dto: CreateSucursalDto, usuario: UsuarioAutenticado) {
     const row = await this.tx.run(async (client) => {
       await this.validarNombreUnico(usuario.automotoraId, dto.nombre, null, client);
@@ -177,7 +177,7 @@ export class SucursalesService {
     return normalizarWhatsapp(valor);
   }
 
-  // CRUD de sucursales: acción a nivel de automotora (sucursal_id NULL).
+  // CRUD de sucursales: acción a nivel de automotora (sucursal_id NULL, Módulo 16).
   private async auditar(
     usuario: UsuarioAutenticado,
     sucursalId: string,

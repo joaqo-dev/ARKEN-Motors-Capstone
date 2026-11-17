@@ -89,8 +89,8 @@ function filtrarUsuarios(
   );
 }
 
-// Usuarios: alta por invitación (quien crea nunca conoce la contraseña). El
-// Admin de Sucursal gestiona solo los de su sucursal.
+// Usuarios (Módulo 5): alta por invitación (quien crea nunca conoce la
+// contraseña). El Admin de Sucursal gestiona solo los de su sucursal.
 export function UsuariosPage() {
   const yo = useUsuario();
   const { esGeneral } = useSesion();

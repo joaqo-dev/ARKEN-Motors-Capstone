@@ -1,6 +1,6 @@
 # Vitriauto — Plataforma de gestión para automotoras
 
-Sistema web del proyecto **ARKEN Motors**. Cada automotora se registra y administra
+**Vitriauto** es una plataforma web multi-tenant para automotoras. Cada automotora se registra y administra
 su negocio desde un **panel de gestión**: inventario de vehículos, clientes,
 cotizaciones, reservas, ventas, consignaciones, gastos y reportes, en una o varias
 sucursales. Todo vehículo que la automotora publica aparece en su **vitrina pública**
@@ -59,7 +59,7 @@ sucursal) y _Vendedor_ (su sucursal, sin ver costos ni márgenes).
 | Panel de gestión | React + Vite + Tailwind CSS                                  |
 | Monorepo         | pnpm + Turborepo                                             |
 | Pruebas          | Jest                                                         |
-| Producción       | Docker, Caddy y GitHub Actions (carpeta `deploy/`)           |
+| Producción       | Docker y Caddy en un servidor Linux (carpeta `deploy/`)      |
 
 ---
 
@@ -73,8 +73,8 @@ sucursal) y _Vendedor_ (su sucursal, sin ver costos ni márgenes).
 │   └── web-publico/     Marketplace y vitrinas (Next.js)
 ├── packages/
 │   └── shared-types/    Tipos y reglas compartidas entre la API y los frontends
-├── docs/schema.sql      Esquema completo de la base de datos
-├── migrations/          Migración que crea las tablas a partir de schema.sql
+├── migrations/          Migraciones de la base de datos (base/esquema-inicial.sql
+│                        contiene el esquema completo)
 ├── scripts/             Utilidades (recrear la base local)
 ├── deploy/              Configuración de producción (Docker, Caddy, respaldos)
 └── docker-compose.yml   PostgreSQL local con Docker (opcional)

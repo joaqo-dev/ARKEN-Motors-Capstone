@@ -51,8 +51,8 @@ export function toTasacionResponse(row: TasacionDetalleRow) {
   };
 }
 
-// Tasaciones: flujo inverso, independiente del inventario. No aparecen en la
-// bitácora de ningún vehículo ni generan notificaciones.
+// Tasaciones (Módulo 10.3): flujo inverso, independiente del inventario. No
+// aparecen en la bitácora de ningún vehículo ni generan notificaciones.
 @Injectable()
 export class TasacionesService {
   constructor(
@@ -145,7 +145,7 @@ export class TasacionesService {
       await this.tasaciones.setEstado(id, estado, client);
       await this.comunes.auditar(
         actor,
-        { tipo: 'TASACION', id, sucursalId: actual.sucursal_id },
+        { tipo: 'TASACION', id, sucursalId: actual.sucursal_id, folio: actual.folio },
         `TASACION_${estado}`,
         client,
         { estado: actual.estado },
@@ -169,7 +169,7 @@ export class TasacionesService {
       await this.tasaciones.anular(id, motivo, actor.id, client);
       await this.comunes.auditar(
         actor,
-        { tipo: 'TASACION', id, sucursalId: actual.sucursal_id },
+        { tipo: 'TASACION', id, sucursalId: actual.sucursal_id, folio: actual.folio },
         'TASACION_ANULADA',
         client,
         { estado: actual.estado },
@@ -184,8 +184,8 @@ export class TasacionesService {
     return this.pdf.ruta('TASACION', id);
   }
 
-  // Sin vehículo del cual derivarla: la sucursal es la del usuario o la que
-  // elija el ADMIN_GENERAL.
+  // Sin vehículo del cual derivarla: la sucursal es la del usuario, o la que
+  // elija explícitamente el ADMIN_GENERAL.
   private async resolverSucursal(sucursalId: string | undefined, actor: UsuarioAutenticado) {
     if (actor.rol !== 'ADMIN_GENERAL') {
       if (sucursalId && sucursalId !== actor.sucursalId) {

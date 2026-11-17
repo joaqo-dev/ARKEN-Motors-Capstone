@@ -4,8 +4,8 @@ import type { DocumentoLegalRow } from './documentos-legales.repository';
 import type { FotoRow } from './vehiculo-fotos.repository';
 import type { VehiculoListadoRow } from './vehiculos.repository';
 
-// El VENDEDOR no ve costos de adquisición ni márgenes: ni el costo del
-// vehículo ni la comisión de una consignación.
+// El VENDEDOR no ve costos de adquisición ni márgenes (Módulo 5): ni el costo
+// del vehículo ni la comisión de una consignación.
 const veCostos = (rol: RolUsuario) => rol !== 'VENDEDOR';
 
 export function toVehiculoResponse(row: VehiculoListadoRow, rol: RolUsuario) {
@@ -32,7 +32,7 @@ export function toVehiculoResponse(row: VehiculoListadoRow, rol: RolUsuario) {
     fechaIngreso: row.fecha_ingreso,
     fotoPortada: row.foto_portada,
     observacionRevision: row.observacion_revision,
-    // Qué le falta: obligatorio para publicar y recomendado.
+    // Qué le falta: obligatorio para publicar y recomendado (Módulo 7.6).
     pendientes: pendientesVehiculo({
       fotos: row.fotos_cantidad,
       version: row.version,

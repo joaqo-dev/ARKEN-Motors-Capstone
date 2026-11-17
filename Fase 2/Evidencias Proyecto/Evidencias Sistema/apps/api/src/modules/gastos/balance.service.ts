@@ -6,9 +6,9 @@ import { ConsignacionesRepository, tratoDeFila } from '../consignaciones/consign
 import { VehiculosRepository } from '../vehiculos/vehiculos.repository';
 import { GastosRepository } from './gastos.repository';
 
-// Balance financiero de un vehículo, solo para admins. Si está vendido es el
-// margen real (precio final de la venta); si no, el proyectado al precio
-// actual. Los costos de traspaso nunca entran.
+// Balance financiero de un vehículo (Módulo 7.7), solo para admins. Si está
+// vendido, es el margen REAL (precio final de su venta); si no, el PROYECTADO
+// al precio de venta actual. Los costos de traspaso nunca entran.
 @Injectable()
 export class BalanceService {
   constructor(

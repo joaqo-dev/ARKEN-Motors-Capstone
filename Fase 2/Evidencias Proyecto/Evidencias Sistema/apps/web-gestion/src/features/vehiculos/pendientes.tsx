@@ -4,8 +4,8 @@ import { useSearchParams } from 'react-router-dom';
 import { cx, Tarjeta } from '../../ui/componentes';
 import type { VehiculoDetalle } from './tipos';
 
-// Qué le falta a un vehículo: lo obligatorio bloquea publicarlo; lo
-// recomendado solo avisa.
+// Qué le falta a un vehículo (Módulo 7.6): lo obligatorio bloquea publicarlo;
+// lo recomendado solo avisa.
 
 // Marca compacta para el listado: el detalle va en la burbuja de ayuda.
 export function MarcaPendientes({ pendientes }: { pendientes: Pendiente[] }) {

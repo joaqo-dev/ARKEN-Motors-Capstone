@@ -17,8 +17,8 @@ const SUAVE = '#52525b';
 const TENUE = '#a1a1aa';
 const BORDE = '#e4e4e7';
 
-// Ficha para imprimir y pegar en el vehículo: carta vertical, legible a un par
-// de metros (precio y modelo grandes).
+// Ficha para imprimir y pegar en el vehículo (Módulo 7.10): carta vertical,
+// pensada para leerse a un par de metros (precio y modelo grandes).
 export function plantillaFicha(rp: typeof ReactPdf, f: FichaVehiculo) {
   const { Document, Image, Page, StyleSheet, Text, View } = rp;
   const s = StyleSheet.create({
@@ -54,8 +54,8 @@ export function plantillaFicha(rp: typeof ReactPdf, f: FichaVehiculo) {
     datoEtiqueta: { fontSize: 9, color: TENUE, letterSpacing: 1, marginBottom: 3 },
     datoValor: { fontSize: 16, fontFamily: 'Helvetica-Bold' },
     descripcion: { fontSize: 11, color: SUAVE, lineHeight: 1.45, marginTop: 14, marginBottom: 14 },
-    // El pie va al final de la hoja; si la descripción es larga, lo empuja en vez
-    // de superponerse.
+    // El pie se empuja al final de la hoja; si la descripción es larga, la empuja
+    // en vez de montarse sobre ella.
     pie: {
       marginTop: 'auto',
       flexDirection: 'row',

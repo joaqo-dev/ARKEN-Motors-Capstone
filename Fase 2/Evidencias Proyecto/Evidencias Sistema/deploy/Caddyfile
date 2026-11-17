@@ -1,18 +1,19 @@
-# Proxy de producción. Variables desde deploy/.env: DOMINIO, ACME_EMAIL y
-# CLOUDFLARE_API_TOKEN (permiso Zone.DNS:Edit).
+# Proxy de producción (docs/07-despliegue.md). Variables desde deploy/.env:
+# DOMINIO, ACME_EMAIL y CLOUDFLARE_API_TOKEN (permiso Zone.DNS:Edit del dominio).
 {
 	email {$ACME_EMAIL}
 }
 
-# Certificados por validación DNS: es el único modo de emitir el wildcard.
+# Certificados por validación DNS: el único modo de emitir el wildcard.
 (tls_cloudflare) {
 	tls {
 		dns cloudflare {env.CLOUDFLARE_API_TOKEN}
 	}
 }
 
-# Panel de gestión (SPA estática). Su CSP va como <meta> en el index.html;
-# aquí van las cabeceras que no pueden ir en un <meta>.
+# Panel de gestión: sitio estático (SPA). Su CSP viaja como <meta> en el
+# index.html compilado; aquí van las cabeceras que no pueden ir en un <meta>
+# (docs/05-seguridad-autenticacion.md).
 app.{$DOMINIO} {
 	import tls_cloudflare
 	encode zstd gzip
@@ -36,8 +37,8 @@ app.{$DOMINIO} {
 	file_server
 }
 
-# API. Caddy sirve las fotos públicas directo del volumen (solo lectura);
-# los documentos privados pasan siempre por un endpoint autenticado.
+# API. Las fotos públicas las sirve Caddy directo del volumen (solo lectura);
+# los documentos privados nunca: van por un endpoint autenticado de la API.
 api.{$DOMINIO} {
 	import tls_cloudflare
 	encode zstd gzip
@@ -59,7 +60,7 @@ api.{$DOMINIO} {
 }
 
 # Marketplace (dominio raíz) y vitrinas (<subdominio>.DOMINIO). app.* y api.*
-# tienen su propio bloque, que Caddy prioriza por ser más específico.
+# tienen su propio bloque, que Caddy prefiere por ser más específico.
 www.{$DOMINIO} {
 	import tls_cloudflare
 	redir https://{$DOMINIO}{uri} permanent

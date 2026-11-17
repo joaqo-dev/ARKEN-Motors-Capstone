@@ -458,7 +458,7 @@ function ExtenderModal({
   );
 }
 
-// Cancelar reserva: motivo obligatorio y decisión sobre la seña.
+// Dar de baja (Módulo 12): motivo obligatorio y decisión sobre la seña.
 function CancelarModal({
   r,
   onCerrar,

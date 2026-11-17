@@ -5,8 +5,9 @@ import { CotizacionesRepository } from '../cotizaciones/cotizaciones.repository'
 import { ReservasRepository } from '../reservas/reservas.repository';
 import { TasacionesRepository } from '../tasaciones/tasaciones.repository';
 
-// Pasa a VENCIDA al cumplirse el plazo. Una reserva vencida mantiene el
-// vehículo RESERVADO hasta que un admin la extienda o la cancele.
+// Transición automática a VENCIDA al cumplirse el plazo (Módulo 10). Una reserva
+// vencida mantiene el vehículo RESERVADO hasta que un admin la extienda o la
+// cancele. Las alertas de reservas llegan con Notificaciones (Paso 7).
 @Injectable()
 export class VencimientosTareas implements OnApplicationBootstrap {
   private readonly logger = new Logger(VencimientosTareas.name);
@@ -17,7 +18,7 @@ export class VencimientosTareas implements OnApplicationBootstrap {
     private readonly tasaciones: TasacionesRepository,
   ) {}
 
-  // También al arrancar, para cubrir los días en que la API estuvo abajo.
+  // Al arrancar también: cubre los días en que la API estuvo abajo.
   async onApplicationBootstrap() {
     await this.marcarVencidos();
   }

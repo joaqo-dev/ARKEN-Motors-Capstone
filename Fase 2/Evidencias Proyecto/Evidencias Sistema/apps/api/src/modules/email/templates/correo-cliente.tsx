@@ -28,8 +28,8 @@ const secundario = '#52525b';
 const tenue = '#71717a';
 const borde = '#e4e4e7';
 
-// Correo de una automotora a su cliente: documento emitido, seguimiento o
-// recordatorio. Las respuestas le llegan a la automotora.
+// Correo de una automotora a su cliente (Módulo 18): documento emitido,
+// seguimiento o recordatorio. Responder el correo le escribe a la automotora.
 export function CorreoCliente({
   automotora,
   nombre,

@@ -2,7 +2,7 @@ import type { MetadataRoute } from 'next';
 import { api } from '../lib/api';
 import { urlMarketplace, urlPerfil } from '../lib/config';
 
-// Lo que se indexa: la portada del marketplace y la vitrina de cada
+// Lo que se indexa (Módulo 3): la portada del marketplace y la vitrina de cada
 // automotora. Ni vehículos ni búsquedas: el SEO se enfoca en las empresas.
 export const dynamic = 'force-dynamic';
 

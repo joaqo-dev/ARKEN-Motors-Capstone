@@ -24,9 +24,9 @@ import { vitrinaActual } from '../../../lib/vitrina';
 
 type Props = { params: Promise<{ id: string }> };
 
-// El SEO se enfoca en las automotoras: el detalle de un vehículo no se indexa
-// (es efímero), pero Google sigue sus enlaces a la vitrina. Sí lleva vista
-// previa para compartirlo por WhatsApp o redes.
+// El SEO se enfoca en las automotoras (Módulo 3): el detalle de un vehículo no
+// se indexa (es efímero: se vende), pero Google sigue sus enlaces a la vitrina.
+// Sí lleva una buena vista previa para compartirlo por WhatsApp o redes.
 export async function generateMetadata({ params }: Props): Promise<Metadata> {
   const [v, vitrina] = await Promise.all([api.detalle((await params).id), vitrinaActual()]);
   if (!v) return {};
@@ -46,12 +46,13 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
   };
 }
 
-// Detalle del vehículo: mosaico de fotos y, debajo, descripción, información
-// clave, inspección y simulador a la izquierda; a la derecha precio con cuota
-// de referencia, contacto y ubicación (aquí sí se identifican la automotora y
-// la sucursal). Al final, más vehículos de la automotora.
-// Desde el subdominio de una automotora la ficha queda dentro de su vitrina,
-// sin enlaces al marketplace ni a otras automotoras.
+// Detalle del vehículo (Módulo 2), como la ficha de un concesionario: volver,
+// mosaico de fotos y, debajo, el nombre con la descripción, la información
+// clave, la inspección y el simulador a la izquierda; a la derecha el precio
+// con la cuota de referencia, el contacto y dónde está el auto (aquí sí se
+// identifica a la automotora y la sucursal). Al final, más de la automotora.
+// Desde el subdominio de una automotora la ficha queda dentro de su vitrina:
+// su navegación y pie, sin enlaces al marketplace ni a otras automotoras.
 export default async function VehiculoPage({ params }: Props) {
   const id = (await params).id;
   const [v, vitrina] = await Promise.all([api.detalle(id), vitrinaActual()]);

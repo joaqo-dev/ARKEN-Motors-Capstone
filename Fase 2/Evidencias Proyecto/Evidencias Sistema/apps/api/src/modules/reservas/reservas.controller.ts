@@ -48,7 +48,7 @@ export class ReservasController {
     return this.reservas.extender(id, dto.nuevaFechaVencimiento, actor);
   }
 
-  // El Vendedor nunca cancela reservas.
+  // Módulo 12: el Vendedor nunca anula/cancela.
   @Post(':id/cancelar')
   @Roles('ADMIN_GENERAL', 'ADMIN_SUCURSAL')
   cancelar(

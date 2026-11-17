@@ -123,7 +123,7 @@ export class AutomotorasRepository {
     return rows[0] ?? null;
   }
 
-  // El subdominio nunca se actualiza (fijo tras el registro).
+  // El subdominio nunca se actualiza (fijo tras el registro, Módulo 1).
   async update(
     id: string,
     cambios: CambiosConfiguracion,

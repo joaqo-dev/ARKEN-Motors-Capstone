@@ -4,7 +4,7 @@ import type * as ReactPdf from '@react-pdf/renderer';
 import type { DocumentoPdf } from './documento-pdf';
 import { plantillaDocumento } from './plantilla-documento';
 
-// import() nativo: con module CommonJS, TypeScript lo convertiría en require(),
+// import() nativo: TypeScript (module CommonJS) lo transformaría en require(),
 // que no puede cargar un paquete ESM-only como @react-pdf/renderer.
 const importarEsm = new Function('modulo', 'return import(modulo)') as (
   modulo: string,

@@ -31,7 +31,7 @@ import {
 } from '../../ui/componentes';
 import { useAviso } from '../../ui/toast';
 
-// Configuración de la automotora (solo Admin General). El subdominio es fijo.
+// Configuración de la automotora (Módulo 17, solo Admin General). El subdominio es fijo.
 export function ConfiguracionPage() {
   const { automotora } = useSesion();
   if (!automotora) return <Cargando />;
@@ -295,8 +295,8 @@ function Formulario({ automotora }: { automotora: Automotora }) {
 // Precio de ejemplo para mostrar cómo queda la cuota con la configuración elegida.
 const PRECIO_EJEMPLO = 10_000_000;
 
-// Simulador de crédito de la ficha pública. Solo referencial: la tasa la
-// define la automotora y sin tasa no se puede activar.
+// Simulador de crédito de la ficha pública (Módulos 2 y 17). Solo referencial:
+// la tasa la define la automotora; sin tasa el simulador no se puede activar.
 function Financiamiento({
   activo,
   tasa,
@@ -383,8 +383,8 @@ function Financiamiento({
   );
 }
 
-// Cómo aparece la vitrina en Google: mismo título y descripción que genera el
-// sitio público, con las comunas de las sucursales.
+// Cómo aparece la vitrina en Google (Módulo 3): mismo título y descripción que
+// genera el sitio público, con las comunas de las sucursales.
 function VistaGoogle({
   nombre,
   descripcion,
@@ -509,8 +509,8 @@ const AYUDA_IMAGEN = {
     'Horizontal, idealmente de 1920 × 800 px (se recorta a lo ancho). JPG, PNG, WEBP o HEIC de hasta 10 MB.',
 };
 
-// Logo o banner de la página pública. Muestra al instante la imagen elegida y,
-// al terminar, la respuesta de la API actualiza la sesión sin recargar.
+// Logo o banner de la página pública. Se muestra al instante la imagen elegida
+// y, al terminar, la respuesta de la API reemplaza la sesión (sin recargar).
 function Imagen({
   tipo,
   titulo,

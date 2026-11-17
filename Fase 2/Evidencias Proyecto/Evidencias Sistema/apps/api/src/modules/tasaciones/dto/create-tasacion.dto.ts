@@ -13,7 +13,7 @@ import {
 import { EmisionDocumentoDto } from '../../documentos-comerciales/dto-comunes';
 import { MONTO_MAXIMO, nombreVehiculo, trim, trimONull } from '../../vehiculos/dto/transforms';
 
-// Datos del auto del cliente: no crea un registro en vehiculos.
+// Datos del auto del cliente: NO crea un registro en vehículos (Módulo 10.3).
 export class CreateTasacionDto extends EmisionDocumentoDto {
   @IsUUID()
   clienteId!: string;

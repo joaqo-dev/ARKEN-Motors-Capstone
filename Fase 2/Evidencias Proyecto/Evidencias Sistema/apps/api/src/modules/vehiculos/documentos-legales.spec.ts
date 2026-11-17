@@ -12,7 +12,7 @@ import { VehiculoArchivosService } from './vehiculo-archivos.service';
 const auto = { patente: 'BCDF14', anio: 2020 };
 const HOY = '2026-11-06';
 
-describe('Reglas de documentos legales', () => {
+describe('Reglas de documentos legales (Módulo 7.5)', () => {
   it('SOAP y permiso total solo vencen un 31 de marzo, a lo más el del período ya pagable', () => {
     expect(vencimientosPosibles('POLIZA_SOAP', HOY, 2)).toEqual(['2027-03-31', '2026-03-31']);
     const ok = validarDocumentoLegal(

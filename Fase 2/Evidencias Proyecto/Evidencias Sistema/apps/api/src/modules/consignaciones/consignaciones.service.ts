@@ -46,8 +46,8 @@ export function toConsignacionResponse(row: ConsignacionDetalleRow, rol: RolUsua
   };
 }
 
-// Consignaciones. La gestión (condiciones, extensión, devolución, liquidación)
-// es solo de admins (controller); el Vendedor solo consulta, sin ver la comisión.
+// Consignaciones (Módulo 9). La gestión (condiciones, extensión, devolución,
+// liquidación) es solo de admins (controller); el Vendedor solo consulta, sin comisión.
 @Injectable()
 export class ConsignacionesService {
   constructor(
@@ -245,7 +245,8 @@ export class ConsignacionesService {
         entidadTipo: 'CONSIGNACION',
         entidadId: detalle.id,
         valorAnterior: anterior,
-        valorNuevo: nuevo,
+        // Con el folio, la auditoría enlaza «Consignación N° X» también en extensiones y devoluciones.
+        valorNuevo: nuevo.folio === undefined ? { ...nuevo, folio: detalle.folio } : nuevo,
       },
       client,
     );

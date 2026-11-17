@@ -28,9 +28,9 @@ const FORMA_PAGO: Record<string, string> = {
   PARTE_PAGO: 'Vehículo en parte de pago',
 };
 
-// PDFs de documentos comerciales. Se generan al emitir (después del COMMIT) y
-// se guardan como archivo privado con los datos de ese momento. Si la
-// generación falla, se reintenta en la primera descarga.
+// PDFs de documentos comerciales. Se generan al emitir (después del COMMIT) y se
+// guardan como archivo privado: reflejan los datos vigentes en ese momento. Si
+// la generación falló, se reintenta en la primera descarga.
 @Injectable()
 export class DocumentosPdfService {
   private readonly logger = new Logger(DocumentosPdfService.name);

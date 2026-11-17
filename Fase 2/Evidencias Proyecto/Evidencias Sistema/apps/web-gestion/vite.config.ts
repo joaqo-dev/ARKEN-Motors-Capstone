@@ -6,7 +6,7 @@ import react from '@vitejs/plugin-react';
 import { defineConfig, loadEnv, type Plugin } from 'vite';
 
 // Cabeceras de seguridad del servidor de Vite (desarrollo y `vite preview`).
-// En producción las pone Caddy (deploy/Caddyfile).
+// En producción las pone Caddy (ver docs/05-seguridad-autenticacion.md).
 const cabeceras = {
   'X-Content-Type-Options': 'nosniff',
   'X-Frame-Options': 'DENY',
@@ -15,10 +15,11 @@ const cabeceras = {
   'Permissions-Policy': 'camera=(), microphone=(), geolocation=(), payment=(), usb=()',
 };
 
-// Content-Security-Policy del build, como <meta> en index.html, para que viaje
-// con los archivos sin importar quién los sirva. El único script en línea (el
-// del tema) se autoriza por su hash. En desarrollo no se aplica (Vite inyecta
-// sus scripts en línea). Sin API (modo demo) solo se permite el propio origen.
+// Content-Security-Policy del build, como <meta> en index.html: viaja con los
+// archivos sin importar quién los sirva. El único script en línea (el del tema)
+// se autoriza por su hash; cualquier otro script en línea queda bloqueado.
+// En desarrollo no se aplica: Vite inyecta sus propios scripts en línea.
+// Sin API (modo demo) solo se permite el propio origen.
 function politicaSeguridad(apiUrl: string | null): Plugin {
   const api = apiUrl ? new URL(apiUrl).origin : '';
   return {

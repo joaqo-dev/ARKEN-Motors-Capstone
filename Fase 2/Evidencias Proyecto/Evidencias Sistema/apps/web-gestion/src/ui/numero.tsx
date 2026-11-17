@@ -17,7 +17,7 @@ const formatear = (digitos: string) => (digitos ? miles.format(Number(digitos)) 
 // Campo numérico con formato chileno mientras se escribe: "$ 12.500.000"
 // (moneda) o "54.000" (miles). Para el formulario sigue siendo un
 // <input type="number"> oculto: register({ valueAsNumber }), min/required,
-// reset y valores controlados funcionan igual.
+// reset y valores controlados funcionan igual que antes.
 export function CampoNumero({
   className,
   ref,

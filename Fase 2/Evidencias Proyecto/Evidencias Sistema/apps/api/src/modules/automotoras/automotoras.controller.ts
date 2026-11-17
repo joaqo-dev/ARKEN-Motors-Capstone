@@ -32,7 +32,7 @@ export class AutomotorasController {
     return this.automotoras.obtenerPropia(usuario);
   }
 
-  // Configuración: solo ADMIN_GENERAL.
+  // Configuración (Módulo 17): solo ADMIN_GENERAL.
   @Patch()
   @Roles('ADMIN_GENERAL')
   actualizar(@Body() dto: UpdateConfiguracionDto, @CurrentUser() usuario: UsuarioAutenticado) {

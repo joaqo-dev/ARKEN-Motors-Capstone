@@ -1,8 +1,8 @@
 import type { Scope } from '../../common/scope';
 
-// Condiciones comunes de listado de documentos comerciales. Cotizaciones y
-// reservas son visibles desde la sucursal donde se emitieron y desde la
-// sucursal donde está hoy el vehículo.
+// Arma las condiciones comunes de listado de documentos comerciales.
+// Scope de cotizaciones/reservas: visibles desde la sucursal donde se emitieron
+// (congelada) y desde la sucursal donde está hoy el vehículo.
 export function condicionesListado(
   scope: Scope,
   filtro: {
@@ -39,9 +39,9 @@ export function condicionesListado(
   return { where: conditions.join(' AND '), params };
 }
 
-// Búsqueda libre: folio exacto, nombre o RUT del cliente (con o sin puntos y
-// guion), patente, marca o modelo. En la tasación los datos del auto están en
-// el documento; en el resto, en el vehículo (alias v).
+// Búsqueda libre: N° de folio exacto, nombre o RUT del cliente (con o sin puntos y
+// guion), patente, marca o modelo. En la tasación los datos del auto están en el
+// propio documento; en el resto, en el vehículo (alias v).
 function agregarBusqueda(
   q: string,
   opciones: { conVehiculo: boolean },

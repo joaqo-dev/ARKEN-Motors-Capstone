@@ -1,8 +1,8 @@
 import type * as ReactPdf from '@react-pdf/renderer';
 import type { DocumentoPdf } from './documento-pdf';
 
-// react-pdf es ESM-only: el módulo se carga en tiempo de ejecución y se recibe
-// aquí como parámetro (la API compila a CommonJS).
+// react-pdf es ESM-only: el módulo se carga en tiempo de ejecución y se pasa
+// aquí, en vez de importarlo estáticamente (la API compila a CommonJS).
 export function plantillaDocumento(rp: typeof ReactPdf, doc: DocumentoPdf) {
   const { Document, Page, StyleSheet, Text, View } = rp;
   const s = StyleSheet.create({

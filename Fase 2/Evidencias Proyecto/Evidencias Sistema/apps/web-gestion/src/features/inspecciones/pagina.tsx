@@ -2,6 +2,7 @@ import {
   EVALUACIONES_INSPECCION,
   MAX_FOTOS_POR_PUNTO,
   RESULTADOS_INSPECCION,
+  sugerirResultado,
   type EvaluacionInspeccion,
   type ResultadoInspeccion,
 } from '@vitriauto/shared-types';
@@ -33,8 +34,8 @@ import { Lightbox } from '../../ui/lightbox';
 import { useAviso } from '../../ui/toast';
 import type { InspeccionDetalle, PuntoInspeccion, SeccionInspeccionDetalle } from './tipos';
 
-// Color de cada evaluación: lo bueno en lima (el acento de lo positivo), lo
-// regular en ámbar, lo malo en rojo y lo pendiente en neutro.
+// Color de cada evaluación: verde, ámbar, rojo y neutro (mismos tonos de estado del panel).
+// Lo bueno en lima (el acento de lo positivo), lo regular en ámbar, lo malo en rojo.
 const ESTILO: Record<EvaluacionInspeccion, { activo: string; punto: string; corto: string }> = {
   BUENO: {
     activo: 'bg-lima text-[#18181b] font-semibold',
@@ -58,8 +59,8 @@ const ESTILO: Record<EvaluacionInspeccion, { activo: string; punto: string; cort
   },
 };
 
-// Informe de inspección pre-compra. En borrador cada cambio se guarda al
-// instante (pensado para llenarlo desde el celular).
+// Informe de inspección pre-compra (Módulo 7.11). En borrador cada cambio se
+// guarda al instante (pensado para llenarlo en el patio, desde el celular).
 export function InspeccionPage() {
   const { id: vehiculoId = '', inspeccionId = '' } = useParams();
   const navegar = useNavigate();
@@ -653,7 +654,12 @@ function FinalizarModal({
 }) {
   const qc = useQueryClient();
   const avisar = useAviso();
-  const [resultado, setResultado] = useState<ResultadoInspeccion>(ins.resultadoSugerido);
+  // Se calcula con los puntos de la caché, que se actualizan al evaluar cada uno; el
+  // resultadoSugerido que trae la API queda desfasado hasta recargar la página.
+  const sugerido = sugerirResultado(
+    ins.secciones.flatMap((s) => s.puntos.map((p) => p.evaluacion)),
+  );
+  const [resultado, setResultado] = useState<ResultadoInspeccion>(sugerido);
   const finalizar = useMutation({
     mutationFn: () =>
       api<InspeccionDetalle>('POST', `/inspecciones/${ins.id}/finalizar`, { body: { resultado } }),
@@ -699,7 +705,7 @@ function FinalizarModal({
                   onChange={() => setResultado(r)}
                 />
                 <span className="text-sm font-medium text-slate-900">{etiqueta(r)}</span>
-                {r === ins.resultadoSugerido && (
+                {r === sugerido && (
                   <span className="ml-auto text-xs text-slate-500">Sugerido</span>
                 )}
               </label>

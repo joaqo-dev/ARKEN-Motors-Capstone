@@ -25,7 +25,7 @@ export function enlaceWhatsapp(numero: string, texto: string): string {
   return `https://wa.me/${numero.replace(/[^\d]/g, '')}?text=${encodeURIComponent(texto)}`;
 }
 
-// La tarjeta del listado no identifica a la automotora.
+// La tarjeta del listado NO identifica a la automotora (Módulo 2).
 function tarjeta(v: VehiculoPublicoRow) {
   return {
     id: v.id,
@@ -43,7 +43,7 @@ function tarjeta(v: VehiculoPublicoRow) {
   };
 }
 
-// Sitio público: acceso anónimo, solo datos publicables.
+// Sitio público (Módulos 2 y 3): acceso 100% anónimo, solo datos publicables.
 @Injectable()
 export class PublicoService {
   constructor(
@@ -76,7 +76,7 @@ export class PublicoService {
       traccion: v.traccion,
       descripcion: v.descripcion,
       fotos: v.fotos,
-      // En el detalle sí se identifican la automotora y la sucursal del auto.
+      // En el detalle sí se identifica a la automotora y la sucursal donde está el auto.
       automotora: {
         nombre: v.automotora_nombre,
         subdominio: v.automotora_subdominio,
@@ -107,8 +107,9 @@ export class PublicoService {
     };
   }
 
-  // Última inspección finalizada, solo si está aprobada. Al público solo se le
-  // informa que existe y su resultado; el detalle queda en el panel.
+  // Última inspección finalizada, solo si está aprobada (Módulo 7.11). Al público
+  // solo se le informa que existe, con su resultado: el detalle punto por punto
+  // (evaluaciones, observaciones, fotos) queda en el panel.
   private async inspeccionPublica(vehiculoId: string) {
     const i = await this.inspecciones.publicaDeVehiculo(vehiculoId);
     if (!i) return null;
@@ -170,7 +171,7 @@ export class PublicoService {
     };
   }
 
-  // SEO: las vitrinas son lo único que se indexa del sitio público.
+  // SEO (Módulo 3): las vitrinas son lo único que se indexa del sitio público.
   async vitrinas() {
     return this.repo.vitrinas();
   }
@@ -188,12 +189,12 @@ export class PublicoService {
     }));
   }
 
-  // Formulario de contacto: no guarda nada, solo reenvía el mensaje al correo
-  // de la automotora con reply-to al visitante.
+  // Formulario de contacto (Módulo 3): no guarda nada, solo reenvía el mensaje
+  // al correo de la automotora con reply-to al visitante.
   async contactar(subdominio: string, dto: ContactoAutomotoraDto) {
     const a = await this.repo.automotora(subdominio);
     if (!a) throw new NotFoundException('Automotora no encontrada');
-    // Bot (llenó el campo oculto): se responde normal para no darle pistas.
+    // Bot (llenó el campo oculto): se responde como si nada para no darle pistas.
     if (dto.sitioWeb) return { enviado: true };
 
     let sucursal: string | null = null;

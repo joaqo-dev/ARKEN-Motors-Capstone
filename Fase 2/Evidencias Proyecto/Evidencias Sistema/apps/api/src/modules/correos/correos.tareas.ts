@@ -13,15 +13,15 @@ function horaEnChile(ahora = new Date()): number {
   );
 }
 
-// La bandeja de salida se revisa cada minuto (reintentos y pendientes) y los
-// recordatorios se planifican una vez al día, después de los vencimientos
-// automáticos (00:05).
+// Módulo 18: la bandeja de salida se revisa cada minuto (reintentos y lo que
+// quedó pendiente) y los recordatorios se planifican una vez al día, después de
+// los vencimientos automáticos (00:05).
 @Injectable()
 export class CorreosTareas implements OnApplicationBootstrap {
   constructor(private readonly correos: CorreosService) {}
 
-  // También al arrancar, para cubrir los días en que la API estuvo abajo, pero
-  // nunca de noche: no se envían recordatorios a las 3 AM.
+  // Al arrancar también, para cubrir los días en que la API estuvo abajo, pero
+  // nunca de noche: un recordatorio a las 3 AM no se le manda a un cliente.
   async onApplicationBootstrap() {
     const hora = horaEnChile();
     if (hora >= 7 && hora < 21) await this.correos.planificarRecordatorios();

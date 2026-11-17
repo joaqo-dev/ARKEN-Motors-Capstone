@@ -51,7 +51,7 @@ import type { Cliente } from './tipos';
 
 const LIMITE = 25;
 
-// Clientes de toda la automotora: todas las sucursales ven a todos los clientes.
+// CRM de la automotora completa (Módulo 6): todas las sucursales ven a todos los clientes.
 export function ClientesPage() {
   const navegar = useNavigate();
   const qc = useQueryClient();
@@ -259,8 +259,8 @@ export function ClientePage() {
     onError: (e) => avisar(e.message, 'error'),
   });
 
-  // Seguimientos y avisos de cotización/tasación. El cliente se da de baja desde
-  // el correo; aquí se reactiva si lo pide.
+  // Seguimientos y avisos de cotización/tasación (Módulo 18). El cliente se da
+  // de baja desde el correo; aquí se reactiva si lo pide.
   const recordatorios = useMutation({
     mutationFn: (acepta: boolean) =>
       api<Cliente>('PATCH', `/clientes/${id}`, { body: { aceptaRecordatorios: acepta } }),

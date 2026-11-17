@@ -153,7 +153,7 @@ export class NotificacionesRepository {
     return rows[0].id;
   }
 
-  // Visibilidad: la sucursal afectada + todos los ADMIN_GENERAL.
+  // Visibilidad (Módulo 13): la sucursal afectada + todos los ADMIN_GENERAL.
   async findAllScoped(
     scope: Scope,
     filtro: {

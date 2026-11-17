@@ -88,7 +88,7 @@ export class ListarDocumentosDto {
   offset?: number;
 }
 
-// Casilla "Enviar por correo al cliente". Si no viene, decide la
+// Casilla "Enviar por correo al cliente" (Módulo 18). Si no viene, decide la
 // configuración de la automotora.
 export class EnvioCorreoDto {
   @IsOptional()
@@ -96,7 +96,8 @@ export class EnvioCorreoDto {
   enviarCorreo?: boolean;
 }
 
-// Al emitir: vigencia en días (por defecto, la de la automotora) y envío por correo.
+// Al emitir: vigencia en días (por defecto, la configurada en la automotora,
+// Módulo 17) y envío por correo.
 export class EmisionDocumentoDto extends EnvioCorreoDto {
   @IsOptional()
   @IsInt()

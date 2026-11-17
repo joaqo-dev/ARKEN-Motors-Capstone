@@ -6,8 +6,8 @@ import { Cabecera } from '../cabecera';
 import { Pie } from '../pie';
 
 // Marco de una página legal (Términos, Privacidad). En el subdominio de una
-// automotora no muestra cabecera ni pie del marketplace: solo vuelve a su
-// vitrina.
+// automotora no muestra la cabecera ni el pie del marketplace: solo vuelve a
+// su vitrina (la vitrina queda aislada del marketplace).
 export async function DocumentoLegal({
   titulo,
   bajada,

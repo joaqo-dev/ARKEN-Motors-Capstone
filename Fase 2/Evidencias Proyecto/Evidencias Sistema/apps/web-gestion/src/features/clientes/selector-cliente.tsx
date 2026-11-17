@@ -10,8 +10,8 @@ import { useAviso } from '../../ui/toast';
 import { FormularioCliente } from './formulario-cliente';
 import type { Cliente } from './tipos';
 
-// Búsqueda rápida de clientes (nombre o RUT) con alta en el momento, para
-// consignaciones, cotizaciones, reservas, tasaciones y ventas.
+// Búsqueda rápida de clientes (por nombre o RUT) con alta en el momento, para
+// usar en consignaciones, cotizaciones, reservas, tasaciones y ventas (Módulo 6).
 export function SelectorCliente({
   valor,
   onCambiar,

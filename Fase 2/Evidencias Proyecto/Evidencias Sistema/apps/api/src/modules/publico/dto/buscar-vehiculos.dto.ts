@@ -26,7 +26,7 @@ export type Orden = (typeof ORDENES)[number];
 const trim = ({ value }: { value: unknown }) =>
   typeof value === 'string' ? value.trim() || undefined : value;
 
-// Filtros del marketplace y del perfil público de cada automotora.
+// Filtros del Marketplace (Módulo 2) y del perfil público (Módulo 3).
 export class BuscarVehiculosDto {
   @Transform(trim)
   @IsOptional()

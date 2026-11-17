@@ -22,8 +22,8 @@ import {
   Vacio,
 } from '../../ui/componentes';
 
-// Alertas del sistema: cada uno ve las de su sucursal (el Admin General,
-// todas). Se marcan resueltas al atenderlas.
+// Alertas del sistema (Módulo 13): se ven las de la propia sucursal (el Admin
+// General, todas). Se marcan resueltas al atenderlas.
 export function NotificacionesPage() {
   const [estado, setEstado] = useState<'PENDIENTE' | 'RESUELTA'>('PENDIENTE');
 

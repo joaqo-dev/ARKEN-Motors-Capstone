@@ -14,7 +14,7 @@ type TipoConfig = keyof Pick<
 >;
 
 // Casilla "Enviar por correo al cliente" al emitir: parte con lo que diga la
-// configuración de la automotora.
+// configuración de la automotora (Módulo 18).
 export function useEnvioCorreo(tipo: TipoConfig) {
   const { automotora } = useSesion();
   return useState(automotora?.correos?.[tipo] ?? true);

@@ -43,8 +43,8 @@ export interface FiltroAuditoria {
   offset: number;
 }
 
-// Registro de auditoría. Se escribe en la misma transacción que el cambio
-// auditado, para que ningún cambio quede sin registro.
+// Registro de auditoría (Módulo 16). Se llama dentro de la misma transacción
+// que el cambio auditado, para que nunca quede un cambio sin su registro.
 @Injectable()
 export class AuditoriaRepository {
   constructor(@Inject(PG_POOL) private readonly pool: Pool) {}
@@ -67,8 +67,8 @@ export class AuditoriaRepository {
     );
   }
 
-  // ADMIN_GENERAL ve todo; ADMIN_SUCURSAL solo las filas de su sucursal (no las
-  // de nivel automotora, con sucursal_id NULL).
+  // Visibilidad (Módulo 16): ADMIN_GENERAL ve todo; ADMIN_SUCURSAL solo las filas
+  // de su sucursal (las de nivel automotora, con sucursal_id NULL, no las ve).
   async findAll(
     scope: Scope,
     filtro: FiltroAuditoria,

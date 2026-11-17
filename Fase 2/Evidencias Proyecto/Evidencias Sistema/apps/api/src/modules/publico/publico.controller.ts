@@ -16,8 +16,8 @@ import { BuscarVehiculosDto, FiltrosDisponiblesDto } from './dto/buscar-vehiculo
 import { ContactoAutomotoraDto } from './dto/contacto.dto';
 import { PublicoService } from './publico.service';
 
-// API del sitio público, anónima. Solo lectura, salvo el formulario de
-// contacto (sin sesión ni cookies, por eso sin CSRF; con límite por IP).
+// API del sitio público: anónima. Solo lectura, salvo el formulario de contacto
+// (sin sesión ni cookies, por eso sin CSRF; con límite estricto por IP).
 @Controller('publico')
 @Public()
 export class PublicoController {

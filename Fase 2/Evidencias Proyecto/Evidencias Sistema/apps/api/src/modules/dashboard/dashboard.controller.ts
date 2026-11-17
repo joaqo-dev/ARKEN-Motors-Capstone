@@ -4,7 +4,7 @@ import type { UsuarioAutenticado } from '../../common/usuario-autenticado';
 import { DashboardService } from './dashboard.service';
 import { ConsultaDashboardDto } from './dto/consulta-dashboard.dto';
 
-// Se calcula en cada request (tiempo real, no batch).
+// Cálculo al vuelo en cada request (Módulo 14: tiempo real, no batch).
 @Controller()
 export class DashboardController {
   constructor(private readonly dashboard: DashboardService) {}

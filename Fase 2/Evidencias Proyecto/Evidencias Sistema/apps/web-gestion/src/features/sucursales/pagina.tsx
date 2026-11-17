@@ -18,8 +18,8 @@ import {
 import { Confirmar } from '../../ui/confirmar';
 import { useAviso } from '../../ui/toast';
 
-// Sucursales (solo Admin General). La baja es lógica y se bloquea si tiene
-// vehículos activos o usuarios asignados.
+// Sucursales (Módulo 4, solo Admin General). La baja es lógica y se bloquea si
+// tiene vehículos activos o usuarios asignados.
 export function SucursalesPage() {
   const { sucursales } = useSucursalActiva();
   const qc = useQueryClient();

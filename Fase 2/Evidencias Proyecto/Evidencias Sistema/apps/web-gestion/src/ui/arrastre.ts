@@ -1,8 +1,9 @@
 import { useRef, type PointerEvent as EventoPuntero } from 'react';
 
-// Cierre por arrastre (hojas inferiores y cajones), según "Designing Fluid
-// Interfaces" de Apple: seguimiento 1:1, resistencia progresiva al pasarse del
-// borde y decisión al soltar según la posición proyectada por la velocidad.
+// Cierre por arrastre (hojas inferiores y cajones), según Apple "Designing Fluid
+// Interfaces": seguimiento 1:1 desde donde se tomó, resistencia progresiva al
+// pasarse del borde, y decisión al soltar según la posición *proyectada* por la
+// velocidad (no solo la distancia recorrida).
 
 const DESACELERACION = 0.998;
 const UMBRAL_INICIO = 6; // px antes de asumir que es un arrastre (histéresis)

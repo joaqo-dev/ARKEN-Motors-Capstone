@@ -1,9 +1,11 @@
 /* ================================================================
-   Estilos de la vitrina de cada automotora: portada fotográfica a sangre con
-   una barra de datos encima, secciones con rótulo de punto (• Categorías),
-   esquinas casi rectas y tarjetas como hoja técnica (foto sobre gris claro y
-   datos en filas finas). Vive bajo .vt, sobre la base .mk: vitrina
-   (.mk-vitrina), marketplace (.mk-mercado) y ficha de un vehículo (.mk-ficha).
+   Vitrina "Concesionario": la página propia de cada automotora.
+   Portada fotográfica a sangre con una barra de datos encima; secciones con
+   rótulo de punto (• Categorías) y títulos medianos; esquinas casi rectas
+   (4px), botones rectangulares y la ficha de cada vehículo como una hoja
+   técnica: foto sobre gris claro y datos en filas finas con rótulos en mono.
+   Vive bajo .vt, sobre la base .mk: la vitrina (.mk-vitrina), el marketplace
+   (.mk-mercado: portada y búsqueda) y la ficha de un vehículo (.mk-ficha).
    ================================================================ */
 
 .vt {
@@ -18,16 +20,16 @@
   --radio-chico: 8px;
   --mk-radio-grande: 6px;
   --vt-boton: 10px;
-  /* El contenido llega casi al borde: 40px de aire a cada lado (16px en
-     teléfonos) y un tope de 1800px en pantallas grandes. */
+  /* Ancho de Drivehub: el contenido llega casi al borde, con 40px de aire a
+     cada lado (16px en teléfonos) y un tope de 1800px en pantallas enormes. */
   --mk-ancho: 1800px;
   --mk-margen: clamp(16px, 2.8vw, 40px);
-  /* Bandas oscuras a sangre y rectas */
+  /* Bandas oscuras a sangre y rectas, como la portada de Drivehub */
   --mk-marco: 0px;
   --mk-radio-grande: 0px;
 
-  /* Tipografía suave: pesos 400, interletrado levemente negativo y muy apretado
-     en los títulos. */
+  /* Tipografía suave (Geist como en Drivehub): pesos 400, interletrado
+     levemente negativo en todo y muy apretado en los títulos. */
   letter-spacing: -0.01em;
 }
 
@@ -88,7 +90,7 @@
 /* ---------------------------------------------------------------- Navegación */
 
 /* Fija arriba: se esconde al bajar y vuelve al subir (NavDesplazable). Sobre el
-   hero es transparente; con scroll toma el fondo oscuro de la vitrina. */
+   hero es transparente; con scroll toma el fondo nocturno de la vitrina. */
 .vt {
   --v-nav-alto: 76px;
 }
@@ -167,10 +169,12 @@
   position: absolute;
   inset: 0;
   z-index: -2;
-  background-position: center;
-  background-size: cover;
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  object-position: center;
   filter: saturate(0.85);
-  /* Entra con un leve zoom y luego se acerca muy lento */
+  /* Entra con un leve zoom y después se acerca muy lento: la foto respira */
   animation:
     vt-revelar 1200ms var(--ease-out) both,
     vt-respirar 26s ease-in-out 1200ms infinite alternate;
@@ -606,9 +610,9 @@
 }
 
 /* ---------------------------------------------------------------- Ficha del vehículo (vitrina)
-   Mosaico de fotos (portada grande + 2×2) y debajo el nombre con la
-   descripción a la izquierda y, a la derecha, la tarjeta de precio con la
-   cuota de referencia y el contacto. */
+   Como la ficha de Drivehub: volver, mosaico de fotos (portada grande + 2×2),
+   y debajo el nombre con la descripción a la izquierda y, a la derecha, la
+   tarjeta de precio con la cuota de referencia y el contacto. */
 
 .vt.mk-ficha {
   --fondo: #ffffff;
@@ -888,8 +892,9 @@
 }
 
 /* ---------------------------------------------------------------- Más de la automotora (ficha)
-   Una fila que se desplaza a mano (flechas o deslizar): hasta 10 autos y, al
-   final, la tarjeta que lleva a todo el inventario. */
+   Una sola fila que se desplaza a mano (flechas o deslizar): hasta 10 autos
+   y, al final, la tarjeta que lleva a todo el inventario. Se asoma la
+   siguiente para invitar a mover. */
 
 .vt .vt-fila .mk-carrusel {
   display: grid;
@@ -970,8 +975,8 @@
 }
 
 /* ---------------------------------------------------------------- Marketplace (.mk-mercado)
-   Portada y búsqueda con el mismo lenguaje que la vitrina: enlaces rectos,
-   rótulos de punto y tarjetas de hoja técnica sobre gris. */
+   Portada y búsqueda con el mismo lenguaje: navegación con enlaces rectos,
+   encabezados con rótulo de punto y las tarjetas hoja técnica sobre gris. */
 
 .vt .cabecera-nav a,
 .vt .cabecera-menu summary,
@@ -998,7 +1003,7 @@
 .vt .mk-encabezado .vt-rotulo + h2 {
   margin-top: 0;
 }
-/* Buscador sobre la portada */
+/* Buscador sobre la portada: esquinas del mundo */
 .vt .m-buscador {
   border-radius: var(--radio);
 }

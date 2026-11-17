@@ -11,9 +11,9 @@ export const EstadoVehiculo = z.enum([
 ]);
 export type EstadoVehiculo = z.infer<typeof EstadoVehiculo>;
 
-// Estados que un usuario puede fijar a mano; RESERVADO y VENDIDO solo los fijan
-// Reservas y Ventas. PENDIENTE_REVISION (enviado a revisión o recibido en parte
-// de pago) solo un admin lo publica.
+// Estados que un usuario puede fijar a mano; RESERVADO y VENDIDO solo los
+// fijan Reservas y Ventas. PENDIENTE_REVISION = enviado a revisión (o recibido
+// en parte de pago): solo un admin lo publica (DISPONIBLE).
 export const ESTADOS_VEHICULO_MANUALES = [
   'DISPONIBLE',
   'EN_PREPARACION',
@@ -52,7 +52,7 @@ export const CombustibleVehiculo = z.enum([
 export const TransmisionVehiculo = z.enum(['MANUAL', 'AUTOMATICA', 'OTRO']);
 export const TipoDocumentoLegal = z.enum(['PERMISO_CIRCULACION', 'REVISION_TECNICA', 'SOAP']);
 export type TipoDocumentoLegal = z.infer<typeof TipoDocumentoLegal>;
-// Trato con el consignante: % del precio de venta o precio neto garantizado.
+// Trato con el consignante (Módulo 9): % del precio de venta o precio neto garantizado.
 export const TipoTrato = z.enum(['COMISION_VENTA', 'PRECIO_NETO']);
 export type TipoTrato = z.infer<typeof TipoTrato>;
 
@@ -70,7 +70,7 @@ export function esPatenteValida(patente: string): boolean {
   return PATENTE_REGEX.test(normalizarPatente(patente));
 }
 
-// Mes (1-12) de la revisión técnica según el último dígito de la patente.
+// Mes (1-12) de la revisión técnica según el último dígito de la patente (Módulo 7.5).
 // Marzo y diciembre no tienen dígito asignado.
 const MES_REVISION_POR_DIGITO: Record<string, number> = {
   '9': 1,
@@ -90,8 +90,8 @@ export function mesRevisionTecnica(patente: string): number | null {
   return MES_REVISION_POR_DIGITO[ultimo] ?? null;
 }
 
-// Fecha sugerida (YYYY-MM-DD): último día del mes que corresponde, en su
-// próxima ocurrencia desde `hoy`. El usuario puede ajustar el año.
+// Fecha sugerida (YYYY-MM-DD): último día del mes que corresponde, en su próxima
+// ocurrencia desde `hoy`. Periodicidad anual; el usuario puede ajustar el año.
 export function sugerirVencimientoRevisionTecnica(
   patente: string,
   hoy: Date = new Date(),

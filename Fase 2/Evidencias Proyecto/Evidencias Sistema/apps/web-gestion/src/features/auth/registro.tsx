@@ -5,6 +5,7 @@ import {
   MENSAJE_TELEFONO,
   PASSWORD_REGEX,
   REGIONES_CHILE,
+  SUBDOMINIOS_RESERVADOS,
 } from '@vitriauto/shared-types';
 import { useEffect, useState } from 'react';
 import { InputRut } from '../../ui/rut';
@@ -33,8 +34,8 @@ interface Datos {
 
 const MENSAJE_PASSWORD = 'Mínimo 8 caracteres, con al menos una letra y un número';
 
-// Registro público de una automotora: crea automotora + casa matriz + usuario
-// Admin General. Hay que verificar el email antes de iniciar sesión.
+// Registro público de una automotora (Módulo 1): crea automotora + casa matriz +
+// usuario Admin General. Hay que verificar el email antes de iniciar sesión.
 export function RegistroPage() {
   const [enviado, setEnviado] = useState<string | null>(null);
   const [error, setError] = useState<string | null>(null);
@@ -48,6 +49,9 @@ export function RegistroPage() {
   const [disponibilidad, setDisponibilidad] = useState<string | null>(null);
   useEffect(() => {
     if (!subdominio) return setDisponibilidad(null);
+    // Las palabras reservadas también fallan esSubdominioValido: se avisan antes con su propio mensaje.
+    if (SUBDOMINIOS_RESERVADOS.includes(subdominio))
+      return setDisponibilidad('Ese subdominio está reservado');
     if (!esSubdominioValido(subdominio))
       return setDisponibilidad('Solo minúsculas, números y guiones (3 a 63 caracteres)');
     const t = setTimeout(async () => {

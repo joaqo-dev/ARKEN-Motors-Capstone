@@ -18,16 +18,25 @@ export const pesosCompacto = (v: number) => {
 };
 
 const relativo = new Intl.RelativeTimeFormat('es-CL', { numeric: 'auto' });
+// Día calendario de Chile ('YYYY-MM-DD') de una fecha 'YYYY-MM-DD' o de un instante ISO.
+// Un instante se lleva a America/Santiago: cortar el ISO (que viene en UTC) adelanta un día
+// todo lo registrado después de las 21:00 en verano.
+export const diaChile = (v: string) =>
+  v.length > 10
+    ? new Intl.DateTimeFormat('en-CA', { timeZone: 'America/Santiago' }).format(new Date(v))
+    : v;
+
+// Días calendario de Chile transcurridos desde una fecha o instante hasta hoy.
+export const diasDesde = (v: string) =>
+  Math.round(
+    (new Date(`${hoy()}T12:00:00Z`).getTime() - new Date(`${diaChile(v)}T12:00:00Z`).getTime()) /
+      86_400_000,
+  );
+
 // "hoy", "ayer", "hace 3 días", "hace 2 meses".
 // Acepta fechas 'YYYY-MM-DD' o instantes ISO (estos se llevan a la fecha de Chile).
 export const haceCuanto = (v: string) => {
-  const dia =
-    v.length > 10
-      ? new Intl.DateTimeFormat('en-CA', { timeZone: 'America/Santiago' }).format(new Date(v))
-      : v;
-  const dias = Math.round(
-    (new Date(`${hoy()}T12:00:00`).getTime() - new Date(`${dia}T12:00:00`).getTime()) / 86_400_000,
-  );
+  const dias = diasDesde(v);
   if (dias < 30) return relativo.format(-dias, 'day');
   if (dias < 365) return relativo.format(-Math.round(dias / 30), 'month');
   return relativo.format(-Math.round(dias / 365), 'year');
@@ -36,9 +45,9 @@ export const haceCuanto = (v: string) => {
 export const km = (v: number) => `${numero.format(v)} km`;
 export const num = (v: number) => numero.format(v);
 
-// 'YYYY-MM-DD' → 'DD-MM-YYYY'
+// 'YYYY-MM-DD' o instante ISO → 'DD-MM-YYYY' (día de Chile)
 export const fecha = (v: string | null | undefined) =>
-  v ? v.slice(0, 10).split('-').reverse().join('-') : '—';
+  v ? diaChile(v).split('-').reverse().join('-') : '—';
 
 export const fechaHora = (v: string | Date | null | undefined) =>
   v

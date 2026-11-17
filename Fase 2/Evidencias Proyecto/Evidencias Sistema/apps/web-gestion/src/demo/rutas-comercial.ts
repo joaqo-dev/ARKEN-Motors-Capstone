@@ -338,7 +338,7 @@ const rutasCotizaciones: Rutas = {
       id: nuevoId('cot'),
       folio: siguienteFolio(c.automotoraId, 'COTIZACION'),
       automotoraId: c.automotoraId,
-      sucursalId: v.sucursalId, // sucursal fijada al emitir
+      sucursalId: v.sucursalId, // congelada al emitir
       clienteId: cl.id,
       vehiculoId: v.id,
       precioCotizado: Number(b.precioCotizado),
@@ -815,7 +815,7 @@ const rutasConsignaciones: Rutas = {
   },
 };
 
-// ---------------------------------------------------------------- Correos
+// ---------------------------------------------------------------- Correos (Módulo 18)
 
 const correosDe = (tipo: string, id: string) =>
   datos()

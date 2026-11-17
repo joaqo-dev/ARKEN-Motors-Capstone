@@ -4,7 +4,7 @@ import { CurrentUser } from '../../common/decorators/current-user.decorator';
 import type { UsuarioAutenticado } from '../../common/usuario-autenticado';
 import { FichasService } from './fichas.service';
 
-// Ficha imprimible del vehículo: cualquier rol con acceso al vehículo.
+// Ficha imprimible del vehículo (Módulo 7.10): cualquier rol con acceso al vehículo.
 @Controller('vehiculos')
 export class FichasController {
   constructor(private readonly fichas: FichasService) {}

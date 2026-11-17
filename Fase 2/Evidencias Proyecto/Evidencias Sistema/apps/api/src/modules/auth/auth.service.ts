@@ -86,7 +86,7 @@ export class AuthService {
     return { disponible: true };
   }
 
-  // Una transacción: Automotora → Sucursal principal → Usuario ADMIN_GENERAL
+  // Transacción única: Automotora → Sucursal principal → Usuario ADMIN_GENERAL
   // (+ token de verificación). El correo se envía después del COMMIT.
   async registrarAutomotora(dto: RegistroAutomotoraDto, cliente: InfoCliente) {
     const { automotora: datos, admin } = dto;
@@ -226,8 +226,8 @@ export class AuthService {
           ? 'EMAIL_SIN_VERIFICAR'
           : null;
     if (motivo) {
-      // Sin esperar la escritura, para que el tiempo de respuesta no distinga una
-      // cuenta existente de una inexistente.
+      // Sin esperar la escritura: así el tiempo de respuesta no distingue una
+      // cuenta existente de una inexistente (que no se registra).
       void this.accesos
         .registrar({
           automotoraId: usuario.automotora_id,
@@ -306,7 +306,7 @@ export class AuthService {
     return { ...toUsuarioResponse(usuario), automotoraId: usuario.automotora_id };
   }
 
-  // Registro de accesos, en la transacción del cambio cuando la hay.
+  // Registro de accesos (Módulo 16), en la transacción del cambio cuando la hay.
   private async registrarAcceso(
     usuario: { id: string; automotora_id: string },
     evento: EventoAcceso,

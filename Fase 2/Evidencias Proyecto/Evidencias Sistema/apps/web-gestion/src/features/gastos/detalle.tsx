@@ -40,8 +40,8 @@ interface GastoDetalle extends GastoListado {
 const enlace =
   'text-slate-900 underline decoration-slate-300 underline-offset-[3px] transition-colors hover:decoration-slate-900';
 
-// Detalle de un gasto, identificado por su número correlativo. Desde aquí se
-// edita o anula; es el destino de los enlaces de la auditoría.
+// Detalle de un gasto (Módulo 8), identificado por su número correlativo. Desde
+// aquí se edita o anula, y es el destino de los enlaces de la auditoría.
 export function GastoPage() {
   const { id = '' } = useParams();
   const qc = useQueryClient();

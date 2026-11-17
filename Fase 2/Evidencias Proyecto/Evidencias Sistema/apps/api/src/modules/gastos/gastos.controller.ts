@@ -27,7 +27,7 @@ import { GastosService } from './gastos.service';
 
 const ADJUNTO = FileInterceptor('adjunto', { limits: { fileSize: 10 * 1024 * 1024 } });
 
-// El Vendedor no registra ni ve gastos ni márgenes.
+// El Vendedor no registra ni ve gastos ni márgenes (Módulos 5 y 8).
 @Controller('gastos')
 @Roles('ADMIN_GENERAL', 'ADMIN_SUCURSAL')
 export class GastosController {

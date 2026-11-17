@@ -511,7 +511,7 @@ describe('traccionSegunCategoria (motos)', () => {
   });
 });
 
-describe('VehiculosService: revisión antes de publicar', () => {
+describe('VehiculosService: revisión antes de publicar (Módulo 7.6)', () => {
   const vendedor: UsuarioAutenticado = {
     id: 'va',
     automotoraId: 'a1',

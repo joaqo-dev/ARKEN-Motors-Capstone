@@ -268,8 +268,8 @@ export class VehiculosService {
         if (actual.estado === 'VENDIDO') {
           throw new ConflictException('Un vehículo vendido no se puede editar');
         }
-        // El precio de un auto publicado solo lo cambia un admin (es lo que ve el
-        // cliente). El resto de la ficha el Vendedor la sigue editando.
+        // El precio de un auto publicado lo cambia un admin (Módulo 7.6): es lo
+        // que ve el cliente. El resto de la ficha el Vendedor la sigue editando.
         if (
           actor.rol === 'VENDEDOR' &&
           actual.estado === 'DISPONIBLE' &&
@@ -382,8 +382,8 @@ export class VehiculosService {
           `No se puede reactivar: ya hay otro vehículo con patente ${actual.patente} en el inventario`,
         );
       }
-      // Revisión antes de publicar: el Vendedor lo envía a revisión y un admin lo
-      // publica o lo devuelve a preparación indicando qué corregir.
+      // Revisión antes de publicar (Módulo 7.6): el Vendedor lo envía a revisión y
+      // un admin lo publica o lo devuelve a preparación diciendo qué corregir.
       const esAdmin = actor.rol !== 'VENDEDOR';
       if (dto.estado === 'DISPONIBLE' && !esAdmin) {
         throw new ForbiddenException('Solo un admin publica vehículos: envíalo a revisión');
@@ -458,7 +458,7 @@ export class VehiculosService {
   }
 
   // Solo ADMIN_GENERAL (controller). Las transacciones ya generadas conservan su
-  // sucursal: aquí solo cambia la ubicación actual del vehículo.
+  // sucursal congelada: aquí solo cambia la ubicación actual del vehículo.
   async transferir(id: string, dto: TransferirVehiculoDto, actor: UsuarioAutenticado) {
     await this.buscarOFallar(id, actor);
     const destino = await this.sucursales.findByIdScoped(dto.sucursalDestinoId, getScope(actor));
@@ -525,7 +525,8 @@ export class VehiculosService {
     };
   }
 
-  // ADMIN_SUCURSAL / VENDEDOR: se usa su sucursal. ADMIN_GENERAL: debe elegirla.
+  // Para ADMIN_SUCURSAL / VENDEDOR se autocompleta con su sucursal; el
+  // ADMIN_GENERAL debe elegirla explícitamente (Módulo 7.3).
   private async resolverSucursalAlta(
     sucursalId: string | undefined,
     actor: UsuarioAutenticado,
@@ -595,7 +596,7 @@ export class VehiculosService {
     if (!fecha) return null;
     if (fecha > hoyEnChile())
       throw new BadRequestException('La fecha de ingreso no puede ser futura');
-    // Mediodía en Chile (UTC-3/-4): cae en la misma fecha calendario todo el año.
+    // Mediodía en Chile (UTC-3/-4): cae en la misma fecha calendario en cualquier época del año.
     return new Date(`${fecha}T12:00:00-04:00`);
   }
 
@@ -666,7 +667,7 @@ export class VehiculosService {
   }
 }
 
-// La tracción no aplica a las motos (queda vacía); en el resto es obligatoria.
+// La tracción no aplica a las motos (queda vacía); en el resto es obligatoria (Módulo 7.1).
 export function traccionSegunCategoria(categoria: string, traccion?: string | null): string | null {
   if (categoria === 'MOTO') return null;
   if (!traccion) throw new BadRequestException('Indica la tracción del vehículo');

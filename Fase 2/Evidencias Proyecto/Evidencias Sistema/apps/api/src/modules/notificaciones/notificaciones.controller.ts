@@ -13,8 +13,8 @@ import type { UsuarioAutenticado } from '../../common/usuario-autenticado';
 import { ListarNotificacionesDto } from './dto/listar-notificaciones.dto';
 import { NotificacionesService } from './notificaciones.service';
 
-// Solo dentro del sistema (sin email/SMS/push). Cada rol ve las de su
-// sucursal; el ADMIN_GENERAL, todas las de la automotora.
+// Canal solo dentro del sistema (sin email/SMS/push). Todos los roles ven las de
+// su sucursal; el ADMIN_GENERAL ve todas las de la automotora.
 @Controller('notificaciones')
 export class NotificacionesController {
   constructor(private readonly notificaciones: NotificacionesService) {}

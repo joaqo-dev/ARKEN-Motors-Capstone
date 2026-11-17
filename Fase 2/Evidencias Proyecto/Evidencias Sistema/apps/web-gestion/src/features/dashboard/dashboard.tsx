@@ -153,7 +153,7 @@ function Panel({
   titulo: string;
   descripcion?: string;
   accion?: ReactNode;
-  cifra?: ReactNode; // número grande bajo el título
+  cifra?: ReactNode; // número grande bajo el título (como en el tablero de referencia)
   children: ReactNode;
   className?: string;
 }) {
@@ -265,7 +265,7 @@ function EstadoResultados({ d }: { d: Indicadores }) {
 
 // ---------------------------------------------------------------- Página
 
-// Dashboard del negocio, calculado al vuelo. El ADMIN_GENERAL ve el
+// Dashboard del negocio (Módulo 14): cálculo al vuelo. El ADMIN_GENERAL ve el
 // consolidado o la sucursal elegida en la barra lateral; los demás, su sucursal.
 export function DashboardPage() {
   const { usuario, esAdmin, esGeneral } = useSesion();

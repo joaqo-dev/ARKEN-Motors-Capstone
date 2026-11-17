@@ -7,8 +7,8 @@ import { etiqueta, kilometros, precio } from '../lib/formato';
 import { Orden } from './filtros';
 
 // Tarjeta de vehículo (marketplace y vitrinas): foto sobre gris claro, la
-// categoría como sello, cuatro datos en 2×2 y el precio junto a "Ver detalle".
-// No identifica a la automotora.
+// categoría como sello, cuatro datos con ícono en 2×2 y el precio junto a
+// "Ver detalle". Sin identidad de la automotora (Módulo 2).
 export function Tarjeta({
   v,
   orden = 0,

@@ -44,8 +44,8 @@ export interface FiltroAccesos {
   offset: number;
 }
 
-// Registro de accesos: inicios y cierres de sesión y cambios de credenciales.
-// Inmutable (trigger en la BD).
+// Registro de accesos (Módulo 16): inicios de sesión, cierres y cambios de
+// credenciales de los usuarios de la automotora. Inmutable (trigger en la BD).
 @Injectable()
 export class AccesosRepository {
   constructor(@Inject(PG_POOL) private readonly pool: Pool) {}

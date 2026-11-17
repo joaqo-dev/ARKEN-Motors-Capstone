@@ -48,8 +48,8 @@ export interface FiltroClientes {
   offset: number;
 }
 
-// Los clientes son de la automotora (sin sucursal_id): el filtro de tenant es
-// solo automotora_id, para todos los roles.
+// Clientes viven a nivel de automotora (sin sucursal_id, Módulo 6):
+// el filtro de tenant es solo automotora_id, para todos los roles.
 @Injectable()
 export class ClientesRepository {
   constructor(@Inject(PG_POOL) private readonly pool: Pool) {}
@@ -98,8 +98,8 @@ export class ClientesRepository {
     return rows[0] ?? null;
   }
 
-  // Historial completo del cliente: todos sus documentos, de cualquier sucursal,
-  // con la sucursal como un dato más de cada fila.
+  // Historial completo del cliente (Módulo 6, opción A): TODOS sus documentos,
+  // de cualquier sucursal, con la sucursal como un dato más de cada fila.
   async historial(
     clienteId: string,
     automotoraId: string,

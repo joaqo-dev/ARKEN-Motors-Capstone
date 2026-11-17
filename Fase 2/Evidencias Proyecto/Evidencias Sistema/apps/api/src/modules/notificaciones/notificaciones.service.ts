@@ -12,7 +12,7 @@ import {
 } from './notificaciones.repository';
 import { planificarNotificaciones } from './planificador';
 
-// Anticipación de los avisos.
+// Anticipación (Módulo 13).
 const DIAS_HABILES_DOCUMENTOS = 7;
 const DIAS_HABILES_CONSIGNACIONES = 7;
 const DIAS_RESERVAS = 1;
@@ -41,8 +41,8 @@ export class NotificacionesService {
     private readonly tx: TransactionRunner,
   ) {}
 
-  // Genera los avisos de todas las automotoras. Idempotente: cada evento tiene
-  // una clave única y nunca se avisa dos veces.
+  // Genera los avisos de todas las automotoras. Idempotente: cada evento tiene una
+  // clave única y nunca se avisa dos veces.
   async generar(hoy: string = hoyEnChile()): Promise<number> {
     const [documentos, reservas, consignacionesPrevio, consignacionesDia] = await Promise.all([
       this.notificaciones.documentosPorVencer(sumarDiasHabiles(hoy, DIAS_HABILES_DOCUMENTOS)),

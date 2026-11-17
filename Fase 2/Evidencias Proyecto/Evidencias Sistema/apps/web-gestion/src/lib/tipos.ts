@@ -47,7 +47,7 @@ export interface Automotora {
   financiamiento: ConfigFinanciamiento;
 }
 
-// Simulador de crédito de la ficha pública. tasaMensual en % mensual.
+// Simulador de crédito de la ficha pública (Módulo 17). tasaMensual en % mensual.
 export interface ConfigFinanciamiento {
   activo: boolean;
   tasaMensual: number | null;
@@ -55,8 +55,8 @@ export interface ConfigFinanciamiento {
   plazoMaximo: number;
 }
 
-// Correos al cliente: PDF al emitir por tipo y días de cada recordatorio
-// (null = no se envía).
+// Correos al cliente (Módulo 18): PDF al emitir por tipo y días de cada
+// recordatorio (null = no se envía).
 export interface ConfigCorreos {
   cotizacion: boolean;
   reserva: boolean;

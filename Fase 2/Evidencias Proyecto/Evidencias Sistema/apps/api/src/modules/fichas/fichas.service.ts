@@ -34,8 +34,8 @@ const km = (n: number) => `${new Intl.NumberFormat('es-CL').format(n)} km`;
 // La ficha es una sola hoja: la descripción se recorta para no desbordarla.
 const DESCRIPCION_MAXIMA = 360;
 
-// Ficha imprimible del vehículo. Se genera al momento para mostrar siempre el
-// precio vigente; no se guarda.
+// Ficha imprimible del vehículo (Módulo 7.10). Se genera al momento para
+// mostrar siempre el precio vigente; no se guarda.
 @Injectable()
 export class FichasService {
   constructor(

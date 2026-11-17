@@ -1,13 +1,18 @@
 import { Cabecera } from '../../../components/cabecera';
 import { vitrinaActual } from '../../../lib/vitrina';
 
-// Silueta de la ficha mientras carga (mosaico, texto y tarjeta de precio). En
-// la vitrina, una franja oscura en lugar de la cabecera del marketplace.
+// Mientras se arma la ficha: su silueta (mosaico, texto y tarjeta de precio).
+// En la vitrina, una franja oscura en lugar de la cabecera del marketplace
+// (sin enlaces hacia afuera mientras carga).
 export default async function CargandoFicha() {
   const vitrina = await vitrinaActual();
   return (
     <div className={vitrina ? 'mk vt mk-vitrina mk-ficha' : 'mk vt mk-ficha'}>
-      {vitrina ? <div className="v-cabecera" style={{ height: 76 }} aria-hidden /> : <Cabecera />}
+      {vitrina ? (
+        <div className="v-cabecera" style={{ height: 76 }} aria-hidden />
+      ) : (
+        <Cabecera />
+      )}
       <main
         className="contenedor mk-contenedor mk-contenedor-detalle"
         aria-busy="true"

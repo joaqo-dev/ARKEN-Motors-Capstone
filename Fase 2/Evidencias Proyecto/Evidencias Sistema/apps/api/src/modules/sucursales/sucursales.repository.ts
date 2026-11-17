@@ -169,7 +169,7 @@ export class SucursalesRepository {
     ]);
   }
 
-  // Vehículos activos: cualquier estado salvo VENDIDO / DADO_DE_BAJA.
+  // Vehículos "activos": cualquier estado salvo VENDIDO / DADO_DE_BAJA (Módulo 4).
   async contarVehiculosActivos(id: string, db: Queryable = this.pool): Promise<number> {
     const { rows } = await db.query<{ total: string }>(
       `SELECT count(*) AS total FROM vehiculo

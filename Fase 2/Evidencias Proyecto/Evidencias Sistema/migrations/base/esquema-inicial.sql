@@ -1,12 +1,18 @@
 -- ============================================================================
--- Plataforma de Centralización de Automotoras — esquema PostgreSQL (sin ORM).
+-- Plataforma de Centralización de Automotoras — schema.sql
+-- DDL de PostgreSQL puro (sin ORM), equivalente exacto al modelo de la Fase 2
+-- + soporte multi-sucursal.
 --
--- MULTI-SUCURSAL: ventas, cotizaciones, reservas, gastos y tasaciones guardan
--- su propio sucursal_id al crearse, duplicando a propósito vehiculo.sucursal_id.
--- Un vehículo puede transferirse de sucursal y sus transacciones pasadas deben
--- seguir atribuidas a la sucursal donde ocurrieron (dashboard y analítica).
+-- NOTA MULTI-SUCURSAL: ventas, cotizaciones, reservas, gastos y tasaciones
+-- "congelan" su sucursal_id al momento de crearse (dato deliberadamente
+-- duplicado respecto de vehiculo.sucursal_id). Un vehiculo puede
+-- transferirse de sucursal, y las transacciones ya ocurridas deben seguir
+-- atribuidas a la sucursal donde realmente ocurrieron. Sin esto, el
+-- Dashboard y la Analitica por sucursal quedarian historicamente
+-- incorrectos tras una transferencia.
 --
--- Convención: snake_case en tablas y columnas; PKs UUID (gen_random_uuid()).
+-- Convención: snake_case en tablas y columnas. PKs UUID generadas por la
+-- aplicación o por gen_random_uuid() (extensión pgcrypto).
 -- ============================================================================
 
 CREATE EXTENSION IF NOT EXISTS pgcrypto;
@@ -16,9 +22,9 @@ CREATE EXTENSION IF NOT EXISTS pgcrypto;
 -- ============================================================================
 
 CREATE TYPE rol_usuario AS ENUM ('ADMIN_GENERAL', 'ADMIN_SUCURSAL', 'VENDEDOR');
--- ADMIN_GENERAL: dueño del negocio; gestiona todas las sucursales de su automotora.
--- ADMIN_SUCURSAL: mismos permisos que ADMIN_GENERAL, acotado a su sucursal.
--- VENDEDOR: acotado a su sucursal; no ve costos de adquisición ni márgenes.
+-- ADMIN_GENERAL: "dueño del negocio", ve y gestiona TODAS las sucursales de su automotora.
+-- ADMIN_SUCURSAL: mismos permisos que ADMIN_GENERAL, acotado a su unica sucursal asignada.
+-- VENDEDOR: acotado a su sucursal; no ve costos de adquisicion ni margenes.
 
 CREATE TYPE estado_usuario AS ENUM ('ACTIVO', 'INACTIVO');
 CREATE TYPE estado_cliente AS ENUM ('ACTIVO', 'INACTIVO');
@@ -40,16 +46,16 @@ CREATE TYPE combustible_vehiculo AS ENUM ('BENCINA', 'DIESEL', 'HIBRIDO', 'ELECT
 CREATE TYPE transmision_vehiculo AS ENUM ('MANUAL', 'AUTOMATICA', 'OTRO');
 
 CREATE TYPE tipo_documento_legal AS ENUM ('PERMISO_CIRCULACION', 'REVISION_TECNICA', 'SOAP');
--- Qué respalda el archivo subido. En SOAP, permiso y homologación el
--- vencimiento lo calcula la regla, no lo ingresa el usuario.
+-- Que respalda el archivo subido (Modulo 7.5). Para SOAP, permiso y homologacion
+-- el vencimiento lo fija la regla, no lo escribe el usuario.
 CREATE TYPE respaldo_documento_legal AS ENUM (
     'CERTIFICADO_REVISION', 'CERTIFICADO_HOMOLOGACION',   -- revision tecnica
     'POLIZA_SOAP',                                        -- SOAP
     'PERMISO_PAGO_TOTAL', 'PERMISO_PRIMERA_CUOTA'         -- permiso de circulacion
 );
 
--- Gastos de un vehículo (costo directo, entra en su margen) u operacionales
--- (arriendo, sueldos...: se restan del resultado del período).
+-- Gastos (Módulo 8): de un vehículo (costo directo, entra en su margen) u
+-- operacionales (arriendo, sueldos...: se restan del resultado del período).
 CREATE TYPE tipo_gasto AS ENUM ('VEHICULO', 'OPERACIONAL');
 CREATE TYPE categoria_gasto AS ENUM (
     -- de vehículo
@@ -60,19 +66,19 @@ CREATE TYPE categoria_gasto AS ENUM (
 );
 CREATE TYPE estado_gasto AS ENUM ('ACTIVO', 'ANULADO');
 
--- Trato con el consignante:
+-- Trato con el consignante (Módulo 9):
 --   COMISION_VENTA: la automotora cobra un % del precio final de venta.
 --   PRECIO_NETO:    el dueño recibe un monto líquido garantizado; la automotora
 --                   se queda con la diferencia entre el precio final y ese neto.
 CREATE TYPE tipo_trato_consignacion AS ENUM ('COMISION_VENTA', 'PRECIO_NETO');
 CREATE TYPE estado_consignacion AS ENUM ('ACTIVA', 'VENCIDA', 'DEVUELTA', 'VENDIDA');
 
--- Tasaciones: el cliente acepta o rechaza la oferta de compra.
--- ANULADA: un documento emitido no se edita; se anula (con motivo) y se emite otro.
+-- Tasaciones: el cliente acepta o rechaza la oferta de compra de la automotora.
+-- ANULADA: un documento emitido nunca se edita; para corregirlo se anula (con motivo) y se emite otro.
 CREATE TYPE estado_documento_oferta AS ENUM ('VIGENTE', 'ACEPTADA', 'RECHAZADA', 'VENCIDA', 'ANULADA');
 
--- Cotizaciones: VIGENTE dentro de su plazo, VENCIDA al cumplirlo y CONCRETADA
--- cuando una venta la referencia (venta.cotizacion_id). No cambian a mano.
+-- Cotizaciones: no se aceptan ni rechazan a mano. VIGENTE dentro de su plazo,
+-- VENCIDA al cumplirlo, CONCRETADA cuando una venta la concreta (venta.cotizacion_id).
 CREATE TYPE estado_cotizacion AS ENUM ('VIGENTE', 'VENCIDA', 'CONCRETADA', 'ANULADA');
 
 CREATE TYPE estado_reserva AS ENUM ('VIGENTE', 'VENCIDA', 'CONVERTIDA_EN_VENTA', 'CANCELADA');
@@ -93,7 +99,7 @@ CREATE TYPE tipo_notificacion AS ENUM (
 );
 CREATE TYPE estado_notificacion AS ENUM ('PENDIENTE', 'RESUELTA');
 CREATE TYPE tipo_entidad_notificacion AS ENUM ('VEHICULO', 'RESERVA', 'CONSIGNACION');
--- Regiones de Chile (ubicación de cada sucursal y filtro del marketplace).
+-- Regiones de Chile (ubicacion de cada sucursal, filtro del Marketplace).
 CREATE TYPE region_chile AS ENUM (
     'ARICA_PARINACOTA', 'TARAPACA', 'ANTOFAGASTA', 'ATACAMA', 'COQUIMBO', 'VALPARAISO',
     'METROPOLITANA', 'OHIGGINS', 'MAULE', 'NUBLE', 'BIOBIO', 'ARAUCANIA', 'LOS_RIOS',
@@ -101,7 +107,7 @@ CREATE TYPE region_chile AS ENUM (
 );
 CREATE TYPE tipo_token_accion AS ENUM ('VERIFICACION_EMAIL', 'INVITACION_USUARIO', 'RESET_PASSWORD');
 
--- Correos automáticos al cliente.
+-- Correos automaticos al cliente (Modulo 18).
 CREATE TYPE tipo_documento_correo AS ENUM ('COTIZACION', 'RESERVA', 'TASACION', 'VENTA', 'CONSIGNACION');
 CREATE TYPE tipo_correo AS ENUM (
     'DOCUMENTO',              -- el PDF del documento recien emitido (o un reenvio)
@@ -112,7 +118,7 @@ CREATE TYPE tipo_correo AS ENUM (
 );
 CREATE TYPE estado_correo AS ENUM ('PENDIENTE', 'ENVIADO', 'FALLIDO', 'DESCARTADO');
 
--- Inspección pre-compra.
+-- Inspeccion pre-compra (Modulo 7.11).
 CREATE TYPE estado_inspeccion AS ENUM ('BORRADOR', 'FINALIZADA');
 CREATE TYPE resultado_inspeccion AS ENUM ('APROBADO', 'APROBADO_CON_OBSERVACIONES', 'NO_APROBADO');
 CREATE TYPE evaluacion_inspeccion AS ENUM ('BUENO', 'REGULAR', 'MALO', 'NO_APLICA');
@@ -127,8 +133,8 @@ CREATE TABLE automotora (
     rut                      TEXT NOT NULL,
     subdominio               TEXT NOT NULL UNIQUE, -- fijo, no editable tras el registro
 
-    -- Datos de contacto de la casa matriz. Junto al vehículo se muestran los
-    -- de su sucursal.
+    -- Datos generales / de contacto de la casa matriz (no reemplazan los datos
+    -- propios de cada sucursal, que son los que se muestran junto al vehiculo).
     direccion                TEXT NOT NULL,
     telefono                 TEXT NOT NULL,
     email                    TEXT NOT NULL,
@@ -136,12 +142,12 @@ CREATE TABLE automotora (
     banner_url               TEXT, -- URL publica de la imagen
     descripcion              TEXT, -- descripcion breve para el perfil publico
 
-    -- Vigencias por defecto (días); se pueden ajustar caso a caso al emitir.
+    -- Vigencias por defecto (dias), configurables, ajustables caso a caso al emitir
     dias_validez_cotizacion  INTEGER NOT NULL DEFAULT 15 CHECK (dias_validez_cotizacion BETWEEN 1 AND 365),
     dias_validez_reserva     INTEGER NOT NULL DEFAULT 3 CHECK (dias_validez_reserva BETWEEN 1 AND 365),
     dias_validez_tasacion    INTEGER NOT NULL DEFAULT 15 CHECK (dias_validez_tasacion BETWEEN 1 AND 365),
 
-    -- Correos automáticos al cliente: envío del PDF al emitir, por tipo de documento.
+    -- Correos automaticos al cliente (Modulo 18). Envio del PDF al emitir, por tipo de documento.
     correo_cotizacion        BOOLEAN NOT NULL DEFAULT true,
     correo_reserva           BOOLEAN NOT NULL DEFAULT true,
     correo_tasacion          BOOLEAN NOT NULL DEFAULT true,
@@ -153,8 +159,8 @@ CREATE TABLE automotora (
     dias_aviso_reserva       INTEGER DEFAULT 1 CHECK (dias_aviso_reserva BETWEEN 1 AND 30),
     dias_aviso_tasacion      INTEGER DEFAULT 2 CHECK (dias_aviso_tasacion BETWEEN 1 AND 30),
 
-    -- Simulador de crédito de la ficha pública. Solo referencial: la plataforma
-    -- no otorga ni intermedia créditos. Sin tasa no se muestra.
+    -- Simulador de credito en la ficha publica (Modulo 2). Solo referencial: la
+    -- plataforma no otorga ni intermedia creditos. Sin tasa no hay simulador.
     financiamiento_activo        BOOLEAN NOT NULL DEFAULT false,
     financiamiento_tasa_mensual  NUMERIC(4,2) CHECK (financiamiento_tasa_mensual BETWEEN 0.01 AND 5.00), -- % mensual
     financiamiento_pie_minimo    INTEGER NOT NULL DEFAULT 20 CHECK (financiamiento_pie_minimo BETWEEN 0 AND 80), -- % del precio
@@ -170,7 +176,7 @@ CREATE TABLE sucursal (
 
     nombre         TEXT NOT NULL,
     direccion      TEXT NOT NULL,
-    -- Ubicación estructurada: el marketplace filtra por región y comuna.
+    -- Ubicacion estructurada: el Marketplace filtra por region y comuna (sucursal real del vehiculo).
     region         region_chile NOT NULL,
     comuna         TEXT NOT NULL,
     telefono       TEXT NOT NULL,
@@ -179,8 +185,8 @@ CREATE TABLE sucursal (
     -- Celular para el boton de WhatsApp de sus vehiculos (+569XXXXXXXX); si es NULL se usa telefono.
     whatsapp       TEXT CHECK (whatsapp ~ '^\+569[0-9]{8}$'),
     es_principal   BOOLEAN NOT NULL DEFAULT false, -- true para la creada automaticamente al registrar la automotora
-    -- Baja lógica: una sucursal con historial no puede borrarse por las FK.
-    -- false = dada de baja.
+    -- Baja logica: una sucursal con historial (ventas, gastos, etc. congelados)
+    -- no puede borrarse fisicamente por las FK. false = dada de baja.
     activa         BOOLEAN NOT NULL DEFAULT true,
 
     fecha_creacion TIMESTAMPTZ NOT NULL DEFAULT now()
@@ -191,8 +197,9 @@ CREATE TABLE usuario (
     id                UUID PRIMARY KEY DEFAULT gen_random_uuid(),
     automotora_id     UUID NOT NULL REFERENCES automotora(id),
 
-    -- NULL solo cuando rol = ADMIN_GENERAL. Obligatorio para ADMIN_SUCURSAL y
-    -- VENDEDOR (lo asegura el CHECK de más abajo).
+    -- Nulo UNICAMENTE cuando rol = ADMIN_GENERAL (no esta acotado a una sucursal).
+    -- Obligatorio para ADMIN_SUCURSAL y VENDEDOR (resguardado ademas con el
+    -- CHECK de mas abajo, a nivel de base de datos).
     sucursal_id       UUID REFERENCES sucursal(id),
 
     nombre            TEXT NOT NULL,
@@ -203,8 +210,8 @@ CREATE TABLE usuario (
     estado            estado_usuario NOT NULL DEFAULT 'ACTIVO',
     fecha_creacion    TIMESTAMPTZ NOT NULL DEFAULT now(),
 
-    -- Aceptación de los Términos de uso y la Política de privacidad (versión =
-    -- fecha de publicación). La registra quien inscribe la automotora.
+    -- Aceptacion de los Terminos de uso y la Politica de privacidad (version =
+    -- fecha de publicacion). La registra quien inscribe la automotora.
     terminos_version      TEXT,
     terminos_aceptados_en TIMESTAMPTZ,
 
@@ -254,26 +261,27 @@ CREATE TABLE cliente (
     email          TEXT NOT NULL,
     direccion      TEXT NOT NULL,
     estado         estado_cliente NOT NULL DEFAULT 'ACTIVO',
-    -- false = pidió no recibir recordatorios ni seguimientos (enlace de baja del
-    -- correo). Los documentos emitidos y el aviso de reserva se envían igual.
+    -- false = pidio no recibir recordatorios ni seguimientos por correo (enlace de
+    -- baja del propio correo). Los documentos emitidos y el aviso de reserva se envian igual.
     acepta_recordatorios BOOLEAN NOT NULL DEFAULT true,
     fecha_creacion TIMESTAMPTZ NOT NULL DEFAULT now(),
 
-    -- El RUT se guarda normalizado ("12345678-K") para que esta restricción funcione.
+    -- rut se guarda normalizado ("12345678-K") para que esta restriccion sea efectiva
     UNIQUE (automotora_id, rut) -- no pueden existir 2 clientes con el mismo RUT en la misma automotora
 );
 CREATE INDEX idx_cliente_automotora ON cliente(automotora_id);
 
--- vehiculos, ventas y tasaciones se referencian entre sí (vehiculo ->
--- venta_origen / tasacion_origen, venta -> vehiculo, tasacion -> vehiculo).
--- Se crean sin esas FK y se agregan al final con ALTER TABLE.
+-- vehiculos, ventas y tasaciones se referencian circularmente entre si
+-- (vehiculo -> venta_origen / tasacion_origen, venta -> vehiculo, tasacion -> vehiculo).
+-- Se crean primero sin esas FKs y se agregan al final con ALTER TABLE para
+-- evitar el problema de "la tabla X no existe todavia".
 
 CREATE TABLE vehiculo (
     id                   UUID PRIMARY KEY DEFAULT gen_random_uuid(),
     automotora_id        UUID NOT NULL REFERENCES automotora(id),
 
-    -- Sucursal actual del vehículo; cambia al transferirlo. El historial de
-    -- ubicaciones está en vehiculo_bitacora (tipo_evento = TRANSFERENCIA_SUCURSAL).
+    -- Sucursal ACTUAL del vehiculo (cambia si se transfiere; ver vehiculo_bitacora
+    -- con tipo_evento = TRANSFERENCIA_SUCURSAL para el historial de ubicaciones).
     sucursal_id          UUID NOT NULL REFERENCES sucursal(id),
 
     -- Datos generales
@@ -291,22 +299,22 @@ CREATE TABLE vehiculo (
     traccion             traccion_vehiculo, -- NULL solo en motos (no aplica)
     descripcion          TEXT,
 
-    -- Lo que un admin pidió corregir al devolverlo de PENDIENTE_REVISION a
-    -- EN_PREPARACION. Se borra al reenviarlo o al publicarlo.
+    -- Lo que un admin pidio corregir al devolverlo de PENDIENTE_REVISION a
+    -- EN_PREPARACION (Modulo 7.6). Se borra al enviarlo de nuevo o al publicarlo.
     observacion_revision TEXT,
 
     -- Comerciales
     precio_venta         NUMERIC(12, 2) NOT NULL CHECK (precio_venta > 0),
     costo_adquisicion    NUMERIC(12, 2) NOT NULL DEFAULT 0 CHECK (costo_adquisicion >= 0),
-    -- En vehículos con origen = CONSIGNACION queda en 0: su costo para el margen
-    -- es la comisión pactada en consignaciones.
+    -- Nota de negocio: en vehiculos origen=CONSIGNACION este campo se mantiene en 0;
+    -- el costo real para efectos de margen es la comision pactada en "consignaciones".
 
     origen               origen_vehiculo NOT NULL,
-    -- Nace EN_PREPARACION y no pasa a DISPONIBLE (publicado) sin al menos 1 foto.
-    -- RESERVADO y VENDIDO solo los fijan Reservas y Ventas.
+    -- Nace EN_PREPARACION: no puede pasar a DISPONIBLE (publicado) sin al menos 1 foto.
+    -- RESERVADO y VENDIDO solo los fijan los modulos de Reservas y Ventas.
     estado               estado_vehiculo NOT NULL DEFAULT 'EN_PREPARACION',
 
-    -- Origen del vehículo, cuando aplica (FK agregadas más abajo con ALTER TABLE).
+    -- Trazabilidad de origen (cuando aplica; FKs agregadas mas abajo con ALTER TABLE)
     venta_origen_id      UUID,        -- set cuando origen = PARTE_PAGO
     tasacion_origen_id   UUID UNIQUE, -- set cuando origen = COMPRA_PARTICULAR
 
@@ -323,9 +331,11 @@ CREATE TABLE vehiculo (
     CONSTRAINT chk_vehiculo_compra_particular_con_tasacion
         CHECK ((origen = 'COMPRA_PARTICULAR') = (tasacion_origen_id IS NOT NULL))
 );
--- Patente única en el inventario activo de cada automotora. No cuentan los
--- vendidos ni los dados de baja: un vehículo que reingresa (parte de pago,
--- reconsignación) es un registro nuevo y el anterior conserva su historial.
+-- Patente unica dentro del inventario de cada automotora (sin validacion cruzada entre
+-- automotoras). No cuentan los vendidos ni los dados de baja: un vehiculo que vuelve a
+-- ingresar (ej. en parte de pago, o una reconsignacion tras devolverlo) es un registro
+-- nuevo, y el anterior conserva su historial. Reactivar uno dado de baja se valida en
+-- el Service (y este indice lo resguarda).
 CREATE UNIQUE INDEX uq_vehiculo_patente_en_inventario
     ON vehiculo(automotora_id, patente) WHERE estado NOT IN ('VENDIDO', 'DADO_DE_BAJA');
 CREATE INDEX idx_vehiculo_automotora_estado ON vehiculo(automotora_id, estado);
@@ -340,7 +350,7 @@ CREATE TABLE vehiculo_foto (
     url         TEXT NOT NULL,
     orden       INTEGER NOT NULL CHECK (orden BETWEEN 1 AND 30), -- orden = 1 se usa como foto de portada
 
-    -- Diferible: permite reordenar las fotos dentro de una transacción.
+    -- Diferible: permite reordenar todas las fotos dentro de una transaccion.
     CONSTRAINT uq_vehiculo_foto_orden UNIQUE (vehiculo_id, orden) DEFERRABLE INITIALLY DEFERRED
 );
 CREATE INDEX idx_vehiculo_foto_vehiculo ON vehiculo_foto(vehiculo_id);
@@ -353,7 +363,7 @@ CREATE TABLE documento_legal_vehiculo (
     respaldo           respaldo_documento_legal NOT NULL,
     archivo_url        TEXT NOT NULL,
     fecha_vencimiento  DATE NOT NULL,
-    -- Solo para la homologación: desde ella se calcula el vencimiento.
+    -- Solo para la homologacion: desde ella se calcula el vencimiento.
     fecha_primera_inscripcion DATE,
     fecha_carga        TIMESTAMPTZ NOT NULL DEFAULT now(),
     cargado_por        UUID NOT NULL REFERENCES usuario(id),
@@ -372,13 +382,14 @@ CREATE INDEX idx_doclegal_vehiculo_tipo ON documento_legal_vehiculo(vehiculo_id,
 CREATE UNIQUE INDEX uq_doclegal_vigente
     ON documento_legal_vehiculo(vehiculo_id, tipo) WHERE vigente;
 
--- Informe de inspección pre-compra: lista de chequeo por secciones. Se llena
--- como BORRADOR y queda fijo al finalizar; las anteriores se conservan. La
--- última FINALIZADA, si está aprobada, se publica en la página del vehículo.
+-- Informe de inspeccion pre-compra (Modulo 7.11): lista de chequeo por secciones.
+-- Se llena como BORRADOR y al finalizar queda fijo; una inspeccion nueva no
+-- borra las anteriores (historial). La ultima FINALIZADA, si esta aprobada (con o
+-- sin observaciones), se publica en la pagina del vehiculo.
 CREATE TABLE inspeccion (
     id                      UUID PRIMARY KEY DEFAULT gen_random_uuid(),
     automotora_id           UUID NOT NULL REFERENCES automotora(id),
-    -- Sucursal donde estaba el vehículo al iniciar la inspección.
+    -- Sucursal donde estaba el vehiculo al iniciar la inspeccion.
     sucursal_id             UUID NOT NULL REFERENCES sucursal(id),
     vehiculo_id             UUID NOT NULL REFERENCES vehiculo(id),
 
@@ -386,7 +397,7 @@ CREATE TABLE inspeccion (
     observaciones           TEXT, -- generales, publicas
 
     estado                  estado_inspeccion NOT NULL DEFAULT 'BORRADOR',
-    -- Lo decide quien inspecciona (el sistema sugiere uno según los puntos).
+    -- Lo elige quien inspecciona (el sistema sugiere uno segun los puntos).
     resultado               resultado_inspeccion,
 
     usuario_id              UUID NOT NULL REFERENCES usuario(id), -- quien la inicio
@@ -399,7 +410,7 @@ CREATE TABLE inspeccion (
         (resultado IS NOT NULL AND fecha_finalizacion IS NOT NULL AND usuario_finalizacion_id IS NOT NULL)
     )
 );
--- A lo sumo un borrador por vehículo.
+-- A lo sumo un borrador por vehiculo.
 CREATE UNIQUE INDEX uq_inspeccion_borrador_por_vehiculo
     ON inspeccion(vehiculo_id) WHERE estado = 'BORRADOR';
 CREATE INDEX idx_inspeccion_vehiculo ON inspeccion(vehiculo_id, fecha_finalizacion);
@@ -409,7 +420,7 @@ CREATE TABLE inspeccion_punto (
     inspeccion_id  UUID NOT NULL REFERENCES inspeccion(id) ON DELETE CASCADE,
 
     seccion        TEXT NOT NULL, -- codigo de la seccion (lista en shared-types)
-    -- Código del punto de la lista estándar; NULL = punto agregado en esta inspección.
+    -- Codigo del punto de la lista estandar; NULL = punto agregado en esta inspeccion.
     codigo         TEXT,
     nombre         TEXT NOT NULL,
     orden          INTEGER NOT NULL,
@@ -437,17 +448,18 @@ CREATE INDEX idx_inspeccion_foto_punto ON inspeccion_foto(punto_id);
 CREATE TABLE gasto (
     id                    UUID PRIMARY KEY DEFAULT gen_random_uuid(),
     automotora_id         UUID NOT NULL REFERENCES automotora(id),
-    -- Correlativo por automotora (los gastos generales no tienen sucursal).
-    -- Se asigna al crear, con lock por automotora.
+    -- Correlativo POR AUTOMOTORA (no por sucursal: los gastos generales no
+    -- tienen sucursal). Se asigna al crear, con lock por automotora.
     numero                INTEGER NOT NULL,
     tipo                  tipo_gasto NOT NULL DEFAULT 'VEHICULO',
 
-    -- Solo en gastos de VEHICULO. No se permite si vehiculo.origen = 'CONSIGNACION'
-    -- (lo valida el Service).
+    -- Solo en gastos de VEHICULO. Regla de negocio (validar en la capa de
+    -- aplicacion, no solo en BD): no se permite si vehiculo.origen = 'CONSIGNACION'.
     vehiculo_id           UUID REFERENCES vehiculo(id),
 
-    -- Sucursal fijada al crear el gasto. En un gasto OPERACIONAL, NULL = gasto
-    -- general de la automotora (solo cuenta en la vista consolidada).
+    -- Sucursal "congelada" al crear el gasto (ver nota multi-sucursal). En un
+    -- gasto OPERACIONAL, NULL = gasto general de la automotora (solo cuenta en
+    -- la vista consolidada, nunca se reparte entre sucursales).
     sucursal_id           UUID REFERENCES sucursal(id),
 
     categoria             categoria_gasto NOT NULL,
@@ -478,7 +490,7 @@ CREATE TABLE consignacion (
     automotora_id   UUID NOT NULL REFERENCES automotora(id),
     folio           INTEGER NOT NULL,
 
-    -- Sucursal fijada al registrar la consignación (el folio es de la automotora).
+    -- Sucursal "congelada" al registrar la consignacion (el folio es de la automotora).
     sucursal_id     UUID NOT NULL REFERENCES sucursal(id),
 
     vehiculo_id     UUID NOT NULL UNIQUE REFERENCES vehiculo(id), -- relacion 1:1
@@ -520,7 +532,7 @@ CREATE TABLE cotizacion (
     automotora_id      UUID NOT NULL REFERENCES automotora(id),
     folio              INTEGER NOT NULL,
 
-    -- Sucursal fijada al emitir el documento.
+    -- Sucursal "congelada" al momento de emitir el documento (ver nota multi-sucursal).
     sucursal_id        UUID NOT NULL REFERENCES sucursal(id),
 
     cliente_id         UUID NOT NULL REFERENCES cliente(id),
@@ -535,7 +547,7 @@ CREATE TABLE cotizacion (
     usuario_id         UUID NOT NULL REFERENCES usuario(id),
     pdf_url            TEXT, -- clave del PDF privado, generado al emitir
 
-    -- Anulación: motivo obligatorio.
+    -- Anulacion (correccion de errores): motivo obligatorio.
     motivo_anulacion       TEXT,
     fecha_anulacion        TIMESTAMPTZ,
     usuario_anulacion_id   UUID REFERENCES usuario(id),
@@ -551,8 +563,8 @@ CREATE TABLE cotizacion_costo (
     id             UUID PRIMARY KEY DEFAULT gen_random_uuid(),
     cotizacion_id  UUID NOT NULL REFERENCES cotizacion(id) ON DELETE CASCADE,
 
-    -- Adicionales (p. ej. traspaso, o $0 para algo de regalo): suman al total a
-    -- pagar, nunca al margen.
+    -- "Adicionales" (ej. traspaso, o $0 como referencia de algo de regalo):
+    -- suman al total a pagar; nunca al margen.
     descripcion    TEXT NOT NULL,
     monto          NUMERIC(12, 2) NOT NULL CHECK (monto >= 0)
 );
@@ -563,7 +575,7 @@ CREATE TABLE reserva (
     automotora_id            UUID NOT NULL REFERENCES automotora(id),
     folio                    INTEGER NOT NULL,
 
-    -- Sucursal fijada al emitir el documento.
+    -- Sucursal "congelada" al momento de emitir el documento (ver nota multi-sucursal).
     sucursal_id              UUID NOT NULL REFERENCES sucursal(id),
 
     cliente_id               UUID NOT NULL REFERENCES cliente(id),
@@ -573,22 +585,22 @@ CREATE TABLE reserva (
     condiciones_devolucion   TEXT,
     fecha_emision            TIMESTAMPTZ NOT NULL DEFAULT now(),
     fecha_vencimiento        DATE NOT NULL,
-    -- VENCIDA: pasó el plazo y el vehículo sigue RESERVADO hasta que un admin la
-    -- extienda (vuelve a VIGENTE) o la cancele (CANCELADA).
+    -- VENCIDA: el plazo paso pero el vehiculo sigue RESERVADO hasta que un admin
+    -- decida extenderla (vuelve a VIGENTE) o darla de baja (CANCELADA).
     estado                   estado_reserva NOT NULL DEFAULT 'VIGENTE',
 
-    -- Estado del vehículo al reservarse: se restaura al cancelar la reserva.
+    -- Estado del vehiculo al reservarse: se restaura al cancelar la reserva.
     estado_vehiculo_previo   estado_vehiculo NOT NULL,
 
     usuario_id               UUID NOT NULL REFERENCES usuario(id),
     pdf_url                  TEXT, -- clave del PDF privado, generado al emitir
 
-    -- Cancelación: solo admins, motivo obligatorio.
+    -- Cancelacion (Modulo 12): solo admins, motivo obligatorio.
     motivo_cancelacion       TEXT,
     fecha_cancelacion        TIMESTAMPTZ,
     usuario_cancelacion_id   UUID REFERENCES usuario(id),
-    -- Al cancelar: true = la seña se retiene y cuenta como ingreso (en
-    -- fecha_cancelacion); false = se devuelve. Siempre true si se anula su venta.
+    -- Al cancelar: true = la sena se retiene y cuenta como ingreso (en fecha_cancelacion);
+    -- false = se devuelve al cliente. Siempre true si se cancela por anular su venta.
     sena_retenida            BOOLEAN,
 
     CONSTRAINT chk_reserva_cancelacion CHECK ((estado = 'CANCELADA') = (motivo_cancelacion IS NOT NULL)),
@@ -597,7 +609,7 @@ CREATE TABLE reserva (
         CHECK (estado_vehiculo_previo IN ('DISPONIBLE', 'EN_PREPARACION', 'PENDIENTE_REVISION')),
     UNIQUE (automotora_id, folio) -- correlativo de toda la automotora (compartido entre sucursales)
 );
--- Un vehículo tiene a lo sumo una reserva activa (vigente o vencida sin resolver).
+-- Un vehiculo tiene a lo sumo una reserva activa (vigente o vencida sin resolver).
 CREATE UNIQUE INDEX uq_reserva_activa_por_vehiculo
     ON reserva(vehiculo_id) WHERE estado IN ('VIGENTE', 'VENCIDA');
 CREATE INDEX idx_reserva_vehiculo ON reserva(vehiculo_id);
@@ -609,13 +621,15 @@ CREATE TABLE tasacion (
     automotora_id      UUID NOT NULL REFERENCES automotora(id),
     folio              INTEGER NOT NULL,
 
-    -- Sucursal fijada al emitir. La tasación no tiene un vehículo propio del cual
-    -- derivarla (el auto aún es del cliente): este campo es su única fuente.
+    -- Sucursal "congelada" al momento de emitir el documento. A diferencia de
+    -- venta/cotizacion/reserva/gasto, tasacion no tiene un vehiculo propio del
+    -- cual derivar la sucursal (el auto aun es del cliente), por lo que este
+    -- campo es la UNICA fuente de la sucursal para esta entidad.
     sucursal_id        UUID NOT NULL REFERENCES sucursal(id),
 
     cliente_id         UUID NOT NULL REFERENCES cliente(id), -- persona que ofrece vender su vehiculo
 
-    -- Datos del vehículo del cliente (no es un registro de vehiculos).
+    -- Datos del vehiculo del cliente (NO es un registro en la tabla vehiculos)
     patente            TEXT NOT NULL, -- normalizada; debe coincidir con la del vehiculo si se compra
     marca              TEXT NOT NULL,
     modelo             TEXT NOT NULL,
@@ -628,18 +642,18 @@ CREATE TABLE tasacion (
     fecha_emision      TIMESTAMPTZ NOT NULL DEFAULT now(),
     fecha_vencimiento  DATE NOT NULL,
     estado             estado_documento_oferta NOT NULL DEFAULT 'VIGENTE',
-    -- No genera notificaciones de vencimiento.
+    -- No genera notificaciones de vencimiento (regla de negocio).
 
     usuario_id         UUID NOT NULL REFERENCES usuario(id),
     pdf_url            TEXT, -- clave del PDF privado, generado al emitir
 
-    -- Anulación: motivo obligatorio.
+    -- Anulacion (correccion de errores): motivo obligatorio.
     motivo_anulacion       TEXT,
     fecha_anulacion        TIMESTAMPTZ,
     usuario_anulacion_id   UUID REFERENCES usuario(id),
 
-    -- Si se acepta, se crea a mano un vehículo con origen COMPRA_PARTICULAR que
-    -- la referencia en vehiculo.tasacion_origen_id.
+    -- Si se acepta, un usuario crea manualmente un vehiculo con origen COMPRA_PARTICULAR
+    -- referenciando este registro via vehiculo.tasacion_origen_id.
 
     CONSTRAINT chk_tasacion_anulacion CHECK ((estado = 'ANULADA') = (motivo_anulacion IS NOT NULL)),
     UNIQUE (automotora_id, folio) -- correlativo de toda la automotora (compartido entre sucursales)
@@ -652,7 +666,7 @@ CREATE TABLE venta (
     automotora_id        UUID NOT NULL REFERENCES automotora(id),
     folio                INTEGER NOT NULL,
 
-    -- Sucursal fijada al cerrar la venta.
+    -- Sucursal "congelada" al momento de cerrar la venta (ver nota multi-sucursal).
     sucursal_id          UUID NOT NULL REFERENCES sucursal(id),
 
     vehiculo_id          UUID NOT NULL REFERENCES vehiculo(id),
@@ -664,7 +678,7 @@ CREATE TABLE venta (
     fecha_venta          TIMESTAMPTZ NOT NULL DEFAULT now(),
     estado               estado_venta NOT NULL DEFAULT 'CONFIRMADA',
 
-    -- Anulación: solo admins, motivo obligatorio.
+    -- Anulacion (Modulo 12): solo admins, motivo obligatorio.
     motivo_anulacion     TEXT,
     fecha_anulacion      TIMESTAMPTZ,
     usuario_anulacion_id UUID REFERENCES usuario(id),
@@ -679,9 +693,9 @@ CREATE INDEX idx_venta_vehiculo ON venta(vehiculo_id);
 CREATE INDEX idx_venta_cliente ON venta(cliente_id);
 CREATE INDEX idx_venta_automotora_fecha ON venta(automotora_id, fecha_venta);
 CREATE INDEX idx_venta_sucursal_fecha ON venta(sucursal_id, fecha_venta);
--- Un vehículo tiene a lo sumo una venta confirmada (las anuladas quedan como historial).
+-- Un vehiculo tiene a lo sumo una venta confirmada (las anuladas quedan como historial).
 CREATE UNIQUE INDEX uq_venta_confirmada_por_vehiculo ON venta(vehiculo_id) WHERE estado = 'CONFIRMADA';
--- Una cotización la concreta a lo sumo una venta confirmada (si se anula, puede volver a concretarse).
+-- Una cotización la concreta a lo sumo una venta confirmada (si esa venta se anula, puede volver a concretarse).
 CREATE UNIQUE INDEX uq_venta_confirmada_por_cotizacion ON venta(cotizacion_id) WHERE estado = 'CONFIRMADA';
 CREATE INDEX idx_venta_automotora ON venta(automotora_id);
 
@@ -691,9 +705,9 @@ CREATE TABLE venta_costo (
 
     descripcion  TEXT NOT NULL,
     monto        NUMERIC(12, 2) NOT NULL CHECK (monto >= 0)
-    -- Adicionales (p. ej. traspaso; $0 = algo de regalo): suman al total que paga
-    -- el cliente y al cuadre de formas de pago, pero nunca al margen, dashboard ni
-    -- analítica: la automotora solo los traspasa.
+    -- "Adicionales" (ej. traspaso; $0 = referencia de algo de regalo): suman al total que
+    -- paga el cliente (entran en el cuadre de formas de pago), pero NUNCA en
+    -- margen/utilidad, Dashboard ni Analitica: la automotora los traspasa.
 );
 CREATE INDEX idx_venta_costo_venta ON venta_costo(venta_id);
 
@@ -703,9 +717,9 @@ CREATE TABLE venta_forma_pago (
 
     tipo                  tipo_forma_pago NOT NULL,
     monto                 NUMERIC(12, 2) NOT NULL CHECK (monto > 0),
-    -- La suma de montos de una venta debe cuadrar con precio_venta_final +
-    -- adicionales (venta_costos), menos la seña de la reserva si la hay
-    -- (lo valida el Service antes de confirmar).
+    -- La suma de montos de todas las filas de una misma venta debe cuadrar con
+    -- precio_venta_final + adicionales (venta_costos) menos la sena de la reserva,
+    -- si la venta viene de una (validar en la capa de aplicacion antes de confirmar).
 
     vehiculo_recibido_id  UUID UNIQUE REFERENCES vehiculo(id), -- solo si tipo = 'PARTE_PAGO'
 
@@ -732,9 +746,10 @@ CREATE TABLE vehiculo_bitacora (
 
     usuario_id       UUID NOT NULL REFERENCES usuario(id),
 
-    -- Referencia polimórfica al registro que originó el evento (gasto, cotización,
-    -- reserva o venta). En TRANSFERENCIA_SUCURSAL queda nula y el detalle va en
-    -- descripcion. Las tasaciones no aparecen aquí.
+    -- Referencia polimorfica al registro que origino el evento (gasto, cotizacion, reserva o venta).
+    -- Para tipo_evento = 'TRANSFERENCIA_SUCURSAL', referencia_tipo/referencia_id quedan nulos y el
+    -- detalle (sucursal origen/destino) se deja en el campo "descripcion".
+    -- La tasacion NUNCA aparece aqui: es independiente del vehiculo.
     referencia_tipo  tipo_referencia_bitacora,
     referencia_id    UUID
 );
@@ -744,8 +759,11 @@ CREATE TABLE notificacion (
     id                UUID PRIMARY KEY DEFAULT gen_random_uuid(),
     automotora_id     UUID NOT NULL REFERENCES automotora(id),
 
-    -- Sucursal afectada. Solo la ven esa sucursal y el ADMIN_GENERAL. Si agrupa
-    -- varios vehículos (permiso/SOAP por vencer), todos son de la misma sucursal.
+    -- Sucursal afectada por la notificacion (donde estan el/los vehiculo(s),
+    -- la reserva o la consignacion referidos). Solo esa sucursal + ADMIN_GENERAL
+    -- la ven. Si la notificacion agrupa varios vehiculos (permiso/SOAP con
+    -- vencimientos cercanos), la agrupacion se hace UNICAMENTE entre vehiculos
+    -- de la misma sucursal para que esta regla de visibilidad tenga sentido.
     sucursal_id       UUID NOT NULL REFERENCES sucursal(id),
 
     tipo              tipo_notificacion NOT NULL,
@@ -764,23 +782,24 @@ CREATE TABLE notificacion_referencia (
     id               UUID PRIMARY KEY DEFAULT gen_random_uuid(),
     notificacion_id  UUID NOT NULL REFERENCES notificacion(id) ON DELETE CASCADE,
 
-    -- Permite agrupar varios vehículos en una notificación (permiso/SOAP por vencer).
+    -- Permite que una sola notificacion agrupe varios vehiculos
+    -- (caso de permiso de circulacion / SOAP con vencimientos cercanos).
     entidad_tipo     tipo_entidad_notificacion NOT NULL,
     entidad_id       UUID NOT NULL,
 
-    -- Identifica el evento avisado para que el cron diario no lo repita:
+    -- Identifica el evento avisado, para que el cron diario no lo repita:
     --   DOC:<documento_legal_id>                          (renovar = documento nuevo = aviso nuevo)
     --   RESERVA:<reserva_id>:<fecha_vencimiento>          (extender = fecha nueva = aviso nuevo)
-    --   CONSIGNACION:<id>:<fecha_fin>:PREVIO | :DIA       (7 días hábiles antes y el mismo día)
-    --   REVISION:<vehiculo_id>:<instante>                 (cada envío a revisión)
+    --   CONSIGNACION:<id>:<fecha_fin>:PREVIO | :DIA       (7 dias habiles antes y el mismo dia)
+    --   REVISION:<vehiculo_id>:<instante>                 (cada envio a revision)
     clave_evento     TEXT NOT NULL UNIQUE
 );
 CREATE INDEX idx_notif_referencias_notificacion ON notificacion_referencia(notificacion_id);
 CREATE INDEX idx_notif_referencias_entidad ON notificacion_referencia(entidad_tipo, entidad_id);
 
--- Bandeja de salida de correos al cliente. El documento se guarda primero y el
--- correo se encola: un proceso lo envía (con reintentos) sin bloquear ni
--- revertir la operación. También es el historial visible en el panel.
+-- Bandeja de salida de los correos al cliente (Modulo 18). El documento se guarda
+-- primero y el correo se encola: un proceso lo envia (con reintentos) sin
+-- bloquear ni revertir la operacion. Tambien es el historial visible en el panel.
 CREATE TABLE correo (
     id               UUID PRIMARY KEY DEFAULT gen_random_uuid(),
     automotora_id    UUID NOT NULL REFERENCES automotora(id),
@@ -792,7 +811,7 @@ CREATE TABLE correo (
     tipo             tipo_correo NOT NULL,
     destinatario     TEXT NOT NULL, -- email del cliente al momento de encolar
 
-    -- Evita repetir un correo automático (NULL en reenvíos manuales):
+    -- Evita repetir un correo automatico (NULL en los reenvios manuales):
     --   DOCUMENTO:<documento_id>
     --   SEGUIMIENTO:<cotizacion_id>
     --   AVISO:<documento_id>:<fecha_vencimiento>   (extender = fecha nueva = aviso nuevo)
@@ -818,8 +837,9 @@ CREATE TABLE auditoria (
     automotora_id   UUID NOT NULL REFERENCES automotora(id),
     usuario_id      UUID NOT NULL REFERENCES usuario(id),
 
-    -- NULL en acciones de toda la automotora (configuración, CRUD de sucursales).
-    -- Con valor, ADMIN_SUCURSAL solo ve las de su sucursal; ADMIN_GENERAL ve todas.
+    -- Nulo cuando la accion es a nivel de toda la automotora (ej. cambios en
+    -- configuracion, o el propio CRUD de sucursales). Si tiene valor, ADMIN_SUCURSAL
+    -- solo ve las filas de su propia sucursal; ADMIN_GENERAL ve todas sin filtro.
     sucursal_id     UUID REFERENCES sucursal(id),
 
     accion          TEXT NOT NULL,
@@ -829,14 +849,15 @@ CREATE TABLE auditoria (
     valor_nuevo     JSONB,
     fecha           TIMESTAMPTZ NOT NULL DEFAULT now()
 
-    -- Retención indefinida: no se elimina automáticamente.
+    -- Visible para ADMIN_GENERAL (todo) y ADMIN_SUCURSAL (acotado a su sucursal_id).
+    -- Retencion indefinida: no se elimina automaticamente.
 );
 CREATE INDEX idx_auditoria_automotora_fecha ON auditoria(automotora_id, fecha);
 CREATE INDEX idx_auditoria_sucursal_fecha ON auditoria(sucursal_id, fecha);
 CREATE INDEX idx_auditoria_entidad ON auditoria(entidad_tipo, entidad_id);
 
--- Auditoría inmutable: los registros no se modifican ni se borran.
--- (La misma función protege el registro de accesos.)
+-- Retencion indefinida e inmutable: el registro de auditoria no se modifica ni se borra.
+-- (La misma funcion protege el registro de accesos, mas abajo.)
 CREATE FUNCTION auditoria_inmutable() RETURNS trigger AS $$
 BEGIN
     RAISE EXCEPTION 'El registro es inmutable: no se permite % sobre %', TG_OP, TG_TABLE_NAME;
@@ -847,10 +868,11 @@ CREATE TRIGGER trg_auditoria_inmutable
     BEFORE UPDATE OR DELETE ON auditoria
     FOR EACH ROW EXECUTE FUNCTION auditoria_inmutable();
 
--- Registro de accesos: seguridad de las cuentas, aparte de la auditoría de
--- negocio. Solo eventos de usuarios existentes (un email desconocido no se
--- guarda). No registra las renovaciones automáticas del token. Lo ve solo el
--- ADMIN_GENERAL.
+-- Registro de accesos (Modulo 16): la seguridad de las cuentas, aparte de la
+-- auditoria de negocio. Solo eventos de usuarios que existen (un email
+-- desconocido no se guarda: seria texto arbitrario de un atacante). Las
+-- renovaciones automaticas del token no se registran (ocurren cada minutos).
+-- Lo ve solo el ADMIN_GENERAL de la automotora.
 CREATE TYPE evento_acceso AS ENUM (
     'LOGIN_EXITOSO', 'LOGIN_FALLIDO', 'LOGOUT', 'REGISTRO_AUTOMOTORA',
     'EMAIL_VERIFICADO', 'INVITACION_ACEPTADA', 'RESET_SOLICITADO', 'PASSWORD_RESTABLECIDO'

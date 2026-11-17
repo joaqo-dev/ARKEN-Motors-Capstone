@@ -3,6 +3,7 @@ import type {
   RespaldoDocumentoLegal,
   TipoDocumentoLegal,
 } from '@vitriauto/shared-types';
+import { diasDesde } from '../../lib/formato';
 export interface VehiculoListado {
   id: string;
   sucursal: { id: string; nombre: string };
@@ -27,7 +28,7 @@ export interface VehiculoListado {
   fotoPortada: string | null;
   // Lo que un admin pidió corregir al devolverlo de revisión.
   observacionRevision: string | null;
-  // Qué le falta: obligatorio para publicar y recomendado.
+  // Qué le falta: obligatorio para publicar y recomendado (Módulo 7.6).
   pendientes: Pendiente[];
 }
 
@@ -117,6 +118,6 @@ export const descripcionVehiculo = (v: {
   version?: string | null;
 }) => `${v.marca} ${v.modelo}${v.version ? ` ${v.version}` : ''} ${v.anio}`;
 
-// Días desde el ingreso al inventario.
-export const diasEnStock = (fechaIngreso: string) =>
-  Math.floor((Date.now() - new Date(fechaIngreso).getTime()) / 86_400_000);
+// Días calendario (de Chile) desde el ingreso al inventario. La API guarda el ingreso a
+// mediodía; restar milisegundos desde ese instante daba un día menos (y -1 el mismo día) en las mañanas.
+export const diasEnStock = (fechaIngreso: string) => diasDesde(fechaIngreso);

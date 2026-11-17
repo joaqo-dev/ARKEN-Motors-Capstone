@@ -21,10 +21,10 @@ const vence = (fechaVencimiento: string, hoy: string) =>
       ? 'vence hoy'
       : `vence el ${fecha(fechaVencimiento)}`;
 
-// Arma las notificaciones a partir de los eventos aún no avisados:
-// - Permiso de circulación y SOAP: un aviso por automotora + sucursal + tipo,
-//   que agrupa todos los vehículos que entran a la vez en la ventana.
-// - Revisión técnica, reservas y consignaciones: un aviso por entidad.
+// Arma las notificaciones a crear a partir de los eventos aún no avisados (Módulo 13):
+// - Permiso de circulación y SOAP: un aviso por automotora + sucursal + tipo de
+//   documento, agrupando todos los vehículos que entran en la ventana a la vez.
+// - Revisión técnica, reservas y consignaciones: siempre un aviso por entidad.
 export function planificarNotificaciones(
   entrada: {
     documentos: DocumentoPorVencer[];

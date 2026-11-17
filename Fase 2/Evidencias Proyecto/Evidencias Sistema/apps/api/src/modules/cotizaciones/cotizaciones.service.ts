@@ -53,9 +53,9 @@ export function toCotizacionResponse(row: CotizacionDetalleRow) {
   };
 }
 
-// Cotizaciones. Todos los roles emiten y anulan (con motivo). No se aceptan ni
-// rechazan a mano: vencen solas y quedan CONCRETADA cuando una venta las
-// concreta (VentasService).
+// Cotizaciones (Módulo 10.1). Todos los roles emiten y anulan (con motivo). No se
+// aceptan ni rechazan a mano: vencen solas y quedan CONCRETADA cuando una venta
+// las concreta (VentasService).
 @Injectable()
 export class CotizacionesService {
   constructor(
@@ -109,7 +109,7 @@ export class CotizacionesService {
           );
         }
       }
-      // Folio correlativo de la automotora; la sucursal queda fijada: la del vehículo al emitir.
+      // Folio correlativo de la automotora; sucursal congelada: la del vehículo al emitir.
       const folio = await this.folios.siguiente('cotizacion', actor.automotoraId, client);
       const cotizacion = await this.cotizaciones.create(
         {
@@ -170,7 +170,7 @@ export class CotizacionesService {
       await this.cotizaciones.anular(id, motivo, actor.id, client);
       await this.comunes.auditar(
         actor,
-        { tipo: 'COTIZACION', id, sucursalId: actual.sucursal_id },
+        { tipo: 'COTIZACION', id, sucursalId: actual.sucursal_id, folio: actual.folio },
         'COTIZACION_ANULADA',
         client,
         { estado: actual.estado },

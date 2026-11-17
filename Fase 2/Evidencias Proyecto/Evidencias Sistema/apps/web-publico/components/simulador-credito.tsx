@@ -77,8 +77,9 @@ export function BarraContactoMovil({ children }: { children: ReactNode }) {
   );
 }
 
-// Simulador de crédito: sistema francés, cuota fija, calculado en el
-// navegador. Solo referencial: no incluye seguros, gastos ni impuestos.
+// Simulador de crédito (Módulo 2): sistema francés, cuota fija, calculado en el
+// navegador. Solo referencial: no incluye seguros, gastos ni impuestos. Va en su
+// propia tarjeta bajo el escenario: controles a la izquierda, cuota a la derecha.
 export function SimuladorCredito({
   precioVehiculo,
   financiamiento,

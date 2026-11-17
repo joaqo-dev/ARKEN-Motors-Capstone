@@ -10,7 +10,7 @@ import { VehiculoRow, VehiculosRepository } from '../vehiculos/vehiculos.reposit
 
 export type TipoVigencia = 'COTIZACION' | 'RESERVA' | 'TASACION';
 
-// Reglas comunes a Cotización, Reserva y Tasación.
+// Reglas transversales a Cotización, Reserva y Tasación (Módulo 10).
 @Injectable()
 export class DocumentosComunesService {
   constructor(
@@ -70,7 +70,9 @@ export class DocumentosComunesService {
 
   async auditar(
     actor: UsuarioAutenticado,
-    entidad: { tipo: string; id: string; sucursalId: string },
+    // folio: se guarda junto al cambio para que la auditoría enlace «N° X» también en
+    // anulaciones, cancelaciones y extensiones, que no lo incluyen en sus valores.
+    entidad: { tipo: string; id: string; sucursalId: string; folio?: number },
     accion: string,
     client: PoolClient,
     anterior: Record<string, unknown> | null,
@@ -80,12 +82,15 @@ export class DocumentosComunesService {
       {
         automotoraId: actor.automotoraId,
         usuarioId: actor.id,
-        sucursalId: entidad.sucursalId, // sucursal fijada en el documento
+        sucursalId: entidad.sucursalId, // sucursal congelada del documento
         accion,
         entidadTipo: entidad.tipo,
         entidadId: entidad.id,
         valorAnterior: anterior,
-        valorNuevo: nuevo,
+        valorNuevo:
+          entidad.folio !== undefined && nuevo && nuevo.folio === undefined
+            ? { ...nuevo, folio: entidad.folio }
+            : nuevo,
       },
       client,
     );

@@ -121,7 +121,7 @@ const COMISION = (precio: string) =>
 const GASTOS_ACTIVOS = `COALESCE((SELECT sum(g.monto) FROM gasto g
                                   WHERE g.vehiculo_id = v.id AND g.estado = 'ACTIVO'), 0)`;
 
-// Margen real de una venta: propio = precio final − costo − gastos;
+// Margen real de una venta (Módulo 7.7): propio = precio final − costo − gastos;
 // consignado = comisión sobre el precio final. Los costos de traspaso no entran.
 const MARGEN_VENTA = `CASE WHEN v.origen = 'CONSIGNACION' THEN ${COMISION('ve.precio_venta_final')}
                           ELSE ve.precio_venta_final - v.costo_adquisicion - ${GASTOS_ACTIVOS} END`;
@@ -178,7 +178,7 @@ export class DashboardRepository {
     return rows;
   }
 
-  // Ventas confirmadas del período, por la sucursal fijada en la venta.
+  // Ventas confirmadas del período, por sucursal CONGELADA de la venta.
   async ventas(
     alcance: Alcance,
     periodo: Periodo,
@@ -199,7 +199,7 @@ export class DashboardRepository {
     return rows;
   }
 
-  // Señas retenidas (ingreso) del período: por fecha de cancelación y sucursal de la reserva.
+  // Señas retenidas (ingreso) del período: fecha de cancelación, sucursal congelada de la reserva.
   async senasRetenidas(
     alcance: Alcance,
     periodo: Periodo,
@@ -217,8 +217,8 @@ export class DashboardRepository {
     return rows;
   }
 
-  // Gastos activos del período, por tipo y sucursal del gasto. Los generales
-  // (sucursal NULL) solo entran en la vista consolidada ($2 NULL).
+  // Gastos activos del período, por tipo y sucursal congelada del gasto. Los
+  // generales (sucursal NULL) solo entran en la vista consolidada ($2 NULL).
   async gastos(
     alcance: Alcance,
     periodo: Periodo,
@@ -235,7 +235,7 @@ export class DashboardRepository {
     return rows;
   }
 
-  // Vehículos en inventario hace más de `dias` días.
+  // Vehículos en inventario hace más de `dias` días (Módulo 15).
   async estancados(
     alcance: Alcance,
     hoy: string,
@@ -256,7 +256,7 @@ export class DashboardRepository {
     return rows;
   }
 
-  // Análisis por marca/modelo sobre ventas confirmadas del período.
+  // Análisis por marca/modelo sobre ventas confirmadas del período (Módulo 15).
   async porMarcaModelo(
     alcance: Alcance,
     periodo: Periodo,
@@ -294,7 +294,7 @@ export class DashboardRepository {
 
   // --------------------------------------------------------------- Analítica ampliada
 
-  // Ventas confirmadas por mes (sucursal de la venta): cantidad, ingresos y margen real.
+  // Ventas confirmadas por mes (sucursal congelada): cantidad, ingresos y margen real.
   async ventasPorMes(alcance: Alcance, periodo: Periodo, db: Queryable = this.pool) {
     const { rows } = await db.query<MesRow>(
       `SELECT to_char(${FECHA_LOCAL('ve.fecha_venta')}, 'YYYY-MM') AS mes, count(*) AS cantidad,
@@ -310,7 +310,7 @@ export class DashboardRepository {
     return rows;
   }
 
-  // Señas retenidas por mes (fecha de cancelación, sucursal de la reserva).
+  // Señas retenidas por mes (fecha de cancelación, sucursal congelada de la reserva).
   async senasPorMes(alcance: Alcance, periodo: Periodo, db: Queryable = this.pool) {
     const { rows } = await db.query<MesRow>(
       `SELECT to_char(${FECHA_LOCAL('r.fecha_cancelacion')}, 'YYYY-MM') AS mes, count(*) AS cantidad,
@@ -357,7 +357,7 @@ export class DashboardRepository {
   }
 
   // Embudo comercial del período (cada documento por su fecha de emisión y su
-  // sucursal; las cotizaciones anuladas no cuentan).
+  // sucursal congelada; las cotizaciones anuladas no cuentan).
   async embudo(alcance: Alcance, periodo: Periodo, db: Queryable = this.pool) {
     const p = [alcance.automotoraId, alcance.sucursalIds, periodo.desde, periodo.hasta];
     const { rows } = await db.query<EmbudoRow>(

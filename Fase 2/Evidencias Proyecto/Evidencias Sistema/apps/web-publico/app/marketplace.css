@@ -1,8 +1,10 @@
 /* ================================================================
-   Marketplace (portada, búsqueda, detalle y vitrina). Suelo gris claro con
-   superficies blancas redondeadas, controles en píldora y tinta casi negra.
-   Sin color de marca: el color lo ponen las fotos y el verde de WhatsApp.
-   Todo vive bajo .mk (la vitrina suma .mk-vitrina).
+   Marketplace Vitriauto (portada, búsqueda, detalle y vitrina): "Sala blanca".
+   Suelo gris claro con superficies blancas muy redondeadas, botones, chips y
+   navegación en píldora, tinta casi negra y ningún color de marca (el único
+   color es la foto y el verde de WhatsApp en el contacto). Las bandas
+   oscuras son marcos redondeados insertos, no franjas a sangre. Todo vive
+   bajo .mk (la vitrina suma .mk-vitrina).
    ================================================================ */
 
 .mk {
@@ -1220,9 +1222,10 @@
 }
 
 /* ================================================================
-   Vitrina: la portada lleva el nombre en grande y, sobre la foto, una ficha
-   blanca con las cifras de la automotora; debajo, la cinta de marcas en
-   stock. El contacto es un escenario partido blanco / gris.
+   Vitrina "Salón privado": la portada lleva el nombre en grande y, sobre
+   la foto, una ficha blanca con las cifras de la automotora (como la hoja
+   técnica de un auto); debajo, la cinta de marcas en stock; el contacto es
+   un escenario partido blanco / gris como la ficha del vehículo.
    ================================================================ */
 
 /* El contenido de la portada parte visible: solo sube unos píxeles al entrar. */
@@ -1270,8 +1273,8 @@
   }
 }
 
-/* La cifra del encabezado ya dice cuántos hay: el contador del listado queda
-   solo para lectores de pantalla y el orden se alinea a la derecha. */
+/* La cifra grande del encabezado ya dice cuántos hay: el contador del listado
+   queda solo para lectores de pantalla y el orden se alinea a la derecha. */
 .mk-vitrina .listado-encabezado {
   justify-content: flex-end;
 }
@@ -1285,14 +1288,14 @@
 }
 
 /* ---------------------------------------------------------------- Otras opciones
-   Al pie de la ficha: más vehículos de la misma automotora, primero los de
-   precio más parecido. Tres columnas, dos en pantallas medianas y una en teléfonos. */
+   Al pie de la ficha: más vehículos de la misma automotora, los de precio más
+   parecido primero. Tres columnas, dos en pantallas medianas y una en teléfonos. */
 .fx-otras {
   margin-top: clamp(56px, 7vw, 96px);
 }
 /* ---------------------------------------------------------------- Ficha dentro de la vitrina
    Abierta desde el subdominio de una automotora: su navegación en un marco
-   oscuro y su pie. */
+   nocturno (como la portada de la vitrina, sin la foto) y su pie. */
 .mk-ficha .v-cabecera {
   margin: var(--mk-marco) var(--mk-marco) 0;
   border-radius: var(--mk-radio-grande);

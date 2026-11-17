@@ -12,8 +12,8 @@ export interface CondicionesTrato {
   montoNeto: number | null; // PRECIO_NETO
 }
 
-// Liquidación de una consignación, sin descontar gastos. Montos en CLP
-// redondeados al peso.
+// Liquidación de una consignación (Módulo 9), sin descuento de gastos. Montos en
+// CLP redondeados al peso.
 // - COMISION_VENTA: la automotora cobra el % sobre el precio final de venta.
 // - PRECIO_NETO: el dueño recibe el neto garantizado; la automotora, la diferencia.
 export function calcularLiquidacion(t: CondicionesTrato, precioVenta: number): Liquidacion {
@@ -25,8 +25,8 @@ export function calcularLiquidacion(t: CondicionesTrato, precioVenta: number): L
   return { precioVenta, comision, montoConsignante: precioVenta - comision };
 }
 
-// Con comisión sobre la venta, lo que recibe el dueño no puede quedar bajo su
-// precio mínimo aceptado. Comisión máxima posible:
+// Con comisión sobre la venta, lo que recibe el dueño al precio de venta
+// no puede quedar bajo su precio mínimo aceptado. Máxima comisión posible:
 export function comisionMaxima(precioPublicacion: number, precioMinimo: number) {
   const monto = Math.max(0, precioPublicacion - precioMinimo);
   return { monto, porcentaje: precioPublicacion > 0 ? (monto / precioPublicacion) * 100 : 0 };
@@ -50,8 +50,8 @@ export function porcentajeDeGanancia(ganancia: number, precio: number) {
   return precio > 0 ? Math.round((ganancia / precio) * 10_000) / 100 : 0;
 }
 
-// % a guardar cuando la comisión se pacta en pesos: 6 decimales bastan para
-// recuperar el monto exacto al peso (ver calcularLiquidacion).
+// % a guardar cuando la comisión se pacta en pesos: 6 decimales, suficientes
+// para que el monto se recupere exacto al peso (ver calcularLiquidacion).
 export function porcentajeExacto(ganancia: number, precio: number) {
   return precio > 0 ? Math.round((ganancia / precio) * 100_000_000) / 1_000_000 : 0;
 }

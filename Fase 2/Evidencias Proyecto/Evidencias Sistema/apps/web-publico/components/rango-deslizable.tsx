@@ -4,10 +4,10 @@ import { useEffect, useRef, useState } from 'react';
 
 const miles = new Intl.NumberFormat('es-CL');
 
-// Rango con dos manillas (precio, año, kilometraje). Al arrastrar, las celdas
-// de mínimo y máximo muestran el valor al instante; también se pueden
-// escribir. El filtro se aplica al soltar (tras una breve espera) y un extremo
-// en su límite no filtra, para no excluir lo que se publique después.
+// Rango con dos manillas arrastrables (precio, año, kilometraje). Al arrastrar,
+// las celdas de mínimo y máximo muestran el valor al instante; también se
+// pueden escribir. El filtro se aplica al soltar (con una breve espera), y un
+// extremo en su límite no filtra (así no se excluye lo que se publique después).
 export function RangoDeslizable({
   titulo,
   limites,

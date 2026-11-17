@@ -57,7 +57,8 @@ export function ListaDesplegable({
     opciones.findIndex((o) => o.valor === valor),
   );
   const seleccionada = opciones.find((o) => o.valor === valor) ?? opciones[0];
-  // Sin <label> ni etiqueta explícita, el botón se nombra con la opción elegida.
+  // Sin <label> ni etiqueta explícita, el botón se nombra con la opción elegida
+  // (como hacía el <select> nativo en los filtros).
   const [enEtiqueta, setEnEtiqueta] = useState(true);
   useLayoutEffect(() => setEnEtiqueta(!!boton.current?.closest('label')), []);
 

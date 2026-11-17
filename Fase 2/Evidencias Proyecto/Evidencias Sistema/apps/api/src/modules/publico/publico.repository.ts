@@ -74,7 +74,7 @@ export interface AutomotoraDirectorioRow {
   comunas: string[];
 }
 
-export const POR_PAGINA = 30; // máximo por página
+export const POR_PAGINA = 30; // Módulo 2: máximo 30 por página
 
 const ORDEN_SQL: Record<Orden, string> = {
   recientes: 'v.fecha_ingreso DESC, v.id',
@@ -86,7 +86,7 @@ const ORDEN_SQL: Record<Orden, string> = {
   km_desc: 'v.kilometraje DESC, v.id',
 };
 
-// Publicado = DISPONIBLE, en una sucursal activa.
+// Publicado = DISPONIBLE (Módulo 7.6), en una sucursal activa.
 const BASE = `
   FROM vehiculo v
   JOIN sucursal s ON s.id = v.sucursal_id AND s.activa
@@ -255,8 +255,8 @@ export class PublicoRepository {
     return rows[0] ?? null;
   }
 
-  // Directorio del marketplace: automotoras con inventario publicado, primero
-  // las que tienen más vehículos. Solo datos públicos del perfil.
+  // Directorio del marketplace: automotoras con inventario publicado, las que
+  // tienen más vehículos primero. Solo datos públicos del perfil.
   async directorio(db: Queryable = this.pool): Promise<AutomotoraDirectorioRow[]> {
     const { rows } = await db.query<AutomotoraDirectorioRow>(
       `SELECT a.nombre, a.subdominio, a.descripcion, a.logo_url, a.banner_url,
@@ -269,8 +269,8 @@ export class PublicoRepository {
     return rows;
   }
 
-  // Todas las vitrinas con al menos una sucursal activa, tengan o no stock
-  // publicado. Para el sitemap del sitio público.
+  // Todas las vitrinas (tengan o no stock publicado): las que tienen al menos
+  // una sucursal activa. Para el sitemap del sitio público.
   async vitrinas(db: Queryable = this.pool): Promise<{ subdominio: string }[]> {
     const { rows } = await db.query<{ subdominio: string }>(
       `SELECT a.subdominio FROM automotora a

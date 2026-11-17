@@ -10,7 +10,7 @@ import {
 } from 'class-validator';
 import { trim, trimONull } from '../../vehiculos/dto/transforms';
 
-// Formulario de contacto del perfil público: llega por correo a la automotora.
+// Formulario de contacto del perfil público (Módulo 3): llega por correo a la automotora.
 export class ContactoAutomotoraDto {
   @Transform(trim)
   @IsString()

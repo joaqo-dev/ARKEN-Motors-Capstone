@@ -73,8 +73,8 @@ const configuracion = (row: AutomotoraRow) => ({
   financiamientoPlazoMaximo: row.financiamiento_plazo_maximo,
 });
 
-// Configuración de la automotora. Solo ADMIN_GENERAL (controller); se audita
-// a nivel de automotora (sucursal NULL).
+// Configuración de la automotora (Módulo 17). Cambiar la configuración es solo
+// de ADMIN_GENERAL (controller); se audita a nivel de automotora (sucursal NULL).
 @Injectable()
 export class AutomotorasService {
   constructor(
@@ -99,7 +99,7 @@ export class AutomotorasService {
     }
     const row = await this.tx.run(async (client) => {
       const actual = await this.bloquear(usuario, client);
-      // El simulador de crédito no se activa sin una tasa.
+      // El simulador de crédito no se activa sin una tasa (Módulo 17).
       const activo = dto.financiamientoActivo ?? actual.financiamiento_activo;
       const tasaFinal =
         dto.financiamientoTasaMensual !== undefined ? dto.financiamientoTasaMensual : tasa(actual);

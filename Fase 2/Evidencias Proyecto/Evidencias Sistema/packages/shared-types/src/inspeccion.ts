@@ -1,6 +1,6 @@
-// Inspección pre-compra: lista de chequeo estándar. Cada inspección copia
-// estos puntos al crearse (un cambio en la lista no altera las ya hechas) y
-// puede sumar puntos propios en cualquier sección.
+// Informe de inspección pre-compra (Módulo 7.11): lista de chequeo estándar.
+// Cada inspección copia estos puntos al crearse (así un cambio en la lista no
+// altera las ya hechas) y puede sumar puntos propios en cualquier sección.
 
 export const EVALUACIONES_INSPECCION = ['BUENO', 'REGULAR', 'MALO', 'NO_APLICA'] as const;
 export type EvaluacionInspeccion = (typeof EVALUACIONES_INSPECCION)[number];
@@ -31,8 +31,8 @@ export interface SeccionInspeccion {
   puntos: PuntoPlantilla[];
 }
 
-// Revisión pre-compra de un usado en Chile: documentación (anotaciones del
-// Registro Civil y multas), estado físico y prueba de ruta.
+// Revisión pre-compra de un vehículo usado en Chile: documentación (incluidas
+// las anotaciones del Registro Civil y multas), estado físico y prueba de ruta.
 export const SECCIONES_INSPECCION: SeccionInspeccion[] = [
   {
     codigo: 'DOCUMENTACION',
@@ -173,8 +173,8 @@ export const NOMBRE_SECCION: Record<string, string> = Object.fromEntries(
   SECCIONES_INSPECCION.map((s) => [s.codigo, s.nombre]),
 );
 
-// Resultado sugerido (quien inspecciona decide): algún punto Malo → No
-// aprobado; algún Regular → Aprobado con observaciones.
+// Resultado que el sistema sugiere (quien inspecciona decide el final): algún
+// punto Malo → No aprobado; algún Regular → Aprobado con observaciones.
 export function sugerirResultado(
   evaluaciones: (EvaluacionInspeccion | null)[],
 ): ResultadoInspeccion {

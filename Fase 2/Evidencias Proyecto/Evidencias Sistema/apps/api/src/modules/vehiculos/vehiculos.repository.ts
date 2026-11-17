@@ -232,7 +232,7 @@ export class VehiculosRepository {
   }
 
   // Bloquea la fila hasta el fin de la transacción: el valor "anterior" que se
-  // registra en bitácora/auditoría es consistente ante ediciones concurrentes.
+  // registra en bitácora/auditoría es consistente aunque haya ediciones concurrentes.
   async lockById(id: string, automotoraId: string, db: Queryable): Promise<VehiculoRow | null> {
     const { rows } = await db.query<VehiculoRow>(
       'SELECT * FROM vehiculo WHERE id = $1 AND automotora_id = $2 FOR UPDATE',

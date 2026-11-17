@@ -365,9 +365,9 @@ function BarraLateral() {
   );
 }
 
-// Riel de escritorio: un círculo por módulo; el activo, negro. El nombre
-// aparece al pasar el mouse o enfocar, en una etiqueta flotante fuera del
-// riel para que no quede recortada.
+// Riel de escritorio: un círculo por módulo; el activo, negro. El nombre aparece
+// al pasar el mouse o al enfocar (una sola etiqueta flotante, fuera del
+// desplazamiento del riel para que nunca quede recortada).
 function Riel() {
   const { esAdmin, esGeneral } = useSesion();
   const [etiquetaRiel, setEtiquetaRiel] = useState<{ texto: string; top: number } | null>(null);

@@ -1,8 +1,9 @@
 import { TipoDocumentoLegal } from './vehiculos';
 
-// Qué le falta a un vehículo: lo obligatorio para publicarlo (bloquea) y lo
-// recomendado (solo avisa). El filtro "con pendientes" de la API replica este
-// criterio en SQL (vehiculos.repository.ts): mantenerlos iguales.
+// Qué le falta a un vehículo (Módulo 7.6): lo obligatorio para publicarlo
+// (bloquea) y lo recomendado (solo avisa). El listado de la API filtra "con
+// pendientes" con el mismo criterio en SQL (vehiculos.repository.ts): si cambias
+// uno, cambia el otro.
 
 export const FOTOS_RECOMENDADAS = 6;
 

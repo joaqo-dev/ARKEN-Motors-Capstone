@@ -44,8 +44,8 @@ const esOrden = (v: unknown): v is { campo: CampoOrden; direccion: Direccion } |
     ['estado', 'precio', 'costo', 'dias'].includes((v as { campo: string }).campo) &&
     ['asc', 'desc'].includes((v as { direccion: string }).direccion));
 
-// Lo vendido y lo dado de baja van en su propia pestaña (en la URL, así
-// "‹ Volver" desde una ficha regresa a la misma).
+// Lo vendido y lo dado de baja no se mezcla con el inventario: van en su propia
+// pestaña (en la URL, así "‹ Volver" desde una ficha regresa a la misma).
 type Vista = 'inventario' | 'vendidos' | 'baja';
 const VISTAS: { id: Vista; texto: string }[] = [
   { id: 'inventario', texto: 'En inventario' },

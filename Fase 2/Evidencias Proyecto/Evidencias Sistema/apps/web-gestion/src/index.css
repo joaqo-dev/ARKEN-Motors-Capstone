@@ -9,8 +9,8 @@
   --font-sans: 'Geist Variable', ui-sans-serif, system-ui, sans-serif;
   --font-mono: 'Geist Mono Variable', ui-monospace, 'SFMono-Regular', monospace;
 
-  /* Neutros puros (sin matiz azul). En oscuro la escala se invierte y los
-     componentes usan los mismos nombres (slate-900 = texto principal,
+  /* Neutros puros (sin matiz azul). En oscuro la escala se invierte: los
+     componentes usan siempre los mismos nombres (slate-900 = texto principal,
      slate-200 = borde, superficie = tarjeta, invertido = texto sobre slate-900). */
   --color-slate-50: #f7f7f8;
   --color-slate-100: #f0f0f2;

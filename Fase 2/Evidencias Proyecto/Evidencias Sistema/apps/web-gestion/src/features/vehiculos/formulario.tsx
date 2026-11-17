@@ -204,8 +204,8 @@ interface DatosNuevo extends DatosGenerales {
   fechaFin: string;
 }
 
-// Alta de vehículo. La sucursal se autocompleta para Admin de Sucursal y
-// Vendedor; el Admin General la elige. Nace EN_PREPARACION.
+// Alta de vehículo (Módulo 7). La sucursal se autocompleta para Admin de
+// Sucursal y Vendedor; el Admin General la elige. Nace EN_PREPARACION.
 const ORIGENES = [
   {
     valor: 'COMPRA_DIRECTA',
@@ -552,7 +552,7 @@ export function FormularioFicha({ vehiculo }: { vehiculo: VehiculoDetalle }) {
   const qc = useQueryClient();
   const avisar = useAviso();
   const puedeCosto = esAdmin && vehiculo.origen !== 'CONSIGNACION';
-  // El precio de un auto publicado lo cambia un admin.
+  // El precio de un auto publicado lo cambia un admin (Módulo 7.6).
   const precioBloqueado = !esAdmin && vehiculo.estado === 'DISPONIBLE';
   const { register, handleSubmit, formState, watch, reset } = useFormulario<
     DatosGenerales & { costoAdquisicion: number }

@@ -48,8 +48,8 @@ const fechaHora = (d: Date) =>
     hourCycle: 'h23',
   }).format(d);
 
-// Informe de inspección pre-compra en PDF, sin notas internas: se puede
-// entregar al cliente.
+// Informe de inspección pre-compra en PDF (Módulo 7.11). Sin notas internas:
+// es el que se puede entregar al cliente.
 export function plantillaInspeccion(rp: typeof ReactPdf, d: InformeInspeccion) {
   const { Document, Font, Image, Page, StyleSheet, Text, View } = rp;
   // Sin separación silábica: "observaciones" no se corta con guion.

@@ -30,7 +30,7 @@ import { InspeccionesService } from './inspecciones.service';
 const MB = 1024 * 1024;
 const uuid = new ParseUUIDPipe();
 
-// Informe de inspección pre-compra: cualquier rol con acceso al vehículo.
+// Informe de inspección pre-compra (Módulo 7.11): cualquier rol con acceso al vehículo.
 @Controller()
 export class InspeccionesController {
   constructor(private readonly inspecciones: InspeccionesService) {}

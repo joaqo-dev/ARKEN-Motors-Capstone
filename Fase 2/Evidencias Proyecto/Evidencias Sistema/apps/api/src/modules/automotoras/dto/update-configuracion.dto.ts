@@ -16,7 +16,7 @@ import {
 import { trim, trimLower } from '../../auth/dto/transforms';
 import { EsTelefono } from '../../../common/validacion/telefono';
 
-// Configuración de la automotora. El subdominio no está: es fijo.
+// Configuración de la automotora (Módulo 17). El subdominio no está: es fijo.
 export class UpdateConfiguracionDto {
   @Transform(trim)
   @IsOptional()
@@ -82,7 +82,7 @@ export class UpdateConfiguracionDto {
   @Max(365)
   diasValidezTasacion?: number;
 
-  // Correos al cliente: envío del PDF al emitir, por tipo de documento.
+  // Correos al cliente (Módulo 18): envío del PDF al emitir, por tipo de documento.
   @IsOptional()
   @IsBoolean()
   correoCotizacion?: boolean;
@@ -132,7 +132,7 @@ export class UpdateConfiguracionDto {
   @Max(30)
   diasAvisoTasacion?: number | null;
 
-  // Simulador de crédito del sitio público. La tasa es % mensual; null la quita.
+  // Simulador de crédito del sitio público (Módulo 2). La tasa es % mensual; null la quita.
   @IsOptional()
   @IsBoolean()
   financiamientoActivo?: boolean;

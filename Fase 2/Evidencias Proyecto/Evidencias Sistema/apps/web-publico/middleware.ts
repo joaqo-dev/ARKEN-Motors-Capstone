@@ -1,11 +1,11 @@
 import { NextRequest, NextResponse } from 'next/server';
 import { politicaSeguridad } from './lib/csp';
 
-// Resolución de subdominio: <subdominio>.<dominio raíz>/ muestra la vitrina de
-// esa automotora, aislada del marketplace: la ficha de un vehículo usa la
-// navegación de la automotora (cabecera x-vitrina) y las rutas del
-// marketplace vuelven a su portada. En el dominio raíz,
-// /perfil/<subdominio> redirige al subdominio.
+// Resolución de subdominio (Módulo 3): <subdominio>.<dominio raíz>/ muestra el
+// perfil público de esa automotora. La vitrina queda aislada del marketplace:
+// en su subdominio, la ficha de un vehículo se muestra con la navegación de la
+// automotora (cabecera x-vitrina) y las rutas del marketplace vuelven a su
+// portada. En el dominio raíz, /perfil/<subdominio> lleva al subdominio.
 const RESERVADOS = new Set(['www', 'app', 'api']);
 
 function perfilDelHost(req: NextRequest): string | null {

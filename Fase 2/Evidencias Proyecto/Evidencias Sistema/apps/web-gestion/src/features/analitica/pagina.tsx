@@ -151,9 +151,9 @@ function descargarCsv(nombre: string, encabezados: string[], filas: (string | nu
 
 type Medida = 'ventas' | 'ingresos' | 'margen' | 'utilidadNeta';
 
-// Analítica: evolución del negocio, dónde se pierden las ventas, qué
-// inventario rota, quién vende y cómo pagan los clientes. El Vendedor no ve
-// márgenes, capital, gastos ni el ranking del equipo.
+// Analítica (Módulo 15): cómo evoluciona el negocio, dónde se pierden las
+// ventas, qué inventario rota y cuál no, quién vende y cómo pagan los clientes.
+// El Vendedor no ve márgenes, capital, gastos ni el ranking del equipo.
 export function AnaliticaPage() {
   const { esAdmin, esGeneral } = useSesion();
   const { sucursalId } = useSucursalActiva();

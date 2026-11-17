@@ -143,8 +143,8 @@ export class ApiNoDisponibleError extends Error {
   }
 }
 
-// Sin esto la API vería todas las visitas con la IP de este servidor y un solo
-// visitante agotaría el límite de todos. Caddy fija la IP real como último
+// Sin esto la API ve todas las visitas como la IP de este servidor y un solo
+// visitante agota el límite por IP de todos. Caddy fija la IP real como último
 // valor de X-Forwarded-For. Fuera de un request (build) no hay cabeceras.
 async function cabeceraIpVisitante(): Promise<Record<string, string>> {
   try {

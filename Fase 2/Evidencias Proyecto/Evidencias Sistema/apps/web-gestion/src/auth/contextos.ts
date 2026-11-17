@@ -1,9 +1,9 @@
 import { createContext } from 'react';
 import type { Automotora, Sucursal, Usuario } from '../lib/tipos';
 
-// Contextos en un módulo propio: si Vite recarga en caliente sesion.tsx o
-// sucursal-activa.tsx, el objeto de contexto no cambia y la página no pierde
-// su proveedor.
+// Contextos en un módulo propio y estable: si Vite recarga en caliente
+// sesion.tsx o sucursal-activa.tsx, el objeto de contexto no cambia y la
+// página abierta no pierde su proveedor.
 
 export interface Sesion {
   usuario: Usuario | null;

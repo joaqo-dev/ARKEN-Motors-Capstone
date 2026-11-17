@@ -22,13 +22,13 @@ export class VentasController {
     return this.ventas.obtener(id, actor);
   }
 
-  // Cierre de venta: ADMIN_GENERAL, ADMIN_SUCURSAL y VENDEDOR.
+  // Cierre de venta: ADMIN_GENERAL, ADMIN_SUCURSAL y VENDEDOR (Módulo 11).
   @Post()
   cerrar(@Body() dto: CreateVentaDto, @CurrentUser() actor: UsuarioAutenticado) {
     return this.ventas.cerrar(dto, actor);
   }
 
-  // El Vendedor nunca anula; motivo obligatorio.
+  // Módulo 12: el Vendedor nunca anula; motivo obligatorio.
   @Post(':id/anular')
   @Roles('ADMIN_GENERAL', 'ADMIN_SUCURSAL')
   anular(

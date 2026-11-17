@@ -9,7 +9,7 @@ export interface CondicionesTratoCompletas {
   precioMinimo: number;
 }
 
-// Normaliza las condiciones del trato antes de guardarlas:
+// Normaliza las condiciones del trato (Módulo 9) antes de guardarlas:
 // - COMISION_VENTA: exige porcentaje (0–100] y precio mínimo; sin monto neto.
 // - PRECIO_NETO: exige monto neto; el precio mínimo ES el neto (vender por
 //   menos deja a la automotora con pérdida); sin porcentaje.

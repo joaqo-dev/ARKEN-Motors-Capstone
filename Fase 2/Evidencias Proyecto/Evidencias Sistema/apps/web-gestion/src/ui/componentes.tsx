@@ -543,7 +543,7 @@ export function Indicador({
 }
 
 // Selector de una opción entre pocas (período, medida): píldora blanca con la
-// opción activa en tinta.
+// opción activa en tinta, como las pestañas de las referencias.
 export function Segmentado<T extends string>({
   opciones,
   actual,
@@ -589,9 +589,9 @@ export function Segmentado<T extends string>({
   );
 }
 
-// Avance de un plazo (vigencia de una cotización o reserva, plazo de una
-// consignación): barra en tinta que pasa a ámbar en la última semana (o la
-// última décima parte) y al vencer. Solo se dibuja mientras sigue abierto.
+// Cuánto de un plazo ya corrió (vigencia de una cotización o reserva, plazo de una
+// consignación): barra en píldora en tinta que se tiñe de ámbar en la última semana
+// (o la última décima parte) y al vencer. Solo se dibuja mientras sigue abierto.
 export function BarraPlazo({
   desde,
   hasta,
@@ -1457,9 +1457,10 @@ export function Nota({
   );
 }
 
-// Menú desplegable bajo un botón ("Más"): se cierra al hacer clic fuera o con
-// Escape. `alineado` es el borde del botón al que se alinea; si no cabe hacia
-// ese lado, se abre al otro.
+// Menú desplegable de acciones secundarias ("Más").
+// Menú desplegable bajo un botón: se cierra al hacer clic fuera o con Escape.
+// `alineado` es el borde del botón al que se alinea el menú; si no cabe hacia
+// ese lado (en teléfonos el botón puede quedar en un borde), se abre al otro.
 function useMenuFlotante(alineado: 'izquierda' | 'derecha') {
   const [abierto, setAbierto] = useState(false);
   const [haciaDerecha, setHaciaDerecha] = useState(alineado === 'izquierda');

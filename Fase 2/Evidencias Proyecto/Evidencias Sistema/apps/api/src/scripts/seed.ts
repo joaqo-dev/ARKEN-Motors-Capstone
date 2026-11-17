@@ -21,9 +21,9 @@ import { VehiculosService } from '../modules/vehiculos/vehiculos.service';
 import { VentasService } from '../modules/ventas/ventas.service';
 import { pngDemo } from './imagen-demo';
 
-// Seed de desarrollo: 2 automotoras, varias sucursales, un usuario de cada rol
-// y vehículos en distintos estados y orígenes. Usa los Services reales, así
-// respeta todas las reglas (folios, bitácora, auditoría, validaciones).
+// Seed de desarrollo (doc 03): 2 automotoras, varias sucursales, un usuario de
+// cada rol y vehículos en distintos estados y orígenes. Usa los Services reales,
+// así respeta todas las reglas (folios, bitácora, auditoría, validaciones).
 // Uso: pnpm --filter @vitriauto/api seed   (sobre una base vacía)
 
 const PASSWORD = 'Demo12345';
@@ -391,8 +391,8 @@ async function main() {
     agDemo,
   );
 
-  // Gastos operacionales del mes pasado y de este; uno general sin sucursal
-  // (el contador de toda la automotora).
+  // Gastos operacionales (Módulo 8) del mes pasado y de este; uno general sin
+  // sucursal (el contador de toda la automotora).
   const mesPasado = (dia: number) => {
     const [a, m] = hoyEnChile().split('-').map(Number);
     const anio = m === 1 ? a - 1 : a;

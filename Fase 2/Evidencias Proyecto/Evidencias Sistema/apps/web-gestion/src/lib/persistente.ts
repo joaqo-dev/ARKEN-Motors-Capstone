@@ -1,8 +1,8 @@
 import { useEffect, useState } from 'react';
 
-// Estado que sobrevive al cambiar de página (y al recargar), guardado en
-// sessionStorage: dura mientras la pestaña esté abierta. Si el valor guardado
-// no es válido, se ignora.
+// Estado que sobrevive al cambiar de página dentro del panel (y al recargar),
+// guardado en sessionStorage: dura mientras la pestaña esté abierta y vuelve al
+// valor por defecto en una sesión nueva. Si el valor guardado no es válido, se ignora.
 export function usePersistente<T>(
   clave: string,
   porDefecto: () => T,

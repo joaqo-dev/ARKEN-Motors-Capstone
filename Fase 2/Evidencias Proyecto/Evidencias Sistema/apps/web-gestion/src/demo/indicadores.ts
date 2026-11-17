@@ -18,8 +18,8 @@ import {
   type Rutas,
 } from './comun';
 
-// Dashboard y analítica calculados sobre los datos en memoria, con las mismas
-// reglas que apps/api/src/modules/dashboard.
+// Dashboard (Módulo 14) y Analítica (Módulo 15), calculados sobre los datos en
+// memoria con las mismas reglas que apps/api/src/modules/dashboard.
 
 const DIAS_ESTANCADO = 45;
 const DIAS_RESERVA_POR_VENCER = 1;

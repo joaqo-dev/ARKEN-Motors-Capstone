@@ -113,9 +113,9 @@ export class ConsignacionesRepository {
     return rows[0];
   }
 
-  // El scope se aplica sobre la sucursal actual del vehículo (quien lo tiene
-  // decide extender o devolver). El folio y la atribución siguen en la sucursal
-  // fijada en la consignación.
+  // Gestión operativa: el scope se aplica sobre la sucursal ACTUAL del vehículo
+  // (quien lo tiene decide extender o devolver). El folio y la atribución
+  // siguen en la sucursal congelada de la consignación.
   async findAllScoped(
     scope: Scope,
     filtro: FiltroConsignaciones,

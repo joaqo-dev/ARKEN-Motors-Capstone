@@ -15,7 +15,8 @@
     "format:check": "prettier --check .",
     "db:up": "docker compose up -d postgres",
     "db:migrate": "node-pg-migrate -m migrations -j sql --envPath .env up",
-    "db:reset": "node scripts/db-reset.mjs"
+    "db:reset": "node scripts/db-reset.mjs",
+    "db:nueva": "node-pg-migrate create -m migrations -j sql"
   },
   "devDependencies": {
     "@eslint/js": "^9.17.0",

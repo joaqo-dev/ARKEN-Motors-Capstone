@@ -54,11 +54,11 @@ export function toGastoResponse(row: GastoDetalleRow) {
   };
 }
 
-// Gastos. Solo ADMIN_GENERAL / ADMIN_SUCURSAL (controller): son costos y el
-// Vendedor no los ve. Dos tipos:
+// Gastos (Módulo 8). Solo ADMIN_GENERAL / ADMIN_SUCURSAL (controller): el
+// Vendedor no registra ni ve gastos, porque son costos. Dos tipos:
 // - VEHICULO: costo directo de un auto (entra en su margen al venderse).
 // - OPERACIONAL: arriendo, sueldos... de una sucursal o generales de la
-//   automotora (solo ADMIN_GENERAL): se restan del resultado del período.
+//   automotora (sin sucursal, solo ADMIN_GENERAL): se restan del resultado del período.
 @Injectable()
 export class GastosService {
   constructor(
@@ -131,7 +131,7 @@ export class GastosService {
     const clave = archivo ? await this.almacenamiento.guardarDocumento(archivo) : null;
     try {
       const id = await this.tx.run(async (client) => {
-        // Bloquea el vehículo: el gasto queda en la sucursal que tiene al crearlo.
+        // Bloquea el vehículo: la sucursal que se congela es la que tiene al momento de crear.
         const actual = await this.vehiculos.lockById(vehiculoId, actor.automotoraId, client);
         const scope = getScope(actor);
         if (!actual || (scope.sucursalId && actual.sucursal_id !== scope.sucursalId)) {
@@ -175,8 +175,8 @@ export class GastosService {
     }
   }
 
-  // Gasto operacional (sin vehículo). El Admin de Sucursal lo registra en la
-  // suya; el Admin General elige una o ninguna (gasto general).
+  // Gasto operacional (sin vehículo). La sucursal: el Admin de Sucursal, siempre
+  // la suya; el Admin General elige una o ninguna (gasto general de la automotora).
   async crearOperacional(
     dto: CreateGastoOperacionalDto,
     adjunto: { buffer: Buffer } | undefined,
@@ -213,8 +213,8 @@ export class GastosService {
     }
   }
 
-  // Editable mientras el vehículo no esté vendido; después se anula y se crea
-  // otro. Un gasto operacional es editable mientras esté activo.
+  // Editable mientras el vehículo no esté vendido; después, se anula y se crea otro.
+  // Un gasto operacional es editable mientras esté activo.
   async actualizar(id: string, dto: UpdateGastoDto, actor: UsuarioAutenticado) {
     const gasto = await this.buscarOFallar(id, actor);
     if (dto.fecha !== undefined) this.validarFecha(dto.fecha);
@@ -363,7 +363,7 @@ export class GastosService {
       {
         automotoraId: actor.automotoraId,
         usuarioId: actor.id,
-        sucursalId: gasto.sucursal_id, // sucursal del gasto (null = general)
+        sucursalId: gasto.sucursal_id, // la sucursal congelada del gasto (null = general)
         accion,
         entidadTipo: 'GASTO',
         entidadId: gasto.id,

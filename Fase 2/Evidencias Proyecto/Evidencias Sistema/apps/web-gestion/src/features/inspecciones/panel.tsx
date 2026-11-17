@@ -8,8 +8,8 @@ import { useAviso } from '../../ui/toast';
 import type { VehiculoDetalle } from '../vehiculos/tipos';
 import type { InspeccionDetalle, InspeccionResumen } from './tipos';
 
-// Pestaña "Inspección" del vehículo: historial de informes y acceso para
-// iniciar uno nuevo o continuar el borrador.
+// Pestaña "Inspección" del vehículo (Módulo 7.11): historial de informes y
+// acceso para iniciar uno nuevo o continuar el borrador.
 export function PanelInspecciones({ vehiculo }: { vehiculo: VehiculoDetalle }) {
   const navegar = useNavigate();
   const qc = useQueryClient();

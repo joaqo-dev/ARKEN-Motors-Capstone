@@ -17,9 +17,9 @@ const plural = (n: number, uno: string, varios: string) =>
 
 export const metadata: Metadata = { alternates: { canonical: '/' } };
 
-// Portada del marketplace: buscador, lo recién publicado y accesos por marca,
-// tipo y región. Todo sale del inventario publicado: si una sección no tiene
-// datos, no se muestra.
+// Portada del marketplace global (Módulo 2): buscador, lo recién publicado y
+// accesos por marca, tipo y región (sin directorio de automotoras). Todo sale del inventario
+// publicado real (nada inventado): si una sección no tiene datos, no se muestra.
 export default async function PortadaPage() {
   const [recientes, filtros, automotoras] = await Promise.all([
     api.buscar(paramsBusqueda({ orden: 'recientes' })),
@@ -36,7 +36,7 @@ export default async function PortadaPage() {
 
   const total = recientes?.total ?? 0;
   const conFoto = (recientes?.items ?? []).filter((v) => v.fotoPortada);
-  // El hero abre con autos (las motos van al final).
+  // El hero abre con autos (las motos van al final): la portada promete autos.
   const paraHero = [
     ...conFoto.filter((v) => v.categoria !== 'MOTO'),
     ...conFoto.filter((v) => v.categoria === 'MOTO'),

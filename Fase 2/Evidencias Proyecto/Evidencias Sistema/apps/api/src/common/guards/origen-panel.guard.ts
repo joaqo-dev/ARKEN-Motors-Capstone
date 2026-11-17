@@ -8,10 +8,12 @@ import {
 import type { Request } from 'express';
 import { APP_CONFIG, AppConfig } from '../../config/env';
 
-// Las rutas de /auth que se saltan el CSRF (login, registro, refresh...) no
-// tienen token que validar. Exigir un Origin del panel evita el login CSRF: que
-// un sitio ajeno inicie sesión a la víctima en la cuenta del atacante. Sin
-// Origin (curl, tests) no hay navegador que engañar.
+// Las rutas de /auth que se saltan el CSRF (login, registro, refresh, etc.) no
+// tienen token que validar. Sin este chequeo, un sitio ajeno podría enviar un
+// formulario a /auth/login con las credenciales del atacante y dejar a la
+// víctima dentro de esa cuenta (login CSRF). Los navegadores siempre envían
+// Origin en un POST entre sitios; sin Origin (curl, tests) no hay navegador
+// que engañar.
 @Injectable()
 export class OrigenPanelGuard implements CanActivate {
   constructor(@Inject(APP_CONFIG) private readonly config: AppConfig) {}

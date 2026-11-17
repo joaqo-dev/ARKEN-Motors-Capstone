@@ -22,8 +22,9 @@ export function Mosaico({ fotos, alt }: { fotos: string[]; alt: string }) {
           onClick={() => setAbierta(i)}
           aria-label={`Ver foto ${i + 1} de ${fotos.length} en grande`}
         >
-          {/* Todo el mosaico está a la vista al abrir: sin carga diferida */}
-          <img src={f} alt={i === 0 ? alt : ''} />
+          {/* Todo el mosaico está a la vista al abrir: sin carga diferida. La portada
+              es el contenido principal (LCP): va con prioridad alta. */}
+          <img src={f} alt={i === 0 ? alt : ''} fetchPriority={i === 0 ? 'high' : 'auto'} />
         </button>
       ))}
       <button type="button" className="vt-mosaico-ver" onClick={() => setAbierta(0)}>

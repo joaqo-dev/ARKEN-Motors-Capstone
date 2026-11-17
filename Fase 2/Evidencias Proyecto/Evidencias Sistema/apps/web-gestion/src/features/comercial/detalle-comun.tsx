@@ -117,7 +117,7 @@ export function DetalleDocumento({
   emitidoPor: string;
   vence?: string;
   anulacion?: { titulo: string; motivo: string; fecha: string | null; extra?: ReactNode } | null;
-  // Historial y reenvío de los correos al cliente.
+  // Historial y reenvío de los correos al cliente (Módulo 18).
   correos?: { tipo: TipoDocumentoCorreo; id: string };
   children: ReactNode;
 }) {

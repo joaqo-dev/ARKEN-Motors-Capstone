@@ -122,7 +122,7 @@ export function BarrasVerticales({
                   y={barra.valor >= 0 ? arriba : y(0)}
                   width={anchoBarra}
                   height={alto}
-                  // Barras en cápsula.
+                  // Barras en cápsula, como las del dashboard de referencia.
                   rx={Math.min(anchoBarra / 2, alto / 2)}
                   className={cx(
                     'transition-[fill] duration-150',

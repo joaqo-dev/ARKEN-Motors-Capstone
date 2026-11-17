@@ -42,8 +42,8 @@ export class EmailService {
   }
 
   // Formulario de contacto del perfil público: llega al correo de la automotora
-  // y se responde directo al visitante. Este sí lanza si falla, para avisarle
-  // al visitante que su mensaje no llegó.
+  // y se responde directo al visitante. Este sí informa si falló (el visitante
+  // debe saber que su mensaje no llegó).
   async enviarContactoVitrina(para: string, datos: ContactoVitrinaProps): Promise<boolean> {
     const asunto = `Mensaje de ${datos.nombre} desde tu página`;
     if (!this.resend) {
@@ -70,9 +70,9 @@ export class EmailService {
     }
   }
 
-  // Correos a clientes de una automotora: remitente con su nombre y la
-  // dirección de la plataforma; las respuestas van a la automotora. Lanza si el
-  // proveedor lo rechaza: la bandeja de salida reintenta.
+  // Correos a clientes de una automotora (Módulo 18): remitente con el nombre de
+  // la automotora y la dirección de la plataforma; las respuestas van a la
+  // automotora. Lanza si el proveedor lo rechaza: la bandeja de salida reintenta.
   async enviarAlCliente(correo: {
     automotora: string;
     responderA: string;
@@ -125,8 +125,8 @@ export class EmailService {
       if (error) throw new Error(error.message);
     } catch (err) {
       const motivo = err instanceof Error ? err.message : String(err);
-      // Fuera de producción se muestra el link para seguir probando (Resend en
-      // modo prueba solo entrega al dueño de la cuenta).
+      // Fuera de producción se muestra el link para poder seguir probando
+      // (p. ej. Resend en modo prueba solo entrega al dueño de la cuenta).
       this.logger.error(
         `No se pudo enviar "${asunto}" a ${para}: ${motivo}` +
           (esProduccion ? '' : ` — link: ${link}`),

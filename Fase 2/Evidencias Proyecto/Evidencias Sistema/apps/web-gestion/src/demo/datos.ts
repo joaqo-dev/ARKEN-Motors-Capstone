@@ -16,10 +16,10 @@ import type {
 } from './db';
 import { fotosDe } from './fotos';
 
-// Datos de ejemplo: tres automotoras inventadas. Nombres, RUTs (sobre 30
-// millones, sin asignar), teléfonos (+56 9 5555 xxxx) y emails (@example.com)
-// son ficticios. Las fechas son relativas al día de creación, para que el
-// dashboard siempre muestre un período con movimiento.
+// Datos de ejemplo de la demo: tres automotoras inventadas. Nombres, RUTs
+// (sobre 30 millones, sin asignar a personas), teléfonos (+56 9 5555 xxxx)
+// y emails (@example.com) son ficticios. Las fechas son relativas al día en
+// que se crean, para que el dashboard siempre muestre un período con movimiento.
 
 const DIA = 86_400_000;
 
@@ -534,7 +534,7 @@ export function crearDatos(): Db {
       fotos: fotosDe(d.foto).map((url, i) => ({ id: id('foto'), url, orden: i })),
       documentos: [],
     };
-    // Documentos legales vigentes: permiso y SOAP vencen el 31 de marzo.
+    // Documentos legales vigentes (Módulo 7.5): permiso y SOAP vencen el 31 de marzo.
     const anio = Number(hoy().slice(0, 4));
     const marzo = hoy().slice(5) > '03-31' ? `${anio + 1}-03-31` : `${anio}-03-31`;
     const docs: [string, string][] = [

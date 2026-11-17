@@ -60,8 +60,8 @@ export interface NuevaVenta {
   usuarioId: string;
 }
 
-// Scope sobre la sucursal fijada en la venta (o la actual del vehículo, que
-// no cambia: un vehículo vendido no se transfiere).
+// Scope: filtro sobre la sucursal CONGELADA de la venta (o la actual del
+// vehículo, que no cambia tras venderse: un vehículo vendido no se transfiere).
 const SELECT_DETALLE = `
   SELECT d.*, s.nombre AS sucursal_nombre, cl.nombre AS cliente_nombre, cl.rut AS cliente_rut,
          v.patente AS vehiculo_patente, v.marca || ' ' || v.modelo || ' ' || v.anio AS vehiculo_descripcion,

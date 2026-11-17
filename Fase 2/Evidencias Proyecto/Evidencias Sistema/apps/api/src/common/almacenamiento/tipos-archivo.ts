@@ -1,6 +1,6 @@
-// Detecta el tipo real de un archivo por su firma de bytes, no por la
-// extensión ni el Content-Type del cliente.
-// heic/avif: formatos de celular que se aceptan como foto y se convierten a webp.
+// Detección del tipo real de un archivo por su firma de bytes (no por extensión
+// ni por el Content-Type declarado por el cliente).
+// heic/avif: formatos de celular (iPhone) que se aceptan como foto y se convierten a webp.
 export type TipoArchivo = 'jpg' | 'png' | 'webp' | 'pdf' | 'heic' | 'avif';
 
 export const MIME_POR_TIPO: Record<TipoArchivo, string> = {

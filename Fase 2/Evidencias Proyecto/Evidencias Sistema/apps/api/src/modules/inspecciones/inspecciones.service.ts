@@ -73,8 +73,8 @@ export function agruparPuntos(puntos: PuntoRow[], interno: boolean) {
   })).filter((s) => s.puntos.length > 0);
 }
 
-// Informe de inspección pre-compra. El acceso es el del vehículo: cualquier
-// rol de la sucursal donde está hoy (o el Admin General).
+// Informe de inspección pre-compra (Módulo 7.11). El acceso es el del
+// vehículo: cualquier rol de la sucursal donde está hoy (o el Admin General).
 @Injectable()
 export class InspeccionesService {
   constructor(
@@ -295,9 +295,9 @@ export class InspeccionesService {
     await Promise.all(fotos.map((url) => this.almacenamiento.eliminar(url)));
   }
 
-  // En la ficha del vehículo, con su sucursal. Las ediciones punto a punto del
-  // borrador no se auditan: el resultado queda fijo al finalizar y descartarlo
-  // deja registro.
+  // En la ficha del vehículo, con su sucursal (como el resto de su auditoría).
+  // Las ediciones del borrador punto a punto no se auditan: el resultado queda
+  // fijo al finalizar, y descartarlo deja registro.
   private async auditar(
     actor: UsuarioAutenticado,
     vehiculo: { id: string; sucursal_id: string },

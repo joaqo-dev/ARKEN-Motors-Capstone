@@ -10,3 +10,8 @@ coverage
 !.env.example
 .DS_Store
 uploads
+
+# Impeccable: configuración/caché por desarrollador y binario del motor (se descarga solo)
+.impeccable/config.local.json
+.impeccable/hook.cache.json
+.claude/skills/impeccable/scripts/bin/

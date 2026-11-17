@@ -2,10 +2,10 @@
 
 import { useEffect, useRef, type ReactNode } from 'react';
 
-// Navegación fija de la vitrina: se esconde al bajar y vuelve al subir un
-// poco. Arriba de todo es transparente sobre el hero; con scroll toma fondo
-// oscuro. Escribe atributos en el DOM (sin estado de React) para que el
-// scroll no re-renderice.
+// Navegación fija de la vitrina: se esconde al bajar (deja ver los autos) y
+// vuelve apenas se sube un poco. Arriba de todo es transparente sobre el hero;
+// apenas hay scroll toma fondo nocturno para leerse sobre cualquier sección.
+// Escribe atributos en el DOM (sin estado de React): el scroll no re-renderiza.
 
 const TOLERANCIA = 6; // px: ignora el temblor de un trackpad
 const ALTO = 76; // px: alto de la barra (--v-nav-alto)
@@ -18,8 +18,8 @@ export function NavDesplazable({ children }: { children: ReactNode }) {
     if (!el) return;
     let ultimo = window.scrollY;
 
-    // El navegador emite scroll a lo más una vez por cuadro: se procesa de
-    // inmediato (solo cambia dos atributos).
+    // El navegador ya emite scroll a lo más una vez por cuadro: se procesa al
+    // tiro (solo cambia dos atributos), sin esperar otro cuadro.
     const alScroll = () => {
       const y = Math.max(0, window.scrollY);
       el.toggleAttribute('data-fondo', y > 4);

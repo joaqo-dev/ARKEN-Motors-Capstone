@@ -1,8 +1,8 @@
 import { VERSION_TERMINOS } from '@vitriauto/shared-types';
 
-// Datos del titular de Vitriauto para los Términos y la Política de
-// privacidad. Se configuran por entorno; mientras falten, la página lo indica
-// entre corchetes.
+// Datos del titular de Vitriauto que aparecen en los Términos y la Política de
+// privacidad. Se configuran por entorno al desplegar; mientras falten, la
+// página lo indica entre corchetes (no se inventan datos legales).
 const o = (valor: string | undefined, faltante: string) => valor?.trim() || `[${faltante}]`;
 
 export const TITULAR = {

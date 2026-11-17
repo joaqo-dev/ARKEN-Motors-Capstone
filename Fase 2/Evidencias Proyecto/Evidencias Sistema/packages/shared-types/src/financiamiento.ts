@@ -1,5 +1,5 @@
-// Simulador de crédito del sitio público. Sistema francés, cuota fija; solo
-// referencial: no incluye seguros, gastos ni impuesto de timbres.
+// Simulador de crédito del sitio público (Módulo 2). Sistema francés, cuota
+// fija; solo referencial: no incluye seguros, gastos ni impuesto de timbres.
 
 export const PLAZOS_CREDITO = [12, 24, 36, 48, 60] as const;
 export const PIE_MAXIMO_CREDITO = 80; // % del precio

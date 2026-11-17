@@ -1,5 +1,5 @@
-// SEO de la vitrina: título y descripción con que la automotora aparece en
-// Google. Lo usan el sitio público y la vista previa de Configuración.
+// SEO de la vitrina (Módulo 3): título y descripción con los que la automotora
+// aparece en Google. Los usa el sitio público y la vista previa de Configuración.
 
 // "Providencia", "Providencia y Viña del Mar", "A, B y C"
 export function unirComunas(comunas: string[]): string {
@@ -16,8 +16,8 @@ export function tituloSeoAutomotora(nombre: string, comunas: string[]): string {
 // Google muestra unos 160 caracteres de la descripción.
 export const LARGO_DESCRIPCION_SEO = 160;
 
-// La descripción propia (recortada a lo que muestra Google) o, si no hay, una
-// armada con sus sucursales.
+// La descripción propia (recortada a lo que Google muestra) o, si no tiene,
+// una armada con sus sucursales.
 export function descripcionSeoAutomotora(
   nombre: string,
   descripcion: string | null,

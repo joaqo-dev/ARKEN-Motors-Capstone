@@ -23,7 +23,7 @@ export interface ArchivoSubido {
 }
 
 // Fotos (públicas, 1 a 30, la primera es la portada) y documentos legales
-// (privados; al renovar se conserva el historial) de un vehículo.
+// (privados, con renovación que conserva el historial) de un vehículo.
 @Injectable()
 export class VehiculoArchivosService {
   constructor(
@@ -140,8 +140,8 @@ export class VehiculoArchivosService {
   ) {
     if (!archivo) throw new BadRequestException('Adjunta el archivo del documento');
     const vehiculo = await this.buscarOFallar(vehiculoId, actor);
-    // Reglas por tipo: las fechas imposibles se rechazan y, cuando la regla fija
-    // el vencimiento, se usa ese y no el del cliente.
+    // Reglas por tipo (Módulo 7.5): fechas imposibles se rechazan y, cuando la
+    // regla fija el vencimiento, se usa ese y no el que venga del cliente.
     const regla = validarDocumentoLegal(dto, vehiculo, hoyEnChile());
     if (!regla.ok) throw new BadRequestException(regla.error);
     const validado = this.almacenamiento.validarDocumento(archivo.buffer);

@@ -156,7 +156,7 @@ function crear(c: Contexto) {
     ...g,
     costoAdquisicion: origen === 'CONSIGNACION' ? 0 : Number(b.costoAdquisicion ?? 0),
     origen,
-    // Sin fotos no se publica: entra en preparación.
+    // Sin fotos no se publica: entra en preparación (Módulo 7).
     estado: 'EN_PREPARACION',
     fechaIngreso,
     fotos: [],
@@ -201,7 +201,7 @@ function editar(c: Contexto) {
   const b = cuerpo(c);
   const g = datosGenerales(b);
   if (b.precioVenta === undefined) g.precioVenta = v.precioVenta;
-  // El precio de un auto publicado lo cambia un admin.
+  // El precio de un auto publicado lo cambia un admin (Módulo 7.6).
   if (!c.esAdmin && v.estado === 'DISPONIBLE' && g.precioVenta !== v.precioVenta) {
     throw fallo(403, 'El precio de un vehículo publicado solo lo cambia un admin');
   }
@@ -255,7 +255,7 @@ function cambiarEstado(c: Contexto) {
       `Un vehículo ${etiqueta(v.estado).toLowerCase()} cambia de estado desde su reserva o venta`,
     );
   }
-  // Revisión antes de publicar, como en la API.
+  // Revisión antes de publicar (Módulo 7.6), como en la API.
   if (estado === 'DISPONIBLE' && !c.esAdmin) {
     throw fallo(403, 'Solo un admin publica vehículos: envíalo a revisión');
   }
@@ -383,7 +383,7 @@ function ordenarFotos(c: Contexto) {
     .filter((f) => f !== null);
 }
 
-// Mismas reglas de fechas que la API.
+// Mismas reglas de fechas que la API (Módulo 7.5).
 function listarDocumentos(c: Contexto) {
   return vehiculoDelAlcance(c, c.params.id!).documentos.map(({ cargadoPorId: _, ...d }) => d);
 }
@@ -529,7 +529,7 @@ function bitacora(c: Contexto) {
     }));
 }
 
-// ---------------------------------------------------------------- Inspección pre-compra
+// ---------------------------------------------------------------- Inspección pre-compra (Módulo 7.11)
 
 function puntosDe(ins: FilaInspeccion) {
   return ins.secciones.flatMap((s) => s.puntos);

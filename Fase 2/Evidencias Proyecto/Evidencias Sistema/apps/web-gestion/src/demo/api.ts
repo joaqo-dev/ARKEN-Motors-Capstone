@@ -3,8 +3,8 @@ import { datos, guardar, restaurar } from './db';
 import { atender } from './servidor';
 
 // Modo demo: reemplaza al cliente HTTP del panel (src/lib/api.ts) con la misma
-// firma. Las requests las atiende un servidor en memoria y cada cambio se
-// guarda en localStorage. Sin red, cookies ni tokens.
+// firma. Las requests las atiende el "servidor" en memoria y cada cambio se
+// guarda en localStorage. No hay red, cookies ni tokens.
 
 export { ApiError, qs };
 
@@ -18,7 +18,7 @@ interface Opciones {
 // En la demo la sesión no expira.
 export function onSesionExpirada(_fn: () => void) {}
 
-// Breve espera para que los estados de carga se vean como en el panel real.
+// Una pequeña espera para que los estados de carga se vean como en el panel real.
 const espera = (ms: number) => new Promise((r) => setTimeout(r, ms));
 
 export async function api<T>(metodo: Metodo, ruta: string, opciones: Opciones = {}): Promise<T> {

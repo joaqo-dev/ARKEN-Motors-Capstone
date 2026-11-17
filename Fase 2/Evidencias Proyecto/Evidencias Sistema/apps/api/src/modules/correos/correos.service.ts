@@ -68,9 +68,9 @@ export function toCorreoResponse(row: CorreoHistorialRow) {
   };
 }
 
-// Correos al cliente. Todo pasa por la bandeja de salida (tabla `correo`): el
-// documento ya está guardado al encolar y el envío ocurre aparte, con
-// reintentos, sin revertir ni bloquear la operación.
+// Correos al cliente (Módulo 18). Todo pasa por la bandeja de salida (tabla
+// `correo`): el documento ya está guardado cuando se encola, y el envío ocurre
+// aparte, con reintentos, sin revertir ni bloquear la operación.
 @Injectable()
 export class CorreosService {
   private readonly logger = new Logger(CorreosService.name);

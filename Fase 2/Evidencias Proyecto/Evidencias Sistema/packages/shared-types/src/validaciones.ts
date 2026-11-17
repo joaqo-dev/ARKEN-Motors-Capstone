@@ -99,10 +99,12 @@ const SIGLAS_MARCA = new Set([
   'SEAT',
 ]);
 
-// Normaliza marca y modelo ("toyota HILUX" = "Toyota Hilux"): cada palabra o
-// parte separada por guion con mayúscula inicial. Van en mayúsculas las que
-// llevan dígitos ("CX-5", "RAV4"), las siglas conocidas ("BMW") y las partes
-// de 2 a 4 letras sin vocales ("CB 190R", "XTZ 250", "YZF-R3").
+// Normaliza marca y modelo para que "toyota HILUX" y "Toyota Hilux" sean lo
+// mismo: cada palabra (y cada parte separada por guion) con mayúscula inicial,
+// salvo las que llevan dígitos ("CX-5", "RAV4", "3008"), las siglas conocidas
+// ("BMW") y las partes de 2 a 4 letras sin vocales, que casi siempre son siglas
+// de modelo, sobre todo en motos ("CB 190R", "XTZ 250", "YZF-R3"): van
+// completas en mayúsculas. No depende de cómo se escribió ("xtz" = "XTZ").
 const SIGLA_SIN_VOCALES = /^[b-df-hj-np-tv-z]{2,4}$/i;
 
 export function normalizarNombreVehiculo(texto: string): string {
@@ -125,9 +127,9 @@ export function normalizarNombreVehiculo(texto: string): string {
     .join(' ');
 }
 
-// Teléfono chileno para mostrar: "+56 9 1234 5678" (celular) o
-// "+56 2 2233 4455" (fijo). Acepta el número con o sin +56 y espacios; si no
-// calza con el formato, lo devuelve tal cual.
+// Teléfono chileno para mostrar: "+56 9 1234 5678" (celular) o "+56 2 2233 4455"
+// (fijo), agrupado como +CC D DDDD DDDD. Acepta el número con o sin +56, con o
+// sin espacios; si no calza con ese formato, lo devuelve tal cual.
 export function formatearTelefono(telefono: string): string {
   let digitos = telefono.replace(/\D/g, '');
   if (digitos.length === 9) digitos = `56${digitos}`;
@@ -135,9 +137,9 @@ export function formatearTelefono(telefono: string): string {
   return `+${digitos.slice(0, 2)} ${digitos.slice(2, 3)} ${digitos.slice(3, 7)} ${digitos.slice(7)}`;
 }
 
-// RUT para mostrar o mientras se escribe: "12.345.678-5". Acepta puntos y
-// guion opcionales y texto parcial (el último carácter es siempre el dígito
-// verificador). Se guarda con normalizarRut.
+// RUT para mostrar o mientras se escribe: "12.345.678-5". Acepta el RUT con o
+// sin puntos y guion; con texto parcial formatea lo que haya (el último carácter
+// es siempre el dígito verificador). Se guarda normalizado con normalizarRut.
 export function formatearRut(rut: string): string {
   const limpio = rut.replace(/[^0-9kK]/g, '').toUpperCase();
   // La K solo puede ser el dígito verificador.

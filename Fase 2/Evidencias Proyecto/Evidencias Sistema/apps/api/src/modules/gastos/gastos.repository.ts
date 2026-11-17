@@ -90,9 +90,9 @@ const SELECT_DETALLE = `
 export class GastosRepository {
   constructor(@Inject(PG_POOL) private readonly pool: Pool) {}
 
-  // El scope se aplica sobre la sucursal fijada en el gasto. Los generales (sin
-  // sucursal) solo los ve el ADMIN_GENERAL y sin filtro de sucursal (vista
-  // consolidada).
+  // Listado/reporte: el scope se aplica sobre la sucursal CONGELADA del gasto.
+  // Los gastos generales (sin sucursal) solo los ve quien no tiene scope de
+  // sucursal (ADMIN_GENERAL) y sin filtro de sucursal (vista consolidada).
   async findAll(
     scope: Scope,
     filtro: FiltroGastos,
@@ -152,8 +152,9 @@ export class GastosRepository {
     return rows;
   }
 
-  // Acceso a un gasto: desde la sucursal donde se registró o donde está hoy el
-  // vehículo. Un gasto general solo es accesible para el ADMIN_GENERAL.
+  // Acceso a un gasto puntual: desde la sucursal donde se registró o desde la
+  // sucursal donde está hoy el vehículo. Un gasto general (sin sucursal) solo
+  // es accesible sin scope de sucursal (ADMIN_GENERAL).
   async findByIdAccesible(
     id: string,
     scope: Scope,
@@ -177,8 +178,8 @@ export class GastosRepository {
     return rows[0] ?? null;
   }
 
-  // Debe llamarse dentro de una transacción (recibe el client): el advisory lock
-  // serializa los gastos de la automotora hasta el COMMIT, así dos gastos
+  // Debe llamarse dentro de una transacción (recibe el client): el advisory
+  // lock serializa los gastos de la automotora hasta el COMMIT, así dos gastos
   // simultáneos no obtienen el mismo número.
   async create(data: NuevoGasto, db: PoolClient): Promise<GastoRow> {
     await db.query('SELECT pg_advisory_xact_lock(hashtext($1))', [

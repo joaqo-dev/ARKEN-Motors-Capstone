@@ -165,7 +165,7 @@ export class CreateVehiculoDto extends DatosGeneralesVehiculoDto {
   @IsUUID()
   sucursalId?: string;
 
-  // COMPRA_PARTICULAR: la tasación ACEPTADA que originó la compra.
+  // COMPRA_PARTICULAR: la tasación ACEPTADA que originó la compra (Módulo 10.3).
   @ValidateIf((o: CreateVehiculoDto) => o.origen === 'COMPRA_PARTICULAR')
   @IsDefined({ message: 'tasacionId es obligatoria cuando origen = COMPRA_PARTICULAR' })
   @IsUUID()

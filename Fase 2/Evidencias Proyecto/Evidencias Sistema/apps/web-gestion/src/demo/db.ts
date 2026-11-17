@@ -21,7 +21,7 @@ export interface FilaCliente extends Cliente {
 
 export interface FilaVehiculo {
   id: string;
-  // Lo que un admin pidió corregir al devolverlo de revisión.
+  // Lo que un admin pidió corregir al devolverlo de revisión (Módulo 7.6).
   observacionRevision?: string | null;
   automotoraId: string;
   sucursalId: string;
@@ -73,7 +73,7 @@ export interface FilaCotizacion {
   id: string;
   folio: number;
   automotoraId: string;
-  sucursalId: string; // sucursal fijada al emitir
+  sucursalId: string; // congelada al emitir
   clienteId: string;
   vehiculoId: string;
   precioCotizado: number;

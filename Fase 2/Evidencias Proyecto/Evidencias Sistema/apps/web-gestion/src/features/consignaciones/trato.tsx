@@ -93,9 +93,9 @@ const textoPorcentaje = (v: number | null) =>
 const num = (v: string) => (v === '' ? null : Number(v));
 const texto = (v: number | null) => (v === null || Number.isNaN(v) ? '' : String(v));
 
-// Condiciones del trato con el consignante:
-// - Comisión: un campo que se ingresa en % o en $ (es el mismo dato), más el
-//   precio mínimo aceptado. Siempre se guarda el %.
+// Condiciones del trato con el consignante. Un dato por concepto:
+// - Comisión: un solo campo que se ingresa en % o en $ (es el mismo dato), más
+//   el precio mínimo aceptado. Siempre se guarda el %.
 // - Precio neto: solo lo que recibe el dueño.
 // El reparto resultante se resume en una frase, sobre el precio de venta.
 export function CondicionesTrato({

@@ -12,9 +12,9 @@ export interface EstadoContacto {
 
 const CAMPOS = ['nombre', 'email', 'telefono', 'sucursalId', 'mensaje', 'sitioWeb'] as const;
 
-// Formulario de contacto de la vitrina: se envía desde el servidor de Next a
-// la API (sin CORS ni cookies), reenviando la IP del visitante para que el
-// límite de la API sea por persona y no por servidor.
+// Formulario de contacto de la vitrina: se envía desde el servidor de Next a la
+// API (sin CORS ni cookies). Se reenvía la IP del visitante para que el límite
+// de envíos de la API sea por persona y no por servidor.
 export async function enviarContacto(
   subdominio: string,
   _previo: EstadoContacto,

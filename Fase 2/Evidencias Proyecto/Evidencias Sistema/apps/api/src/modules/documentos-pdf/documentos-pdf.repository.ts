@@ -13,8 +13,8 @@ const TABLA: Record<TipoDocumentoComercial, string> = {
   VENTA: 'venta',
 };
 
-// Datos comunes del encabezado (automotora + sucursal del documento) y del
-// cliente, presentes en los 4 documentos.
+// Datos comunes del encabezado (automotora + sucursal congelada del documento)
+// y del cliente, presentes en los 4 documentos.
 export interface DatosEncabezado {
   folio: number;
   automotora_nombre: string;

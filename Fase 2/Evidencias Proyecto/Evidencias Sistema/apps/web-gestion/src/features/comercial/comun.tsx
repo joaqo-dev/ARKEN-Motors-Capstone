@@ -162,9 +162,9 @@ export function useVehiculoInicial(id: string | null) {
 
 // ---------------------------------------------------------------- Adicionales
 
-// Adicionales de una cotización o venta (p. ej. traspaso): suman al total a
-// pagar y aparecen en el documento, pero nunca en el margen ni en el cuadre de
-// pagos. Un monto de $0 registra algo sin costo (p. ej. de regalo).
+// Ej. traspaso: aparecen en el documento, nunca en márgenes ni en el cuadre de pagos.
+// Adicionales de una cotización o venta (ej. traspaso): suman al total a pagar,
+// nunca al margen. Un monto de $0 deja registrado algo sin costo (ej. de regalo).
 export function CostosAdicionales<T extends { costos: { descripcion: string; monto: number }[] }>({
   control,
   register,
@@ -426,8 +426,8 @@ export function BotonPdf({ url, texto = 'Descargar PDF' }: { url: string; texto?
   );
 }
 
-// Resumen lateral de un documento en curso (cotización, reserva): quién, qué,
-// sus cifras y el total destacado.
+// Resumen lateral de un documento en curso (cotización, reserva): quién y qué, las
+// cifras que lo componen y el total en cifra grande.
 export function ResumenDocumento({
   cliente,
   vehiculo,

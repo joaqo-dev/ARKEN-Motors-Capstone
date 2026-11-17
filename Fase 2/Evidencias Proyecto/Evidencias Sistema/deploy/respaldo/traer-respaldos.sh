@@ -1,10 +1,11 @@
 #!/usr/bin/env bash
-# Corre en el servidor de respaldo, no en el VPS. Trae por SSH, con una llave
-# de solo lectura:
-#   - los dumps diarios de la base (guarda RETENCION_DIAS; el VPS solo 7);
-#   - los archivos subidos, como instantánea diaria con enlaces duros (lo que no
-#     cambió no ocupa espacio de nuevo).
-# La conexión sale desde aquí, así que no hay que abrir puertos en esta red.
+# Corre en el servidor de respaldo (la VM de Proxmox), no en el VPS
+# (docs/07-despliegue.md). Trae por SSH, con una llave de solo lectura:
+#   - los dumps diarios de la base (se guardan RETENCION_DIAS, aunque el VPS
+#     solo conserve 7);
+#   - los archivos subidos, como una instantánea por día con enlaces duros
+#     (lo que no cambió no ocupa espacio de nuevo).
+# La conexión sale desde aquí: no hace falta abrir puertos en la red de la casa.
 set -euo pipefail
 
 VPS="${VPS:?Falta VPS, p. ej. respaldo@203.0.113.10}"
@@ -29,7 +30,7 @@ rsync -a --delete --timeout=600 "${enlace[@]}" -e "$ssh_cmd" \
 rm -rf "$DESTINO/uploads/$hoy"
 mv "$DESTINO/uploads/$hoy.parcial" "$DESTINO/uploads/$hoy"
 
-# 3. El último dump debe poder leerse (pg_restore vía Docker, sin instalar Postgres).
+# 3. El último dump debe poder leerse (pg_restore desde Docker, sin instalar Postgres).
 ultimo="$(find "$DESTINO/db" -name 'vitriauto-*.dump' | sort | tail -n 1)"
 [[ -n "$ultimo" ]] || { echo "No hay dumps de la base" >&2; exit 1; }
 docker run --rm -i postgres:16-alpine pg_restore --list >/dev/null <"$ultimo"

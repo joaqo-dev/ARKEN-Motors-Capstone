@@ -39,8 +39,8 @@ export class UpdateClienteDto {
   @MaxLength(200)
   direccion?: string;
 
-  // Recordatorios y seguimientos por correo. El cliente se da de baja desde el
-  // correo; aquí se puede reactivar o desactivar a pedido.
+  // Recordatorios y seguimientos por correo (Módulo 18). El cliente se da de baja
+  // desde el propio correo; aquí se puede volver a activar (o desactivar a pedido).
   @IsOptional()
   @IsBoolean()
   aceptaRecordatorios?: boolean;

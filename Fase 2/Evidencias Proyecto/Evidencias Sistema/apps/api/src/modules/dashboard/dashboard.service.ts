@@ -12,8 +12,8 @@ import {
 } from './dashboard.repository';
 import { ConsultaDashboardDto } from './dto/consulta-dashboard.dto';
 
-export const DIAS_ESTANCADO = 45; // días sin venderse para considerarlo estancado
-const DIAS_RESERVA_POR_VENCER = 1; // misma anticipación que la notificación
+export const DIAS_ESTANCADO = 45; // Módulo 15
+const DIAS_RESERVA_POR_VENCER = 1; // misma anticipación que la notificación (Módulo 13)
 
 const n = (valor: string | number | null | undefined) => Number(valor ?? 0);
 
@@ -69,7 +69,7 @@ const vacio = (): IndicadoresSucursal => ({
   gastosOperacionales: 0,
 });
 
-// Regla simple de sugerencia para vehículos estancados (sin ML).
+// Regla simple de sugerencia para vehículos estancados (Módulo 15, sin ML).
 export function sugerenciaEstancado(v: Pick<EstancadoRow, 'dias' | 'fotos' | 'estado'>): string {
   if (v.fotos === 0) return 'No tiene fotos: agrégalas y publícalo';
   if (v.estado === 'EN_PREPARACION' || v.estado === 'PENDIENTE_REVISION') {
@@ -79,10 +79,10 @@ export function sugerenciaEstancado(v: Pick<EstancadoRow, 'dias' | 'fotos' | 'es
   return 'Revisa el precio y destaca la publicación';
 }
 
-// Dashboard y analítica. Alcance según rol:
+// Dashboard (Módulo 14) y Analítica (Módulo 15). Alcance según rol:
 // ADMIN_GENERAL: consolidado o una/varias sucursales, con desglose por sucursal.
 // ADMIN_SUCURSAL / VENDEDOR: solo su sucursal, sin selector. El VENDEDOR no ve
-// costos, márgenes ni gastos.
+// costos, márgenes ni gastos (Módulo 5).
 @Injectable()
 export class DashboardService {
   constructor(private readonly repo: DashboardRepository) {}
@@ -356,14 +356,14 @@ export class DashboardService {
       costoInventario: ind.costoInventario,
       gananciasProyectadas: ind.gananciasProyectadas,
       margenRealPeriodo: ind.margenReal,
-      // Utilidad bruta = margen real de las ventas (ya descuenta costo y gastos de
-      // cada auto) + señas retenidas (ingreso sin costo).
+      // Utilidad bruta = margen real de las ventas (ya descuenta el costo y los
+      // gastos de cada auto vendido) + señas retenidas (ingreso sin costo).
       utilidadPeriodo: ind.margenReal + ind.senasRetenidas,
       gastosOperacionalesPeriodo: ind.gastosOperacionales,
       // Utilidad neta = utilidad bruta − gastos operacionales del período.
       utilidadNetaPeriodo: ind.margenReal + ind.senasRetenidas - ind.gastosOperacionales,
-      // Informativo: lo invertido en preparar autos en el período (no se resta otra
-      // vez: entra en el margen cuando el auto se vende).
+      // Informativo: lo invertido en preparar autos en el período (no se resta
+      // otra vez: entra en el margen cuando el auto se vende).
       gastosVehiculosPeriodo: ind.gastosVehiculos,
     };
   }

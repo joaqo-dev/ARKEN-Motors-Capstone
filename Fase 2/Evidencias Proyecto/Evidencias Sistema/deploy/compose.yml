@@ -1,7 +1,7 @@
-# Producción. Se ejecuta en el VPS desde deploy/:
+# Producción (docs/07-despliegue.md). Se ejecuta en el VPS desde deploy/:
 #   docker compose up -d --build
-# Variables en deploy/.env (plantilla: deploy/.env.example). Solo Caddy expone
-# puertos; el resto se comunica por la red interna de Docker.
+# Variables en deploy/.env (plantilla: deploy/.env.example). Solo Caddy
+# expone puertos; el resto se habla por la red interna de Docker.
 name: vitriauto
 
 x-reinicio: &reinicio

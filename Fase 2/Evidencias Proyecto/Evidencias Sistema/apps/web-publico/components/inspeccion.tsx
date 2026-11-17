@@ -12,9 +12,9 @@ const fecha = (iso: string) =>
   );
 const miles = new Intl.NumberFormat('es-CL');
 
-// Sello de inspección pre-compra (solo si quedó aprobada): al público se le
-// informa que el vehículo fue inspeccionado y su resultado. El detalle queda
-// en el panel.
+// Sello de inspección pre-compra (solo si quedó aprobada, Módulo 7.11): al público
+// se le informa que el vehículo fue inspeccionado y con qué resultado. El detalle
+// punto por punto queda en el panel de la automotora.
 export function Inspeccion({ inspeccion: i }: { inspeccion: InspeccionPublica }) {
   return (
     <section className="panel inspeccion" aria-labelledby="titulo-inspeccion">

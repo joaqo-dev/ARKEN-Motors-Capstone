@@ -1,11 +1,11 @@
 import { z } from 'zod';
 import { mesRevisionTecnica, type TipoDocumentoLegal } from './vehiculos';
 
-// Documentos legales: qué respalda cada archivo y qué vencimientos son
-// posibles. Las reglas viven aquí para que el panel y la API validen igual.
+// Documentos legales (Módulo 7.5): qué respalda cada archivo y qué vencimientos
+// son posibles. Las reglas viven aquí para que el panel y la API validen igual.
 
-// Qué es el archivo subido. En SOAP, permiso y homologación el vencimiento
-// lo calcula la regla, no lo ingresa el usuario.
+// Qué es el archivo subido. Para el SOAP, el permiso y la homologación la fecha
+// de vencimiento la fija la regla, no la escribe el usuario.
 export const RespaldoDocumentoLegal = z.enum([
   'CERTIFICADO_REVISION', // revisión técnica (y de gases) vigente
   'CERTIFICADO_HOMOLOGACION', // vehículo nuevo, aún exento de revisión técnica
@@ -21,8 +21,9 @@ export const RESPALDOS_POR_TIPO: Record<TipoDocumentoLegal, RespaldoDocumentoLeg
   PERMISO_CIRCULACION: ['PERMISO_PAGO_TOTAL', 'PERMISO_PRIMERA_CUOTA'],
 };
 
-// Meses desde la primera inscripción en que un vehículo nuevo está exento de
-// revisión técnica (le basta la homologación). Plazo único para livianos.
+// Meses desde la primera inscripción en que un vehículo nuevo queda exento de
+// revisión técnica (le basta el certificado de homologación). Simplificación
+// asumida: un plazo único para todos los vehículos livianos.
 export const MESES_EXENCION_HOMOLOGACION = 24;
 
 // Cuánto puede durar como máximo una revisión técnica: es anual.
@@ -38,15 +39,15 @@ function partes(fecha: string): [number, number, number] {
   return [a, m, d];
 }
 
-// Permiso y SOAP se pagan desde febrero y cubren de abril a marzo. Devuelve el
-// año del último período ya pagable a la fecha `hoy` (YYYY-MM-DD).
+// El permiso y el SOAP se pagan desde febrero y cubren de abril a marzo. Año del
+// último período que ya se pudo pagar a la fecha `hoy` (YYYY-MM-DD).
 export function anioDePago(hoy: string): number {
   const [anio, mes] = partes(hoy);
   return mes >= 2 ? anio : anio - 1;
 }
 
-// Vencimientos posibles de un respaldo con fecha fija (SOAP y permiso), del
-// más reciente al más antiguo. Se aceptan vencidos.
+// Vencimientos posibles de un respaldo con fecha fija (SOAP y permiso), del más
+// reciente al más antiguo. Se aceptan vencidos: un vehículo puede llegar así.
 export function vencimientosPosibles(
   respaldo: RespaldoDocumentoLegal,
   hoy: string,
@@ -62,8 +63,8 @@ export function vencimientosPosibles(
   return [];
 }
 
-// Vehículo nuevo: su primera revisión técnica cae en el mes de su patente, el
-// año en que termina la exención (sin dígito asignado: el mes en que termina).
+// Vehículo nuevo: su primera revisión técnica toca en el mes que corresponde a su
+// patente, el año en que se cumple la exención (sin dígito: el mes en que se cumple).
 export function vencimientoHomologacion(fechaPrimeraInscripcion: string, patente: string): string {
   const [anio, mes] = partes(fechaPrimeraInscripcion);
   const total = anio * 12 + (mes - 1) + MESES_EXENCION_HOMOLOGACION;
@@ -113,7 +114,7 @@ export type ResultadoDocumentoLegal =
   | { ok: false; error: string };
 
 // Valida un documento antes de guardarlo y devuelve el vencimiento definitivo
-// (calculado cuando lo fija la regla). `hoy` en YYYY-MM-DD, hora de Chile.
+// (calculado cuando lo fija la regla). `hoy` en YYYY-MM-DD, zona de Chile.
 export function validarDocumentoLegal(
   datos: DatosDocumentoLegal,
   vehiculo: VehiculoDelDocumento,

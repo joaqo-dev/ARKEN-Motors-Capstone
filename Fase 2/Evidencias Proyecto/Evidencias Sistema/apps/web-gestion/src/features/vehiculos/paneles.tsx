@@ -94,7 +94,7 @@ function useRefrescarVehiculo(id: string) {
 
 // ---------------------------------------------------------------- Fotos
 
-// 1 a 30 fotos; la primera es la portada.
+// 1 a 30 fotos; la primera es la portada (Módulo 7.4).
 export function PanelFotos({ vehiculo }: { vehiculo: VehiculoDetalle }) {
   const refrescar = useRefrescarVehiculo(vehiculo.id);
   const avisar = useAviso();
@@ -288,8 +288,8 @@ interface DatosDocumento {
 const enlaceArchivo =
   'text-slate-900 underline decoration-slate-300 underline-offset-[3px] transition-colors hover:decoration-slate-900';
 
-// Permiso de circulación, revisión técnica y SOAP. Al renovar, el anterior pasa
-// a historial. Las fechas se validan según el tipo (reglas en
+// Permiso de circulación, revisión técnica y SOAP (Módulo 7.5). Al renovar, el
+// anterior pasa a historial. Las fechas se validan según el tipo (reglas en
 // @vitriauto/shared-types).
 export function PanelDocumentos({ vehiculo }: { vehiculo: VehiculoDetalle }) {
   const refrescar = useRefrescarVehiculo(vehiculo.id);
@@ -650,7 +650,7 @@ interface DatosGasto {
   adjunto: FileList;
 }
 
-// Solo admins; nunca en vehículos consignados.
+// Solo admins; nunca en vehículos consignados (Módulo 8).
 export function PanelGastos({ vehiculo }: { vehiculo: VehiculoDetalle }) {
   const qc = useQueryClient();
   const navegar = useNavigate();
@@ -989,8 +989,8 @@ export function PanelBitacora({ vehiculoId }: { vehiculoId: string }) {
   );
 }
 
-// Balance del vehículo: cifras clave arriba y, debajo, cómo se reparte el
-// precio entre lo que costó el auto y el margen.
+// Balance del vehículo (Módulo 9): cifras clave arriba y, debajo, cómo se reparte
+// el precio entre lo que costó el auto y lo que queda de margen.
 export function PanelBalance({ vehiculoId }: { vehiculoId: string }) {
   const { data, isLoading } = useQuery({
     queryKey: ['vehiculo', vehiculoId, 'balance'],

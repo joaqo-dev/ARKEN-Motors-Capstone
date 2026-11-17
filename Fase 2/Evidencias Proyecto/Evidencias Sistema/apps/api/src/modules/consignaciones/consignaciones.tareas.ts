@@ -3,15 +3,15 @@ import { Cron } from '@nestjs/schedule';
 import { hoyEnChile } from '../../common/fechas';
 import { ConsignacionesRepository } from './consignaciones.repository';
 
-// Vence automáticamente el plazo de las consignaciones. Las alertas (7 días
-// hábiles antes y el mismo día) las genera Notificaciones.
+// Vencimiento automático del plazo de consignación. Las alertas (7 días hábiles
+// antes + el mismo día) se agregan en el Paso 7 con el módulo de Notificaciones.
 @Injectable()
 export class ConsignacionesTareas implements OnApplicationBootstrap {
   private readonly logger = new Logger(ConsignacionesTareas.name);
 
   constructor(private readonly consignaciones: ConsignacionesRepository) {}
 
-  // También al arrancar, para cubrir los días en que la API estuvo abajo.
+  // Al arrancar también: cubre los días en que la API estuvo abajo.
   async onApplicationBootstrap() {
     await this.marcarVencidas();
   }

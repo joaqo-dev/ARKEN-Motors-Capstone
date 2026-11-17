@@ -13,10 +13,10 @@ export const PREFIJO_FOTOS_PUBLICAS = '/archivos/fotos/';
 // Se aceptan los formatos de cámara y celular; todas se guardan como webp.
 const TIPOS_FOTO: TipoArchivo[] = ['jpg', 'png', 'webp', 'heic', 'avif'];
 
-// Lado mayor por defecto de una foto publicada (suficiente para pantalla completa).
+// Lado mayor por defecto de una foto publicada (sobra para la galería a pantalla completa).
 export const LADO_MAXIMO_FOTO = 2000;
-// Documentos (boletas, documentos legales): HEIC/AVIF se guardan como JPG para
-// abrirlos en cualquier navegador.
+// Documentos (boletas, documentos legales): el HEIC/AVIF del celular se guarda
+// como JPG para poder abrirlo en cualquier navegador.
 const TIPOS_DOCUMENTO: TipoArchivo[] = ['pdf', 'jpg', 'png', 'heic', 'avif'];
 
 export interface ArchivoValidado {
@@ -24,8 +24,8 @@ export interface ArchivoValidado {
   tipo: TipoArchivo;
 }
 
-// Único lugar que toca el disco. Fotos: públicas. Documentos: privados, solo
-// se entregan por un endpoint autenticado y con scope.
+// Único lugar que toca el disco. Fotos: públicas (marketplace). Documentos
+// legales: privados, solo se entregan por un endpoint autenticado y con scope.
 
 // Cubre las fotos de 48 MP del iPhone (8064×6048).
 const MAX_PIXELES_HEIC = 50_000_000;
@@ -58,8 +58,9 @@ export class AlmacenamientoService {
     );
   }
 
-  // Guarda la foto como webp y devuelve su URL pública: la endereza según su
-  // EXIF, acota el lado mayor a `ladoMaximo` y quita metadatos (GPS incluido).
+  // Devuelve la URL pública de la foto. Toda foto se guarda como webp: derecha
+  // según su orientación EXIF, con el lado mayor acotado a `ladoMaximo` y sin
+  // metadatos (las fotos de celular traen la ubicación GPS).
   async guardarFoto(archivo: ArchivoValidado, ladoMaximo = LADO_MAXIMO_FOTO): Promise<string> {
     const webp = await this.aWebp(archivo, ladoMaximo);
     const nombre = await this.escribir('fotos', { buffer: webp, tipo: 'webp' });
@@ -140,8 +141,8 @@ export class AlmacenamientoService {
     procesar: (imagen: Sharp) => Sharp,
   ): Promise<Buffer> {
     // Tope antes de decodificar: un HEIC de pocos KB puede declarar 8192×8192 y
-    // heic-convert lo decodificaría entero (~1 GB, ~1 s). sharp lee las
-    // dimensiones del encabezado sin decodificar.
+    // heic-convert lo decodifica entero en el hilo principal (~1 GB, ~1 s).
+    // sharp lee las dimensiones del encabezado sin decodificar.
     if (archivo.tipo === 'heic') {
       const { width = 0, height = 0 } = await sharp(archivo.buffer)
         .metadata()
@@ -153,8 +154,8 @@ export class AlmacenamientoService {
       }
     }
     try {
-      // sharp no trae el decodificador HEVC del iPhone: el HEIC pasa primero a JPEG
-      // (libheif ya aplica su rotación).
+      // Los binarios de sharp no traen el decodificador HEVC del iPhone: el HEIC
+      // pasa primero a JPEG (libheif ya aplica su rotación).
       const entrada =
         archivo.tipo === 'heic'
           ? Buffer.from(

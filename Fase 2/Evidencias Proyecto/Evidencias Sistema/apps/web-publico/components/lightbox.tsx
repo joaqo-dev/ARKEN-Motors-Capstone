@@ -31,9 +31,9 @@ export function Lightbox({
   useEffect(() => {
     const d = dialogo.current;
     if (!d) return;
-    // Sin d.close() al desmontar: en desarrollo React monta los efectos dos veces
-    // y ese cierre dispararía onClose. Al quitarse del DOM, el <dialog> sale de la
-    // capa superior por sí solo.
+    // Sin d.close() al desmontar: en desarrollo React monta los efectos dos
+    // veces y ese cierre dispararía onClose (el visor se cerraría solo). Al
+    // quitarse del DOM, el <dialog> sale de la capa superior por sí mismo.
     if (!d.open) d.showModal();
     const previo = document.body.style.overflow;
     document.body.style.overflow = 'hidden';

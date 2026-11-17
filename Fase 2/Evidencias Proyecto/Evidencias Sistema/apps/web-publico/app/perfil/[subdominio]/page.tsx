@@ -50,8 +50,9 @@ export async function generateMetadata({ params, searchParams }: Props): Promise
   };
 }
 
-// Vitrina de una automotora: su identidad (banner, logo, nombre), el
-// inventario de todas sus sucursales con filtros, "Encuéntranos" y contacto.
+// Perfil público (Módulo 3): la vitrina de una automotora, lista para compartir.
+// Una sola página con su identidad (banner, logo, nombre), el inventario de
+// todas sus sucursales con filtros, el "encuéntranos" y el contacto.
 // Se sirve en <subdominio>.<dominio raíz>/ (ver middleware.ts).
 export default async function PerfilPage({ params, searchParams }: Props) {
   const { subdominio } = await params;
@@ -94,11 +95,13 @@ export default async function PerfilPage({ params, searchParams }: Props) {
       {/* Fija (se esconde al bajar): fuera del hero, que aísla su apilamiento. */}
       <NavVitrina automotora={automotora} />
       <header className="vt-hero">
-        <div
-          className={`vt-hero-fondo${banner ? '' : ' sin-banner'}`}
-          style={banner ? { backgroundImage: `url(${banner})` } : undefined}
-          aria-hidden
-        />
+        {/* El banner es el contenido principal (LCP): como <img> con prioridad alta el
+            navegador lo descubre al leer el HTML; como fondo CSS lo pedía tarde. */}
+        {banner ? (
+          <img className="vt-hero-fondo" src={banner} alt="" fetchPriority="high" aria-hidden />
+        ) : (
+          <div className="vt-hero-fondo sin-banner" aria-hidden />
+        )}
 
         <div className="vt-hero-contenido" id="inicio">
           <div className="vt-hero-texto">

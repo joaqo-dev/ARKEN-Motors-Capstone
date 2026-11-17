@@ -72,8 +72,8 @@ const SELECT_PUNTOS = `
                    FROM inspeccion_foto f WHERE f.punto_id = p.id), '[]') AS fotos
   FROM inspeccion_punto p`;
 
-// Inspección pre-compra. El acceso se valida contra el vehículo (su sucursal
-// actual) en el Service.
+// Inspección pre-compra (Módulo 7.11). El acceso se valida contra el vehículo
+// (su sucursal actual) en el Service.
 @Injectable()
 export class InspeccionesRepository {
   constructor(@Inject(PG_POOL) private readonly pool: Pool) {}
@@ -271,8 +271,8 @@ export class InspeccionesRepository {
     return rows.map((r) => r.url);
   }
 
-  // La que se publica: la última finalizada del vehículo, si está aprobada (con
-  // o sin observaciones). Si la última no lo está, no se publica ninguna.
+  // La que se publica: la última finalizada del vehículo, solo si está aprobada
+  // (con o sin observaciones). Si la última no lo está, no se publica ninguna.
   async publicaDeVehiculo(vehiculoId: string, db: Queryable = this.pool) {
     const { rows } = await db.query<InspeccionRow>(
       `SELECT * FROM (

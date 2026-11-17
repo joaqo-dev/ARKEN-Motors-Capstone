@@ -417,9 +417,9 @@ function Evento({ r }: { r: Registro }) {
   );
 }
 
-// Auditoría (inmutable). El Admin General ve todo; el Admin de Sucursal solo
-// las acciones de su sucursal. Se muestra como actividad por día: cada acción
-// en una frase, con solo los datos que cambiaron.
+// Auditoría (Módulo 16): inmutable. El Admin General ve todo; el Admin de
+// Sucursal solo las acciones de su sucursal. Se muestra como registro de
+// actividad por día: cada acción en una frase y solo los datos que cambiaron.
 export function AuditoriaPage() {
   const { esGeneral } = useSesion();
   const [pestana, setPestana] = useState<'actividad' | 'accesos'>('actividad');

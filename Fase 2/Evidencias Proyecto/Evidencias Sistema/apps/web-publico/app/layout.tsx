@@ -1,12 +1,12 @@
 import type { Metadata } from 'next';
 import type { ReactNode } from 'react';
-import { urlMarketplace } from '../lib/config';
+import { config, urlMarketplace } from '../lib/config';
 import './globals.css';
 import './marketplace.css';
 import './vitrina.css';
 
-// Todo el sitio se renderiza por request: Next.js solo agrega el nonce de la
-// CSP (middleware.ts) a sus scripts en páginas dinámicas; una página estática
+// Todo el sitio se renderiza por request: Next.js solo pone el nonce de la CSP
+// (middleware.ts) a sus scripts en páginas dinámicas. Una página estática
 // saldría sin nonce y el navegador bloquearía sus scripts.
 export const dynamic = 'force-dynamic';
 
@@ -22,6 +22,11 @@ export const metadata: Metadata = {
 export default function RootLayout({ children }: { children: ReactNode }) {
   return (
     <html lang="es">
+      <head>
+        {/* Las fotos vienen de la API, otro origen: abrir la conexión desde el
+            inicio adelanta la foto principal de cada página (su LCP). */}
+        <link rel="preconnect" href={new URL(config.publicApiUrl).origin} />
+      </head>
       <body>{children}</body>
     </html>
   );
