@@ -1,6 +1,6 @@
 # Vitriauto — Plataforma de gestión para automotoras
 
-Sistema web del proyecto **ARKEN Motors**. Cada automotora se registra y administra
+**Vitriauto** es una plataforma web multi-tenant para automotoras. Cada automotora se registra y administra
 su negocio desde un **panel de gestión**: inventario de vehículos, clientes,
 cotizaciones, reservas, ventas, consignaciones, gastos y reportes, en una o varias
 sucursales. Todo vehículo que la automotora publica aparece en su **vitrina pública**
@@ -9,15 +9,15 @@ recorrer sin cuenta.
 
 > **Este repositorio** reúne las evidencias del Capstone (PTY4614, Duoc UC):
 >
-> | Carpeta o archivo                                | Contenido                                                                                                  |
-> | ------------------------------------------------ | ---------------------------------------------------------------------------------------------------------- |
-> | `Fase 1/`                                        | Evidencias de la Fase 1 (definición del proyecto)                                                          |
-> | `Fase 2/Evidencias Proyecto/`                    | Especificación de requerimientos (Word y Excel), `schema.sql` y modelo relacional (PNG e HTML interactivo) |
-> | `Fase 2/Evidencias Proyecto/Evidencias Sistema/` | Código del sistema, que es lo que describe este README                                                     |
-> | `proyecto-arken.md`                              | Descripción completa del proyecto                                                                          |
+> | Carpeta                                                       | Contenido                                                                                                        |
+> | ------------------------------------------------------------- | ---------------------------------------------------------------------------------------------------------------- |
+> | `Fase 1/`                                                     | Evidencias de la Fase 1 (definición del proyecto)                                                                |
+> | `Fase 2/Evidencias Grupales/` y `Fase 2/Evidencias Individuales/` | Guías de la Fase 2 (avance, informe final, autoevaluación y diario de reflexión)                             |
+> | `Fase 2/Evidencias Proyecto/Evidencias de documentación/`     | ERS, requerimientos, diseño, pruebas, manual técnico, `schema.sql`, modelo relacional y EDT funcional            |
+> | `Fase 2/Evidencias Proyecto/Evidencias sistema Aplicación/`   | Código del sistema, que es lo que se instala con las instrucciones de este README                                |
 >
 > Las instrucciones de las secciones 3 a 7 se ejecutan **dentro de la carpeta del código**
-> (`Fase 2/Evidencias Proyecto/Evidencias Sistema`).
+> (`Fase 2/Evidencias Proyecto/Evidencias sistema Aplicación`).
 
 ---
 
@@ -71,22 +71,21 @@ sucursal) y _Vendedor_ (su sucursal, sin ver costos ni márgenes).
 | Panel de gestión | React + Vite + Tailwind CSS                                  |
 | Monorepo         | pnpm + Turborepo                                             |
 | Pruebas          | Jest                                                         |
-| Producción       | Docker, Caddy y GitHub Actions (carpeta `deploy/`)           |
+| Producción       | Docker y Caddy en un servidor Linux (carpeta `deploy/`)      |
 
 ---
 
 ## 3. Estructura del proyecto
 
 ```
-Fase 2/Evidencias Proyecto/Evidencias Sistema/
+Fase 2/Evidencias Proyecto/Evidencias sistema Aplicación/
 ├── apps/
 │   ├── api/             API NestJS (src/modules: un módulo por área de negocio)
 │   ├── web-gestion/     Panel de gestión (React + Vite)
 │   └── web-publico/     Marketplace y vitrinas (Next.js)
 ├── packages/
 │   └── shared-types/    Tipos y reglas compartidas entre la API y los frontends
-├── docs/schema.sql      Esquema completo de la base de datos
-├── migrations/          Migración que crea las tablas a partir de schema.sql
+├── migrations/          Migraciones de la base (base/esquema-inicial.sql tiene el esquema completo)
 ├── scripts/             Utilidades (recrear la base local)
 ├── deploy/              Configuración de producción (Docker, Caddy, respaldos)
 └── docker-compose.yml   PostgreSQL local con Docker (opcional)
@@ -97,7 +96,7 @@ Fase 2/Evidencias Proyecto/Evidencias Sistema/
 ## 4. Cómo levantar el proyecto en otro computador
 
 Tiempo estimado: 10 a 15 minutos. Los comandos se ejecutan en una terminal, **dentro de
-la carpeta del código** (`Fase 2/Evidencias Proyecto/Evidencias Sistema`).
+la carpeta del código** (`Fase 2/Evidencias Proyecto/Evidencias sistema Aplicación`).
 
 > En **macOS / Linux** usa la Terminal. En **Windows** usa **PowerShell**. Cuando un
 > paso es distinto según el sistema, se indican ambas versiones.
@@ -309,7 +308,7 @@ invitaciones de usuarios y la recuperación de contraseña.
 
 ## 7. Comandos útiles
 
-Se ejecutan desde la carpeta del código (`Fase 2/Evidencias Proyecto/Evidencias Sistema`).
+Se ejecutan desde la carpeta del código (`Fase 2/Evidencias Proyecto/Evidencias sistema Aplicación`).
 
 | Comando                             | Qué hace                                                            |
 | ----------------------------------- | ------------------------------------------------------------------- |
